@@ -23,89 +23,105 @@ const AdminPanel = () => {
   ];
 
   return (
-    <div className="portal-layout">
+    <div className="flex h-screen bg-slate-950 text-slate-300 overflow-hidden font-sans">
       {/* Sidebar */}
-      <aside className={`portal-sidebar ${sidebarOpen ? 'open' : ''}`} style={{ borderRightColor: 'var(--accent-purple)' }}>
-        <div className="portal-sidebar-header">
-          <Link to="/" className="text-decoration-none d-flex align-items-center">
-            <i className="fa-solid fa-crown fs-4 text-warning me-2"></i>
-            <span className="fw-bold text-white fs-5">Admin <span className="gradient-text">Panel</span></span>
+      <aside 
+        className={`fixed md:relative z-40 w-64 h-full bg-[#0d1117] border-r border-amber-900/30 flex flex-col transition-transform duration-300 ease-in-out ${
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+        }`}
+      >
+        <div className="flex items-center justify-between p-4 border-b border-amber-900/30">
+          <Link to="/" className="flex items-center no-underline">
+            <i className="fa-solid fa-crown text-2xl text-amber-500 mr-2"></i>
+            <span className="font-bold text-white text-xl">Admin <span className="bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">Panel</span></span>
           </Link>
-          <button className="btn btn-link text-white d-md-none" onClick={() => setSidebarOpen(false)}>
-            <i className="fa-solid fa-xmark fs-4"></i>
+          <button className="text-slate-400 hover:text-white md:hidden" onClick={() => setSidebarOpen(false)}>
+            <i className="fa-solid fa-xmark text-2xl"></i>
           </button>
         </div>
 
-        <div className="px-3 mb-4">
-          <div className="glass-card p-3 d-flex align-items-center gap-3 bg-warning bg-opacity-10 border-warning">
+        <div className="px-4 py-4 mb-2">
+          <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center gap-3">
             <img 
-              src={userData?.photoBase64 || 'https://placehold.co/40x40/121826/00E5FF?text=U'}
+              src={userData?.photoBase64 || 'https://placehold.co/40x40/121826/FFB020?text=A'}
               alt="Avatar" 
-              className="rounded-circle border border-warning" 
-              style={{ width: '40px', height: '40px', objectFit: 'cover' }}
+              className="rounded-full w-10 h-10 object-cover border border-amber-500/50" 
             />
             <div className="overflow-hidden">
-              <div className="text-warning fw-bold text-truncate">{userData?.displayName || 'Admin'}</div>
-              <div className="badge-protocol bg-warning bg-opacity-25 text-warning border-warning" style={{ padding: '2px 6px', fontSize: '0.65rem' }}>
+              <div className="text-amber-400 font-bold truncate text-sm">{userData?.displayName || 'Admin'}</div>
+              <div className="inline-block px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-500 border border-amber-500/30 text-xs font-medium mt-1">
                 System Admin
               </div>
             </div>
           </div>
         </div>
 
-        <nav className="portal-nav px-3 flex-grow-1">
-          <div className="text-muted small text-uppercase fw-bold mb-2 px-2">Management</div>
-          {adminNav.map(item => (
-            <Link 
-              key={item.path} 
-              to={item.path} 
-              className={`portal-nav-link ${location.pathname === item.path ? 'active' : ''}`}
-              onClick={() => setSidebarOpen(false)}
-            >
-              <i className={`fa-solid ${item.icon} me-3`}></i> {item.name}
-            </Link>
-          ))}
+        <nav className="flex-grow px-4 overflow-y-auto custom-scrollbar">
+          <div className="text-slate-500 text-xs uppercase font-bold tracking-wider mb-2 px-2 mt-2">Management</div>
+          <div className="flex flex-col gap-1">
+            {adminNav.map(item => {
+              const isActive = location.pathname === item.path;
+              return (
+                <Link 
+                  key={item.path} 
+                  to={item.path} 
+                  className={`flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                    isActive 
+                      ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' 
+                      : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                  }`}
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  <i className={`fa-solid ${item.icon} w-6`}></i> {item.name}
+                </Link>
+              );
+            })}
+          </div>
 
-          <div className="text-muted small text-uppercase fw-bold mb-2 px-2 mt-4">System</div>
-          <Link to="/portal/dashboard" className="portal-nav-link text-info">
-            <i className="fa-solid fa-arrow-left me-3"></i> Client Portal
-          </Link>
-          <Link to="/" className="portal-nav-link text-info">
-            <i className="fa-solid fa-globe me-3"></i> View Website
-          </Link>
+          <div className="text-slate-500 text-xs uppercase font-bold tracking-wider mb-2 px-2 mt-6">System</div>
+          <div className="flex flex-col gap-1">
+            <Link to="/portal/dashboard" className="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-cyan-400 hover:bg-slate-800 hover:text-white transition-all" onClick={() => setSidebarOpen(false)}>
+              <i className="fa-solid fa-arrow-left w-6"></i> Client Portal
+            </Link>
+            <Link to="/" className="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-cyan-400 hover:bg-slate-800 hover:text-white transition-all">
+              <i className="fa-solid fa-globe w-6"></i> View Website
+            </Link>
+          </div>
         </nav>
       </aside>
 
       {/* Main Content Area */}
-      <div className="portal-main bg-dark">
+      <div className="flex-1 flex flex-col min-w-0 bg-[#020617] relative">
         {/* Mobile Header */}
-        <div className="portal-topbar d-md-none border-bottom border-secondary bg-primary">
-          <div className="d-flex align-items-center gap-3">
-            <button className="btn btn-link text-white p-0" onClick={() => setSidebarOpen(true)}>
-              <i className="fa-solid fa-bars fs-4"></i>
+        <div className="md:hidden flex items-center justify-between p-4 border-b border-amber-900/30 bg-[#0d1117] sticky top-0 z-30">
+          <div className="flex items-center gap-3">
+            <button className="text-slate-300 hover:text-white focus:outline-none" onClick={() => setSidebarOpen(true)}>
+              <i className="fa-solid fa-bars text-xl"></i>
             </button>
-            <span className="fw-bold text-warning">Admin Console</span>
+            <span className="font-bold text-amber-400">Admin Console</span>
           </div>
         </div>
 
         {/* Content Wrapper */}
-        <div className="portal-content">
-          <Routes>
-            <Route path="/" element={<Navigate to="overview" replace />} />
-            <Route path="overview" element={<Overview />} />
-            <Route path="users" element={<Users />} />
-            <Route path="payments" element={<Payments />} />
-            <Route path="servers" element={<Servers />} />
-            <Route path="packages" element={<Packages />} />
-            <Route path="settings" element={<Settings />} />
-          </Routes>
+        <div className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
+          <div className="max-w-7xl mx-auto">
+            <Routes>
+              <Route path="/" element={<Navigate to="overview" replace />} />
+              <Route path="overview" element={<Overview />} />
+              <Route path="users" element={<Users />} />
+              <Route path="payments" element={<Payments />} />
+              <Route path="servers" element={<Servers />} />
+              <Route path="packages" element={<Packages />} />
+              <Route path="settings" element={<Settings />} />
+            </Routes>
+          </div>
         </div>
       </div>
       
       {/* Mobile Overlay */}
       {sidebarOpen && (
         <div 
-          className="position-fixed top-0 start-0 w-100 h-100 bg-black bg-opacity-50 z-2 d-md-none"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 md:hidden transition-opacity"
           onClick={() => setSidebarOpen(false)}
         ></div>
       )}
