@@ -458,23 +458,23 @@ const Home = () => {
           <div className="row justify-content-center g-4 mb-5">
             <div className="col-12 col-md-4 reveal-on-scroll">
               <div className="d-flex flex-column align-items-center">
-                <div className="feature-icon-wrap mb-3"><i className="fa-solid fa-envelope"></i></div>
+                <div className="feature-icon-wrap mb-3"><i className="fa-solid fa-envelope text-slate-300"></i></div>
                 <h6 className="text-white">Email Us</h6>
-                <div className="text-muted small">{config?.contactEmail || 'support@shiftlk.net'}</div>
+                <div className="text-slate-300 text-sm">{config?.contactEmail || 'support@shiftlk.net'}</div>
               </div>
             </div>
             <div className="col-12 col-md-4 reveal-on-scroll" style={{ '--delay': '0.1s' }}>
               <div className="d-flex flex-column align-items-center">
-                <div className="feature-icon-wrap mb-3" style={{ background: 'rgba(59,130,246,0.1)' }}><i className="fa-brands fa-telegram text-primary"></i></div>
+                <div className="feature-icon-wrap mb-3" style={{ background: 'rgba(99,102,241,0.1)' }}><i className="fa-brands fa-telegram text-indigo-400"></i></div>
                 <h6 className="text-white">Telegram Support</h6>
-                <div className="text-muted small">@ShiftLK_Support</div>
+                <div className="text-slate-300 text-sm">@ShiftLK_Support</div>
               </div>
             </div>
             <div className="col-12 col-md-4 reveal-on-scroll" style={{ '--delay': '0.2s' }}>
               <div className="d-flex flex-column align-items-center">
-                <div className="feature-icon-wrap mb-3" style={{ background: 'rgba(34,197,94,0.1)' }}><i className="fa-brands fa-whatsapp text-success"></i></div>
+                <div className="feature-icon-wrap mb-3" style={{ background: 'rgba(34,197,94,0.1)' }}><i className="fa-brands fa-whatsapp text-emerald-400"></i></div>
                 <h6 className="text-white">WhatsApp</h6>
-                <div className="text-muted small">{config?.phone || '+94 77 123 4567'}</div>
+                <div className="text-slate-300 text-sm">{config?.phone || '+94 77 123 4567'}</div>
               </div>
             </div>
           </div>
