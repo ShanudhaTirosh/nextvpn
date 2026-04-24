@@ -1,168 +1,153 @@
 import React, { useState, useEffect } from 'react';
-import GlassCard from '../../components/GlassCard';
 import { useDocument } from '../../hooks/useFirestore';
 import { updateDocument } from '../../firebase/firestore';
 import { showToast } from '../../components/Toast';
 
+const SectionCard = ({ title, icon, children }) => (
+  <div className="rounded-2xl bg-slate-900/60 border border-slate-700/50 p-6 backdrop-blur-sm h-full">
+    <h2 className="text-base font-semibold text-white mb-5 flex items-center gap-2">
+      <i className={`fa-solid ${icon} text-cyan-400`}></i> {title}
+    </h2>
+    {children}
+  </div>
+);
+
+const Field = ({ label, children }) => (
+  <div>
+    <label className="block text-xs font-semibold text-slate-400 mb-1.5">{label}</label>
+    {children}
+  </div>
+);
+
+const inp = "w-full px-3.5 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700/70 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/10 transition-all text-sm";
+
 const Settings = () => {
   const { data: config, loading } = useDocument('siteSettings', 'config');
   const [formData, setFormData] = useState({
-    contactEmail: '',
-    phone: '',
-    address: '',
+    contactEmail: '', phone: '', address: '',
     socialLinks: { facebook: '', telegram: '', instagram: '', whatsapp: '' },
-    paymentDetails: { helaPay: '', eZcash: '', bankAccount: { bank: '', name: '', number: '' } }
+    paymentDetails: { helaPay: '', eZcash: '', bankAccount: { bank: '', name: '', number: '' } },
   });
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (config) {
-      setFormData({
-        contactEmail: config.contactEmail || '',
-        phone: config.phone || '',
-        address: config.address || '',
-        socialLinks: { ...formData.socialLinks, ...config.socialLinks },
-        paymentDetails: { ...formData.paymentDetails, ...config.paymentDetails }
-      });
+      setFormData(prev => ({
+        ...prev, ...config,
+        socialLinks: { ...prev.socialLinks, ...(config.socialLinks || {}) },
+        paymentDetails: {
+          ...prev.paymentDetails, ...(config.paymentDetails || {}),
+          bankAccount: { ...prev.paymentDetails.bankAccount, ...(config.paymentDetails?.bankAccount || {}) },
+        },
+      }));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [config]);
+  }, [config]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleChange = (e, section = null, subSection = null) => {
-    const { name, value } = e.target;
-    
-    if (section && subSection) {
-      setFormData(prev => ({
-        ...prev,
-        [section]: {
-          ...prev[section],
-          [subSection]: {
-            ...prev[section][subSection],
-            [name]: value
-          }
-        }
-      }));
-    } else if (section) {
-      setFormData(prev => ({
-        ...prev,
-        [section]: {
-          ...prev[section],
-          [name]: value
-        }
-      }));
-    } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
-    }
-  };
+  const set = (field, value) => setFormData(prev => ({ ...prev, [field]: value }));
+  const setNested = (section, field, value) => setFormData(prev => ({ ...prev, [section]: { ...prev[section], [field]: value } }));
+  const setDeep = (section, sub, field, value) => setFormData(prev => ({ ...prev, [section]: { ...prev[section], [sub]: { ...prev[section][sub], [field]: value } } }));
 
   const handleSave = async (e) => {
     e.preventDefault();
     setIsSaving(true);
     try {
-      // In firestore, if document doesn't exist yet, we use setDoc. 
-      // But updateDocument will fail if it doesn't exist. Assuming we created it or will handle it.
       await updateDocument('siteSettings', 'config', formData);
-      showToast.success("Global settings updated successfully!");
+      showToast.success('Settings saved successfully!');
     } catch (err) {
-      showToast.error("Failed to save settings. Document may not exist yet.");
+      showToast.error('Failed to save. Does the config document exist in Firestore?');
       console.error(err);
     } finally {
       setIsSaving(false);
     }
   };
 
-  if (loading) return <div className="text-center py-5"><div className="spinner"></div></div>;
+  if (loading) return (
+    <div className="flex items-center justify-center py-24">
+      <div className="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  );
 
   return (
-    <div className="animation-fade-in">
-      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 gap-3">
+    <div className="animate-fade-in">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
         <div>
-          <h2 className="text-white fw-bold mb-1">Global Settings</h2>
-          <p className="text-secondary mb-0">Manage website details and payment receiving accounts.</p>
+          <h1 className="text-2xl font-bold text-white mb-1">Global Settings</h1>
+          <p className="text-slate-500 text-sm">Manage website contact info and payment receiving accounts.</p>
         </div>
-        <button className="btn-gradient" onClick={handleSave} disabled={isSaving}>
-          {isSaving ? <div className="spinner"></div> : <><i className="fa-solid fa-save me-2"></i> Save Changes</>}
+        <button
+          onClick={handleSave}
+          disabled={isSaving}
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 font-bold text-sm hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all disabled:opacity-50"
+        >
+          {isSaving ? <i className="fa-solid fa-spinner animate-spin"></i> : <><i className="fa-solid fa-floppy-disk"></i> Save Changes</>}
         </button>
       </div>
 
-      <div className="row g-4">
-        {/* Contact Info */}
-        <div className="col-12 col-lg-6">
-          <GlassCard className="p-4 h-100">
-            <h5 className="text-white mb-4 border-bottom border-secondary pb-2">Contact & Social</h5>
-            
-            <div className="mb-3">
-              <label className="form-label">Support Email</label>
-              <input type="email" className="form-input" name="contactEmail" value={formData.contactEmail} onChange={handleChange} />
-            </div>
-            <div className="mb-3">
-              <label className="form-label">Phone / WhatsApp</label>
-              <input type="text" className="form-input" name="phone" value={formData.phone} onChange={handleChange} />
-            </div>
-            <div className="mb-4">
-              <label className="form-label">Physical Address</label>
-              <input type="text" className="form-input" name="address" value={formData.address} onChange={handleChange} />
-            </div>
+      <form onSubmit={handleSave}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-            <h6 className="text-white mb-3 mt-4">Social Links</h6>
-            <div className="mb-3">
-              <div className="input-group">
-                <span className="input-group-text bg-dark border-secondary text-primary"><i className="fa-brands fa-facebook"></i></span>
-                <input type="text" className="form-input" name="facebook" value={formData.socialLinks.facebook} onChange={(e) => handleChange(e, 'socialLinks')} placeholder="https://facebook.com/..." />
+          <SectionCard title="Contact & Social" icon="fa-address-book">
+            <div className="space-y-4">
+              <Field label="Support Email">
+                <input type="email" className={inp} value={formData.contactEmail} onChange={e => set('contactEmail', e.target.value)} placeholder="support@example.com" />
+              </Field>
+              <Field label="Phone / WhatsApp">
+                <input type="text" className={inp} value={formData.phone} onChange={e => set('phone', e.target.value)} placeholder="+94 7X XXX XXXX" />
+              </Field>
+              <Field label="Physical Address">
+                <input type="text" className={inp} value={formData.address} onChange={e => set('address', e.target.value)} placeholder="No. 1, Main Street, Colombo" />
+              </Field>
+
+              <div className="pt-2 border-t border-slate-800">
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Social Links</p>
+                <div className="space-y-3">
+                  {[
+                    { key: 'facebook', icon: 'fa-facebook', color: 'text-blue-500', ph: 'https://facebook.com/...' },
+                    { key: 'telegram', icon: 'fa-telegram', color: 'text-sky-400', ph: 'https://t.me/...' },
+                    { key: 'instagram', icon: 'fa-instagram', color: 'text-pink-400', ph: 'https://instagram.com/...' },
+                    { key: 'whatsapp', icon: 'fa-whatsapp', color: 'text-emerald-400', ph: 'https://wa.me/...' },
+                  ].map(s => (
+                    <div key={s.key} className="flex gap-2">
+                      <div className="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center flex-shrink-0">
+                        <i className={`fa-brands ${s.icon} ${s.color} text-sm`}></i>
+                      </div>
+                      <input type="text" className={inp} value={formData.socialLinks[s.key]} onChange={e => setNested('socialLinks', s.key, e.target.value)} placeholder={s.ph} />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-            <div className="mb-3">
-              <div className="input-group">
-                <span className="input-group-text bg-dark border-secondary text-info"><i className="fa-brands fa-telegram"></i></span>
-                <input type="text" className="form-input" name="telegram" value={formData.socialLinks.telegram} onChange={(e) => handleChange(e, 'socialLinks')} placeholder="https://t.me/..." />
+          </SectionCard>
+
+          <SectionCard title="Payment Receiving Details" icon="fa-money-bill-wave">
+            <p className="text-xs text-slate-500 mb-5">These details are shown to users during the manual payment checkout flow.</p>
+            <div className="space-y-5">
+              <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 space-y-3">
+                <p className="text-xs font-bold text-slate-400 flex items-center gap-2"><i className="fa-solid fa-mobile-screen text-cyan-400"></i> Mobile Wallets</p>
+                <Field label="HelaPay Number">
+                  <input type="text" className={inp} value={formData.paymentDetails.helaPay} onChange={e => setNested('paymentDetails', 'helaPay', e.target.value)} placeholder="07XXXXXXXX" />
+                </Field>
+                <Field label="eZcash Number">
+                  <input type="text" className={inp} value={formData.paymentDetails.eZcash} onChange={e => setNested('paymentDetails', 'eZcash', e.target.value)} placeholder="07XXXXXXXX" />
+                </Field>
+              </div>
+              <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 space-y-3">
+                <p className="text-xs font-bold text-slate-400 flex items-center gap-2"><i className="fa-solid fa-building-columns text-purple-400"></i> Bank Transfer</p>
+                <Field label="Bank Name">
+                  <input type="text" className={inp} value={formData.paymentDetails.bankAccount.bank} onChange={e => setDeep('paymentDetails', 'bankAccount', 'bank', e.target.value)} placeholder="Commercial Bank" />
+                </Field>
+                <Field label="Account Name">
+                  <input type="text" className={inp} value={formData.paymentDetails.bankAccount.name} onChange={e => setDeep('paymentDetails', 'bankAccount', 'name', e.target.value)} placeholder="John Doe" />
+                </Field>
+                <Field label="Account Number">
+                  <input type="text" className={inp} value={formData.paymentDetails.bankAccount.number} onChange={e => setDeep('paymentDetails', 'bankAccount', 'number', e.target.value)} placeholder="1234567890" />
+                </Field>
               </div>
             </div>
-            <div className="mb-3">
-              <div className="input-group">
-                <span className="input-group-text bg-dark border-secondary text-danger"><i className="fa-brands fa-instagram"></i></span>
-                <input type="text" className="form-input" name="instagram" value={formData.socialLinks.instagram} onChange={(e) => handleChange(e, 'socialLinks')} placeholder="https://instagram.com/..." />
-              </div>
-            </div>
-          </GlassCard>
+          </SectionCard>
+
         </div>
-
-        {/* Payment Details */}
-        <div className="col-12 col-lg-6">
-          <GlassCard className="p-4 h-100 border-warning">
-            <h5 className="text-warning mb-4 border-bottom border-warning pb-2">Receiving Payment Details</h5>
-            <p className="text-secondary small mb-4">These details are shown to users during the manual payment flow.</p>
-
-            <div className="mb-4 p-3 bg-secondary bg-opacity-25 rounded-3">
-              <h6 className="text-white mb-3 d-flex align-items-center gap-2"><i className="fa-solid fa-mobile-screen text-cyan"></i> Mobile Wallets</h6>
-              <div className="mb-3">
-                <label className="form-label text-muted small">HelaPay Number</label>
-                <input type="text" className="form-input" name="helaPay" value={formData.paymentDetails.helaPay} onChange={(e) => handleChange(e, 'paymentDetails')} placeholder="077XXXXXXX" />
-              </div>
-              <div className="mb-2">
-                <label className="form-label text-muted small">eZcash Number</label>
-                <input type="text" className="form-input" name="eZcash" value={formData.paymentDetails.eZcash} onChange={(e) => handleChange(e, 'paymentDetails')} placeholder="077XXXXXXX" />
-              </div>
-            </div>
-
-            <div className="p-3 bg-secondary bg-opacity-25 rounded-3">
-              <h6 className="text-white mb-3 d-flex align-items-center gap-2"><i className="fa-solid fa-building-columns text-purple" style={{ color: 'var(--accent-purple)' }}></i> Bank Account</h6>
-              <div className="mb-3">
-                <label className="form-label text-muted small">Bank Name</label>
-                <input type="text" className="form-input" name="bank" value={formData.paymentDetails.bankAccount.bank} onChange={(e) => handleChange(e, 'paymentDetails', 'bankAccount')} placeholder="Commercial Bank" />
-              </div>
-              <div className="mb-3">
-                <label className="form-label text-muted small">Account Name</label>
-                <input type="text" className="form-input" name="name" value={formData.paymentDetails.bankAccount.name} onChange={(e) => handleChange(e, 'paymentDetails', 'bankAccount')} placeholder="John Doe" />
-              </div>
-              <div className="mb-2">
-                <label className="form-label text-muted small">Account Number</label>
-                <input type="text" className="form-input" name="number" value={formData.paymentDetails.bankAccount.number} onChange={(e) => handleChange(e, 'paymentDetails', 'bankAccount')} placeholder="1234567890" />
-              </div>
-            </div>
-
-          </GlassCard>
-        </div>
-      </div>
+      </form>
     </div>
   );
 };

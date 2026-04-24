@@ -27,14 +27,14 @@ const AdminPanel = lazy(() => import('./pages/AdminPanel'));
 // Protected Route wrappers
 const ProtectedRoute = ({ children }) => {
   const { currentUser, loading } = useAuth();
-  if (loading) return <div className="d-flex justify-content-center pt-5 mt-5"><div className="spinner"></div></div>;
+  if (loading) return <div className="flex items-center justify-center min-h-screen"><div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div></div>;
   if (!currentUser) return <Navigate to="/login" replace />;
   return children;
 };
 
 const AdminRoute = ({ children }) => {
   const { isAdmin, loading } = useAdmin();
-  if (loading) return <div className="d-flex justify-content-center pt-5 mt-5"><div className="spinner"></div></div>;
+  if (loading) return <div className="flex items-center justify-center min-h-screen"><div className="w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full animate-spin"></div></div>;
   if (!isAdmin) return <Navigate to="/" replace />;
   return children;
 };
@@ -100,7 +100,8 @@ function App() {
     <>
       {!isPortalOrAdmin && <Navbar />}
       
-      <main style={{ minHeight: !isPortalOrAdmin ? 'calc(100vh - 350px)' : '100vh' }}>
+      {/* pt-20 compensates for the fixed floating capsule navbar height+gap */}
+      <main style={{ minHeight: !isPortalOrAdmin ? 'calc(100vh - 350px)' : '100vh' }} className={!isPortalOrAdmin ? 'pt-20' : ''}>
         <Suspense fallback={<FallbackLoader />}>
           <Routes location={location} key={location.pathname}>
             {/* Public Routes */}

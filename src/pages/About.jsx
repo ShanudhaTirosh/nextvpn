@@ -1,108 +1,123 @@
 import React from 'react';
-import GlassCard from '../components/GlassCard';
 import CounterStat from '../components/CounterStat';
 
-const About = () => {
-  return (
-    <div className="about-page">
-      {/* Hero */}
-      <section className="section-padding section-bg-primary text-center">
-        <div className="container-main pt-5">
-          <div className="section-eyebrow">Discover Our Story</div>
-          <h1 className="section-title text-white">About <span className="gradient-text">ShiftLK Netch</span></h1>
-          <p className="section-subtitle mt-3">We are on a mission to provide unrestricted, lightning-fast internet access to users across Sri Lanka and Asia.</p>
-        </div>
-      </section>
+const VALUES = [
+  { icon:'fa-user-shield', color:'text-cyan-400', bg:'bg-cyan-500/10 border-cyan-500/20', title:'Absolute Privacy', desc:'A strict zero-logs policy. We never track, store, or share your data with anyone.' },
+  { icon:'fa-gauge-high', color:'text-blue-400', bg:'bg-blue-500/10 border-blue-500/20', title:'Unmatched Speed', desc:'Premium routing and dedicated bandwidth for zero buffering and low latency.' },
+  { icon:'fa-server', color:'text-purple-400', bg:'bg-purple-500/10 border-purple-500/20', title:'Reliability', desc:'Enterprise-grade servers with automated failover and proactive DDoS mitigation.' },
+  { icon:'fa-headset', color:'text-emerald-400', bg:'bg-emerald-500/10 border-emerald-500/20', title:'24/7 Support', desc:'Real human support via Telegram and WhatsApp to assist you anytime.' },
+];
 
-      {/* Mission & Stats */}
-      <section className="section-padding section-bg-secondary border-top border-secondary">
-        <div className="container-main">
-          <div className="row align-items-center g-5">
-            <div className="col-12 col-lg-6 reveal-on-scroll">
-              <h3 className="text-white fw-bold mb-4">Built by Enthusiasts, <br />Designed for Performance</h3>
-              <p className="text-secondary lh-lg mb-4">
-                Founded in 2024, ShiftLK Netch Solutions started with a simple goal: bypass restrictions 
-                and provide high-speed, secure internet access. What began as a small project has quickly 
-                grown into a trusted premium V2Ray service provider in the region.
-              </p>
-              <p className="text-secondary lh-lg">
-                We utilize enterprise-grade hardware, NVMe storage, and 10Gbps uplinks to ensure 
-                our network never bottlenecks. Whether you are gaming, streaming, or just browsing, 
-                our infrastructure is built to handle it.
-              </p>
-            </div>
-            
-            <div className="col-12 col-lg-6">
-              <div className="row g-3">
-                <div className="col-6 reveal-on-scroll" style={{ '--delay': '0.1s' }}>
-                  <GlassCard className="text-center p-4 h-100">
-                    <div className="fs-2 fw-bold text-white mb-2"><CounterStat end={5} suffix="k+" /></div>
-                    <div className="text-muted small text-uppercase">Users Served</div>
-                  </GlassCard>
+const TIMELINE = [
+  { year:'2023', title:'The Idea', desc:'ShiftLK Netch was born from a simple frustration: slow, restricted internet across Sri Lanka.' },
+  { year:'2024 Q1', title:'First Servers', desc:'Launched our first 3 Singapore nodes, quickly gaining 200+ early adopters.' },
+  { year:'2024 Q2', title:'Regional Expansion', desc:'Expanded to Tokyo, London, and Dubai. Reached 1,000+ active subscribers.' },
+  { year:'Now', title:'5,000+ Users', desc:'Trusted by thousands across Sri Lanka and Asia. 30+ nodes across 4 continents.' },
+];
+
+const About = () => (
+  <div className="min-h-screen bg-[#020617]">
+    <div className="fixed inset-0 pointer-events-none overflow-hidden">
+      <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-cyan-500/4 rounded-full blur-3xl" />
+      <div className="absolute bottom-1/3 left-1/4 w-80 h-80 bg-blue-600/4 rounded-full blur-3xl" />
+    </div>
+
+    {/* Hero */}
+    <section className="relative max-w-6xl mx-auto px-6 py-20 text-center">
+      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold mb-6">
+        <i className="fa-solid fa-globe text-[10px]"></i> Our Story
+      </div>
+      <h1 className="text-5xl font-black text-white mb-4 leading-tight">
+        About <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">ShiftLK Netch</span>
+      </h1>
+      <p className="text-slate-400 max-w-xl mx-auto text-base leading-relaxed">
+        We're on a mission to provide unrestricted, lightning-fast internet access to users across Sri Lanka and Asia.
+      </p>
+    </section>
+
+    {/* Stats */}
+    <section className="max-w-6xl mx-auto px-6 pb-16">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {[
+          { end:5000, suffix:'k+', label:'Users Served', color:'from-cyan-500/10', border:'border-cyan-500/20', text:'text-cyan-400' },
+          { end:30, suffix:'+', label:'Global Servers', color:'from-blue-500/10', border:'border-blue-500/20', text:'text-blue-400' },
+          { end:12, suffix:'', label:'Countries', color:'from-purple-500/10', border:'border-purple-500/20', text:'text-purple-400' },
+          { end:99.9, suffix:'%', label:'Uptime Record', color:'from-emerald-500/10', border:'border-emerald-500/20', text:'text-emerald-400' },
+        ].map(({ end, suffix, label, color, border, text }) => (
+          <div key={label} className={`relative overflow-hidden rounded-2xl bg-gradient-to-br ${color} to-transparent border ${border} p-5 text-center`}>
+            <div className={`text-3xl font-black ${text} mb-1`}><CounterStat end={end} suffix={suffix} /></div>
+            <div className="text-xs text-slate-500 uppercase tracking-wider">{label}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    {/* Mission */}
+    <section className="max-w-6xl mx-auto px-6 pb-20">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+        <div>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold mb-5">
+            <i className="fa-solid fa-rocket text-[10px]"></i> Our Mission
+          </div>
+          <h2 className="text-3xl font-black text-white mb-4 leading-tight">
+            Built by Enthusiasts,<br/><span className="text-slate-400">Designed for Performance</span>
+          </h2>
+          <p className="text-slate-400 text-sm leading-relaxed mb-4">
+            Founded in 2024, ShiftLK Netch Solutions started with a simple goal: bypass restrictions and provide high-speed, secure internet access. What began as a small project has quickly grown into a trusted premium V2Ray provider across the region.
+          </p>
+          <p className="text-slate-400 text-sm leading-relaxed mb-6">
+            We use enterprise-grade hardware, NVMe storage, and 10Gbps uplinks to ensure our network never bottlenecks, whether you're gaming, streaming, or browsing.
+          </p>
+          <div className="flex flex-col gap-3">
+            {['10Gbps uplink ports on all nodes','Automated DDoS mitigation','Multi-region failover routing'].map(item => (
+              <div key={item} className="flex items-center gap-3 text-sm text-slate-300">
+                <div className="w-6 h-6 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                  <i className="fa-solid fa-check text-emerald-400 text-[10px]"></i>
                 </div>
-                <div className="col-6 reveal-on-scroll" style={{ '--delay': '0.2s' }}>
-                  <GlassCard className="text-center p-4 h-100">
-                    <div className="fs-2 fw-bold text-white mb-2"><CounterStat end={30} suffix="+" /></div>
-                    <div className="text-muted small text-uppercase">Global Servers</div>
-                  </GlassCard>
-                </div>
-                <div className="col-6 reveal-on-scroll" style={{ '--delay': '0.3s' }}>
-                  <GlassCard className="text-center p-4 h-100">
-                    <div className="fs-2 fw-bold text-white mb-2"><CounterStat end={12} /></div>
-                    <div className="text-muted small text-uppercase">Countries</div>
-                  </GlassCard>
-                </div>
-                <div className="col-6 reveal-on-scroll" style={{ '--delay': '0.4s' }}>
-                  <GlassCard className="text-center p-4 h-100">
-                    <div className="fs-2 fw-bold text-white mb-2"><CounterStat end={99} suffix=".9%" /></div>
-                    <div className="text-muted small text-uppercase">Uptime Record</div>
-                  </GlassCard>
-                </div>
+                {item}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Timeline */}
+        <div className="flex flex-col gap-0">
+          {TIMELINE.map((item, i) => (
+            <div key={item.year} className="flex gap-4">
+              <div className="flex flex-col items-center">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 flex items-center justify-center flex-shrink-0 text-[10px] font-bold text-cyan-400">{item.year.replace('Now','★')}</div>
+                {i < TIMELINE.length - 1 && <div className="w-px flex-1 bg-gradient-to-b from-cyan-500/20 to-transparent mt-1"></div>}
+              </div>
+              <div className="pb-8">
+                <p className="text-xs text-cyan-400 font-semibold mb-0.5">{item.year}</p>
+                <h3 className="text-white font-bold text-sm mb-1">{item.title}</h3>
+                <p className="text-slate-500 text-xs leading-relaxed">{item.desc}</p>
               </div>
             </div>
-          </div>
+          ))}
         </div>
-      </section>
+      </div>
+    </section>
 
-      {/* Values */}
-      <section className="section-padding section-bg-primary">
-        <div className="container-main text-center">
-          <h2 className="section-title text-white mb-5 reveal-on-scroll">Our Core Values</h2>
-          
-          <div className="row g-4">
-            <div className="col-12 col-md-6 col-lg-3 reveal-on-scroll">
-              <GlassCard className="p-4 h-100">
-                <i className="fa-solid fa-user-shield fs-1 text-cyan mb-4" style={{ color: 'var(--accent-cyan)' }}></i>
-                <h5 className="text-white mb-3">Absolute Privacy</h5>
-                <p className="text-secondary small mb-0">A strict zero-logs policy. We do not track, store, or share your data with anyone.</p>
-              </GlassCard>
+    {/* Values */}
+    <section className="max-w-6xl mx-auto px-6 pb-20">
+      <div className="text-center mb-10">
+        <h2 className="text-3xl font-black text-white mb-3">Our Core Values</h2>
+        <p className="text-slate-500 text-sm">The principles we build everything around.</p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        {VALUES.map(v => (
+          <div key={v.title} className={`rounded-2xl border p-6 text-center bg-slate-900/40 ${v.bg.split(' ')[1]}`}>
+            <div className={`w-14 h-14 rounded-2xl border flex items-center justify-center mx-auto mb-4 ${v.bg}`}>
+              <i className={`fa-solid ${v.icon} text-xl ${v.color}`}></i>
             </div>
-            <div className="col-12 col-md-6 col-lg-3 reveal-on-scroll" style={{ '--delay': '0.1s' }}>
-              <GlassCard className="p-4 h-100">
-                <i className="fa-solid fa-gauge-high fs-1 mb-4" style={{ color: 'var(--accent-blue)' }}></i>
-                <h5 className="text-white mb-3">Unmatched Speed</h5>
-                <p className="text-secondary small mb-0">Premium routing and dedicated bandwidth to ensure zero buffering and low latency.</p>
-              </GlassCard>
-            </div>
-            <div className="col-12 col-md-6 col-lg-3 reveal-on-scroll" style={{ '--delay': '0.2s' }}>
-              <GlassCard className="p-4 h-100">
-                <i className="fa-solid fa-server fs-1 mb-4" style={{ color: 'var(--accent-purple)' }}></i>
-                <h5 className="text-white mb-3">Reliability</h5>
-                <p className="text-secondary small mb-0">Enterprise-grade servers with automated failover and proactive DDoS mitigation.</p>
-              </GlassCard>
-            </div>
-            <div className="col-12 col-md-6 col-lg-3 reveal-on-scroll" style={{ '--delay': '0.3s' }}>
-              <GlassCard className="p-4 h-100">
-                <i className="fa-solid fa-headset fs-1 mb-4" style={{ color: 'var(--accent-green)' }}></i>
-                <h5 className="text-white mb-3">24/7 Support</h5>
-                <p className="text-secondary small mb-0">Real human support available via Telegram and WhatsApp to assist you anytime.</p>
-              </GlassCard>
-            </div>
+            <h3 className="text-white font-bold text-sm mb-2">{v.title}</h3>
+            <p className="text-slate-500 text-xs leading-relaxed">{v.desc}</p>
           </div>
-        </div>
-      </section>
-    </div>
-  );
-};
+        ))}
+      </div>
+    </section>
+  </div>
+);
 
 export default About;

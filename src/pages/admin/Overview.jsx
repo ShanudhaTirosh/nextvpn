@@ -1,147 +1,250 @@
-import React from 'react';
-import GlassCard from '../../components/GlassCard';
+import React, { useState } from 'react';
 import { useCollection } from '../../hooks/useFirestore';
+import { updateDocument, getDocument } from '../../firebase/firestore';
+import { showToast } from '../../components/Toast';
+import { logActivity } from '../../hooks/useActivityLog';
+
+const SEVERITY_CONFIG = {
+  success: { icon: 'fa-check', color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20' },
+  warning: { icon: 'fa-clock', color: 'text-amber-400', bg: 'bg-amber-500/10', border: 'border-amber-500/20' },
+  danger:  { icon: 'fa-triangle-exclamation', color: 'text-red-400', bg: 'bg-red-500/10', border: 'border-red-500/20' },
+  info:    { icon: 'fa-circle-info', color: 'text-cyan-400', bg: 'bg-cyan-500/10', border: 'border-cyan-500/20' },
+};
+
+const StatCard = ({ label, value, icon, colorClass, sub }) => (
+  <div className={`relative overflow-hidden rounded-2xl bg-slate-900/60 border border-slate-700/50 p-5`}>
+    <div className="flex items-start justify-between mb-3">
+      <span className="text-xs font-bold uppercase tracking-widest text-slate-500">{label}</span>
+      <i className={`fa-solid ${icon} text-xl ${colorClass}`}></i>
+    </div>
+    <div className={`text-3xl font-bold text-white mb-1`}>{value}</div>
+    {sub && <p className="text-xs text-slate-500">{sub}</p>}
+  </div>
+);
 
 const Overview = () => {
   const { data: users } = useCollection('users');
   const { data: payments } = useCollection('payments');
   const { data: servers } = useCollection('servers');
-  const { data: tickets } = useCollection('tickets');
+  const { data: logs, loading: logsLoading } = useCollection('activity_logs');
+  const [processing, setProcessing] = useState(null);
 
   const pendingPayments = payments?.filter(p => p.status === 'pending').length || 0;
+  const verifyingPayments = (payments || []).filter(p => p.status === 'verifying');
   const totalRevenue = payments?.filter(p => p.status === 'approved').reduce((acc, curr) => acc + Number(curr.amount), 0) || 0;
   const activeUsers = users?.filter(u => u.isActive && u.plan !== 'none').length || 0;
-  const openTickets = tickets?.filter(t => t.status === 'open').length || 0;
+  const onlineServers = servers?.filter(s => s.isOnline).length || 0;
+
+  const recentLogs = [...(logs || [])].sort((a, b) => {
+    const aT = a.createdAt?.toDate?.() || 0;
+    const bT = b.createdAt?.toDate?.() || 0;
+    return bT - aT;
+  }).slice(0, 8);
+
+  const formatTime = (ts) => {
+    if (!ts?.toDate) return 'just now';
+    const d = ts.toDate();
+    const diff = Math.floor((Date.now() - d.getTime()) / 1000);
+    if (diff < 60) return `${diff}s ago`;
+    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+    return d.toLocaleDateString();
+  };
+
+  // Validate reference format: NX-XXXX-XXXXXXXX
+  const isValidRef = (ref) => /^NX-[A-Z0-9]{4}-[A-Z0-9]+$/.test(ref || '');
+
+  const handleAutoApprove = async (payment) => {
+    if (!isValidRef(payment.reference)) {
+      showToast.error('Invalid reference format. Cannot auto-approve.');
+      return;
+    }
+    setProcessing(payment.id);
+    try {
+      await updateDocument('payments', payment.id, { status: 'approved' });
+      const userDoc = await getDocument('users', payment.uid);
+      if (userDoc) {
+        const currentExpiry = userDoc.subscriptionExpiry ? userDoc.subscriptionExpiry.toDate() : new Date();
+        const newExpiry = new Date(Math.max(currentExpiry.getTime(), Date.now()));
+        newExpiry.setDate(newExpiry.getDate() + 30);
+        await updateDocument('users', payment.uid, {
+          plan: payment.packageName.toLowerCase(),
+          isActive: true,
+          paymentStatus: 'paid',
+          subscriptionExpiry: newExpiry,
+        });
+      }
+      await logActivity('payment', `Auto-verified ${payment.method} payment of LKR ${payment.amount} for "${payment.packageName}" (Ref: ${payment.reference}).`, 'success');
+      showToast.success('Payment auto-approved and plan activated!');
+    } catch (err) {
+      showToast.error('Failed to auto-approve.');
+      console.error(err);
+    } finally {
+      setProcessing(null);
+    }
+  };
+
+  const handleReject = async (payment) => {
+    setProcessing(payment.id);
+    try {
+      await updateDocument('payments', payment.id, { status: 'rejected' });
+      await logActivity('payment', `Payment (Ref: ${payment.reference}) was rejected.`, 'danger');
+      showToast.error('Payment rejected.');
+    } finally {
+      setProcessing(null);
+    }
+  };
 
   return (
-    <div className="animation-fade-in">
-      <h2 className="text-white fw-bold mb-4">System Overview</h2>
-
-      {/* Stats Cards */}
-      <div className="row g-4 mb-5">
-        <div className="col-12 col-sm-6 col-lg-3">
-          <GlassCard className="p-4 h-100 border-cyan">
-            <div className="d-flex justify-content-between align-items-start mb-3">
-              <div className="text-muted small text-uppercase fw-bold">Active Subscriptions</div>
-              <i className="fa-solid fa-users text-cyan fs-4" style={{ color: 'var(--accent-cyan)' }}></i>
-            </div>
-            <h3 className="text-white fw-bold mb-1">{activeUsers}</h3>
-            <p className="text-success small mb-0"><i className="fa-solid fa-arrow-trend-up me-1"></i> +12% this month</p>
-          </GlassCard>
-        </div>
-        
-        <div className="col-12 col-sm-6 col-lg-3">
-          <GlassCard className="p-4 h-100 border-warning">
-            <div className="d-flex justify-content-between align-items-start mb-3">
-              <div className="text-muted small text-uppercase fw-bold">Pending Payments</div>
-              <i className="fa-solid fa-money-bill-transfer text-warning fs-4"></i>
-            </div>
-            <h3 className="text-white fw-bold mb-1">{pendingPayments}</h3>
-            <p className="text-warning small mb-0"><i className="fa-solid fa-clock me-1"></i> Require approval</p>
-          </GlassCard>
-        </div>
-
-        <div className="col-12 col-sm-6 col-lg-3">
-          <GlassCard className="p-4 h-100 border-success">
-            <div className="d-flex justify-content-between align-items-start mb-3">
-              <div className="text-muted small text-uppercase fw-bold">Total Revenue</div>
-              <i className="fa-solid fa-sack-dollar text-success fs-4"></i>
-            </div>
-            <h3 className="text-white fw-bold mb-1">LKR {totalRevenue.toLocaleString()}</h3>
-            <p className="text-secondary small mb-0">All time approved</p>
-          </GlassCard>
-        </div>
-
-        <div className="col-12 col-sm-6 col-lg-3">
-          <GlassCard className="p-4 h-100 border-danger">
-            <div className="d-flex justify-content-between align-items-start mb-3">
-              <div className="text-muted small text-uppercase fw-bold">Open Tickets</div>
-              <i className="fa-solid fa-headset text-danger fs-4"></i>
-            </div>
-            <h3 className="text-white fw-bold mb-1">{openTickets}</h3>
-            <p className="text-secondary small mb-0">Awaiting response</p>
-          </GlassCard>
-        </div>
+    <div className="animate-fade-in">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-white mb-1">System Overview</h1>
+        <p className="text-slate-500 text-sm">Real-time metrics from your Firestore database.</p>
       </div>
 
-      <div className="row g-4">
-        {/* Recent Activity (Mocked) */}
-        <div className="col-12 col-lg-8">
-          <GlassCard className="p-4 h-100">
-            <h5 className="text-white mb-4 border-bottom border-secondary pb-3">Recent System Activity</h5>
-            <div className="d-flex flex-column gap-3">
-              <div className="d-flex align-items-start gap-3">
-                <div className="feature-icon-wrap mb-0 bg-success bg-opacity-25 border-success" style={{ width: '40px', height: '40px', padding: 0 }}>
-                  <i className="fa-solid fa-check text-success"></i>
-                </div>
-                <div>
-                  <div className="text-white small">Payment approved for <strong>UID: asd92...</strong> (Pro Plan)</div>
-                  <div className="text-muted" style={{ fontSize: '0.75rem' }}>10 mins ago</div>
-                </div>
-              </div>
-              <div className="d-flex align-items-start gap-3">
-                <div className="feature-icon-wrap mb-0 bg-info bg-opacity-25 border-info" style={{ width: '40px', height: '40px', padding: 0 }}>
-                  <i className="fa-solid fa-user-plus text-info"></i>
-                </div>
-                <div>
-                  <div className="text-white small">New user registered: <strong>john@example.com</strong></div>
-                  <div className="text-muted" style={{ fontSize: '0.75rem' }}>45 mins ago</div>
-                </div>
-              </div>
-              <div className="d-flex align-items-start gap-3">
-                <div className="feature-icon-wrap mb-0 bg-warning bg-opacity-25 border-warning" style={{ width: '40px', height: '40px', padding: 0 }}>
-                  <i className="fa-solid fa-ticket text-warning"></i>
-                </div>
-                <div>
-                  <div className="text-white small">New support ticket opened by <strong>UID: lkas2...</strong></div>
-                  <div className="text-muted" style={{ fontSize: '0.75rem' }}>2 hours ago</div>
-                </div>
-              </div>
-              <div className="d-flex align-items-start gap-3">
-                <div className="feature-icon-wrap mb-0 bg-danger bg-opacity-25 border-danger" style={{ width: '40px', height: '40px', padding: 0 }}>
-                  <i className="fa-solid fa-server text-danger"></i>
-                </div>
-                <div>
-                  <div className="text-white small">Node <strong>London Secure</strong> offline. Attempting restart...</div>
-                  <div className="text-muted" style={{ fontSize: '0.75rem' }}>5 hours ago</div>
-                </div>
-              </div>
-            </div>
-          </GlassCard>
-        </div>
+      {/* Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <StatCard label="Active Subscribers" value={activeUsers} icon="fa-users" colorClass="text-cyan-400" sub="Plans active now" />
+        <StatCard label="Pending Payments" value={pendingPayments} icon="fa-money-bill-wave" colorClass="text-amber-400" sub="Awaiting review" />
+        <StatCard label="Total Revenue" value={`LKR ${totalRevenue.toLocaleString()}`} icon="fa-sack-dollar" colorClass="text-emerald-400" sub="All approved" />
+        <StatCard label="Servers Online" value={`${onlineServers} / ${servers?.length || 0}`} icon="fa-server" colorClass="text-blue-400" sub="Node health" />
+      </div>
 
-        {/* Server Status Overview */}
-        <div className="col-12 col-lg-4">
-          <GlassCard className="p-4 h-100">
-            <h5 className="text-white mb-4 border-bottom border-secondary pb-3">Node Status</h5>
-            
-            {servers?.length === 0 ? (
-              <p className="text-secondary small">No servers configured.</p>
-            ) : (
-              <div className="d-flex flex-column gap-3">
-                {servers?.slice(0, 5).map(server => (
-                  <div className="d-flex justify-content-between align-items-center" key={server.id}>
-                    <div className="d-flex align-items-center gap-2">
-                      <span className="location-flag" style={{ fontSize: '1rem' }}>{server.flagEmoji}</span>
-                      <span className="text-white small text-truncate" style={{ maxWidth: '120px' }}>{server.name}</span>
+      {/* Auto-Verify Queue */}
+      {verifyingPayments.length > 0 && (
+        <div className="mb-8 rounded-2xl bg-cyan-500/5 border border-cyan-500/20 overflow-hidden">
+          <div className="px-5 py-4 border-b border-cyan-500/20 flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
+              <i className="fa-solid fa-bolt text-cyan-400 text-sm animate-pulse"></i>
+            </div>
+            <div>
+              <h2 className="text-sm font-bold text-white">Auto-Verification Queue</h2>
+              <p className="text-xs text-slate-500">{verifyingPayments.length} HelaPay / eZcash payment{verifyingPayments.length > 1 ? 's' : ''} awaiting verification</p>
+            </div>
+          </div>
+          <div className="divide-y divide-cyan-500/10">
+            {verifyingPayments.map(p => (
+              <div key={p.id} className="px-5 py-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center flex-shrink-0">
+                    <i className={`fa-solid ${p.method === 'helapay' ? 'fa-mobile-screen' : 'fa-wallet'} text-cyan-400 text-sm`}></i>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-semibold text-white text-sm">{p.packageName}</span>
+                      <span className="px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 text-xs capitalize">{p.method}</span>
                     </div>
-                    <div className="d-flex align-items-center gap-2">
-                      <span className="text-secondary small">{server.activeUsers}/{server.maxUsers}</span>
-                      {server.isOnline ? (
-                        <span className="online-dot position-relative" style={{ width: '8px', height: '8px' }}></span>
-                      ) : (
-                        <span className="online-dot position-relative bg-danger shadow-none" style={{ width: '8px', height: '8px' }}></span>
-                      )}
+                    <div className="flex items-center gap-3 mt-1">
+                      <span className="text-xs text-slate-500">LKR {p.amount}</span>
+                      <span className="font-mono text-xs text-amber-400">{p.reference}</span>
+                      {isValidRef(p.reference)
+                        ? <span className="text-xs text-emerald-400"><i className="fa-solid fa-check-circle mr-1"></i>Valid format</span>
+                        : <span className="text-xs text-red-400"><i className="fa-solid fa-xmark-circle mr-1"></i>Invalid ref</span>
+                      }
                     </div>
                   </div>
-                ))}
+                </div>
+                <div className="flex gap-2 flex-shrink-0">
+                  {p.proofBase64 && (
+                    <button
+                      onClick={() => window.open(p.proofBase64)}
+                      className="px-3 py-1.5 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20 text-xs transition-colors"
+                    >
+                      <i className="fa-solid fa-image mr-1"></i>Proof
+                    </button>
+                  )}
+                  <button
+                    onClick={() => handleAutoApprove(p)}
+                    disabled={processing === p.id}
+                    className="px-3 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 text-xs transition-colors font-semibold disabled:opacity-50"
+                  >
+                    {processing === p.id ? <i className="fa-solid fa-spinner animate-spin"></i> : <><i className="fa-solid fa-bolt mr-1"></i>Auto-Approve</>}
+                  </button>
+                  <button
+                    onClick={() => handleReject(p)}
+                    disabled={processing === p.id}
+                    className="px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 text-xs transition-colors disabled:opacity-50"
+                  >
+                    <i className="fa-solid fa-xmark"></i>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        {/* Activity Feed */}
+        <div className="lg:col-span-3">
+          <div className="rounded-2xl bg-slate-900/60 border border-slate-700/50 p-5 h-full">
+            <h2 className="text-base font-semibold text-white mb-4 flex items-center gap-2">
+              <i className="fa-solid fa-bolt-lightning text-cyan-400"></i> Live Activity Feed
+            </h2>
+            {logsLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            ) : recentLogs.length === 0 ? (
+              <div className="text-center py-12 text-slate-600">
+                <i className="fa-solid fa-wave-square text-3xl mb-3 block"></i>
+                <p className="text-sm">No activity logged yet.</p>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-3">
+                {recentLogs.map(log => {
+                  const cfg = SEVERITY_CONFIG[log.severity] || SEVERITY_CONFIG.info;
+                  return (
+                    <div key={log.id} className={`flex items-start gap-3 p-3 rounded-xl ${cfg.bg} border ${cfg.border}`}>
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${cfg.bg} border ${cfg.border}`}>
+                        <i className={`fa-solid ${cfg.icon} text-sm ${cfg.color}`}></i>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm text-slate-300">{log.message}</p>
+                        <span className="text-xs text-slate-600">{formatTime(log.createdAt)}</span>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             )}
-            
-            <div className="mt-4 pt-3 border-top border-secondary text-center">
-              <a href="/admin/servers" className="text-cyan text-decoration-none small">View All Nodes <i className="fa-solid fa-arrow-right ms-1"></i></a>
-            </div>
-          </GlassCard>
+          </div>
+        </div>
+
+        {/* Node Status */}
+        <div className="lg:col-span-2">
+          <div className="rounded-2xl bg-slate-900/60 border border-slate-700/50 p-5 h-full">
+            <h2 className="text-base font-semibold text-white mb-4 flex items-center gap-2">
+              <i className="fa-solid fa-satellite-dish text-blue-400"></i> Node Status
+            </h2>
+            {!servers?.length ? (
+              <p className="text-slate-600 text-sm text-center py-8">No servers configured.</p>
+            ) : (
+              <div className="flex flex-col gap-3">
+                {servers.slice(0, 8).map(server => {
+                  const load = server.maxUsers > 0 ? (server.activeUsers / server.maxUsers) * 100 : 0;
+                  const loadColor = load > 85 ? 'bg-red-500' : load > 60 ? 'bg-amber-400' : 'bg-emerald-400';
+                  return (
+                    <div key={server.id}>
+                      <div className="flex items-center justify-between mb-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-base">{server.flagEmoji}</span>
+                          <span className="text-sm text-slate-300 truncate max-w-[110px]">{server.name}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-slate-500">{server.activeUsers}/{server.maxUsers}</span>
+                          <span className={`w-2 h-2 rounded-full ${server.isOnline ? 'bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]' : 'bg-red-500'}`}></span>
+                        </div>
+                      </div>
+                      <div className="w-full h-1 bg-slate-800 rounded-full overflow-hidden">
+                        <div className={`h-full rounded-full transition-all ${loadColor}`} style={{ width: `${load}%` }}></div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -1,149 +1,148 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useCollection, useDocument } from '../../hooks/useFirestore';
-import GlassCard from '../../components/GlassCard';
 import PricingCard from '../../components/PricingCard';
 import PaymentModal from '../../components/PaymentModal';
+
+const statusConfig = {
+  approved: { cls: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30', icon: 'fa-check-circle', label: 'Paid' },
+  pending:  { cls: 'bg-amber-500/10 text-amber-400 border-amber-500/30', icon: 'fa-clock', label: 'Pending' },
+  rejected: { cls: 'bg-red-500/10 text-red-400 border-red-500/30', icon: 'fa-xmark-circle', label: 'Rejected' },
+};
 
 const MyPlan = () => {
   const { userData } = useAuth();
   const { data: config } = useDocument('siteSettings', 'config');
   const { data: packages, loading } = useCollection('packages', []);
-  const { data: payments } = useCollection('payments', [
-    // query constraint in a real app: where('uid', '==', userData.uid)
-  ]);
-  
+  const { data: payments } = useCollection('payments', []);
+
   const [showPayment, setShowPayment] = useState(false);
   const [selectedPkg, setSelectedPkg] = useState(null);
 
-  // Filter payments locally since we don't have complex firestore queries setup
-  const userPayments = payments?.filter(p => p.uid === userData.uid).sort((a,b) => b.createdAt - a.createdAt) || [];
-  const pendingPayment = userPayments.find(p => p.status === 'pending');
+  const userPayments = (payments || [])
+    .filter(p => p.uid === userData?.uid)
+    .sort((a, b) => (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0));
 
-  const handleSelectPackage = (pkg) => {
-    setSelectedPkg(pkg);
-    setShowPayment(true);
-  };
+  const pendingPayment = userPayments.find(p => p.status === 'pending');
+  const isActive = userData?.isActive && userData?.plan !== 'none';
 
   const getDaysRemaining = () => {
     if (!userData?.subscriptionExpiry) return 0;
-    const expiry = userData.subscriptionExpiry.toDate();
-    const diffTime = expiry - new Date();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays > 0 ? diffDays : 0;
+    const diff = userData.subscriptionExpiry.toDate() - new Date();
+    return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
   };
 
-  const isActive = userData?.isActive && userData?.plan !== 'none';
-  const displayPackages = packages?.filter(p => p.isVisible).sort((a,b) => a.order - b.order) || [];
+  const daysLeft = getDaysRemaining();
+  const displayPackages = (packages || []).filter(p => p.isVisible).sort((a, b) => a.order - b.order);
 
   return (
-    <div className="animation-fade-in">
-      <h2 className="text-white fw-bold mb-4">Subscription Plan</h2>
+    <div className="animate-fade-in">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-white mb-1">My Subscription</h1>
+        <p className="text-slate-500 text-sm">Manage your plan and view billing history.</p>
+      </div>
 
       {pendingPayment && (
-        <div className="announcement-banner border-warning bg-warning bg-opacity-10 mb-4 rounded d-flex align-items-center">
-          <i className="fa-solid fa-clock text-warning mt-1 me-3 fs-4"></i>
+        <div className="mb-6 p-4 rounded-2xl bg-amber-500/5 border border-amber-500/20 flex items-start gap-3">
+          <i className="fa-solid fa-clock text-amber-400 mt-0.5"></i>
           <div>
-            <h6 className="text-white fw-bold mb-1">Payment Verification in Progress</h6>
-            <p className="text-secondary small mb-0">We are currently verifying your payment for the <strong>{pendingPayment.packageName}</strong> plan. This usually takes 1-2 hours.</p>
+            <h3 className="font-semibold text-white text-sm">Payment Under Review</h3>
+            <p className="text-xs text-slate-500 mt-1">
+              Your payment for <strong className="text-slate-300">{pendingPayment.packageName}</strong> is being verified. This usually takes 1–2 hours.
+            </p>
           </div>
         </div>
       )}
 
-      {/* Current Plan Details */}
-      <GlassCard className="p-4 p-md-5 mb-5 border-cyan" style={{ borderLeft: '4px solid var(--accent-cyan)' }}>
-        <div className="row align-items-center">
-          <div className="col-12 col-md-6 mb-4 mb-md-0">
-            <div className="text-muted small text-uppercase fw-bold mb-2">Current Status</div>
-            <div className="d-flex align-items-center gap-3 mb-3">
-              <h1 className="text-white fw-bold mb-0 text-capitalize">{userData?.plan === 'none' ? 'Free Plan' : userData?.plan}</h1>
-              {isActive ? (
-                <span className="badge-active bg-success bg-opacity-25 text-success border-success">Active</span>
-              ) : (
-                <span className="badge-active bg-danger bg-opacity-25 text-danger border-danger">Inactive</span>
-              )}
+      {/* Current Plan Card */}
+      <div className="mb-8 p-6 rounded-2xl bg-slate-900/60 border border-cyan-500/20 backdrop-blur-sm relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-blue-500/5 pointer-events-none" />
+        <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Current Status</p>
+            <div className="flex items-center gap-3 mb-2">
+              <h2 className="text-3xl font-black text-white capitalize">{userData?.plan === 'none' || !userData?.plan ? 'Free Plan' : `${userData.plan} Plan`}</h2>
+              {isActive
+                ? <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs font-semibold flex items-center gap-1.5"><span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>Active</span>
+                : <span className="px-3 py-1 rounded-full bg-slate-700 text-slate-400 border border-slate-600 text-xs font-semibold">Inactive</span>
+              }
             </div>
             {isActive && (
-              <p className="text-secondary mb-0">
-                Your subscription expires on <strong>{userData.subscriptionExpiry?.toDate().toLocaleDateString()}</strong> 
-                ({getDaysRemaining()} days remaining).
+              <p className="text-sm text-slate-500">
+                Expires <span className="text-slate-300 font-medium">{userData.subscriptionExpiry?.toDate().toLocaleDateString()}</span>
+                <span className="ml-2 text-cyan-400">({daysLeft} days remaining)</span>
               </p>
             )}
           </div>
-          <div className="col-12 col-md-6 d-flex justify-content-md-end gap-2">
-            <button className="btn-ghost text-secondary border-secondary">
-              <i className="fa-solid fa-clock-rotate-left me-2"></i> Billing History
-            </button>
-            <button className="btn-gradient" onClick={() => window.scrollTo({ top: 500, behavior: 'smooth' })}>
-              <i className="fa-solid fa-arrow-up-right-dots me-2"></i> Upgrade Plan
+          <div className="flex gap-3">
+            <button
+              onClick={() => document.getElementById('plans-section')?.scrollIntoView({behavior:'smooth'})}
+              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 font-bold text-sm hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all"
+            >
+              <i className="fa-solid fa-arrow-up-right-dots mr-2"></i> Upgrade Plan
             </button>
           </div>
         </div>
-      </GlassCard>
+      </div>
 
       {/* Available Plans */}
-      <h4 className="text-white fw-bold mb-4">Available Packages</h4>
-      {loading ? (
-        <div className="d-flex justify-content-center pt-4"><div className="spinner"></div></div>
-      ) : (
-        <div className="row g-4 mb-5">
-          {displayPackages.map((pkg, idx) => (
-            <div className="col-12 col-md-6 col-lg-4" key={pkg.id}>
-              <PricingCard 
-                pkg={pkg} 
-                isLoggedIn={true} 
-                onSelect={() => handleSelectPackage(pkg)} 
-              />
-            </div>
-          ))}
-        </div>
-      )}
+      <div id="plans-section">
+        <h2 className="text-lg font-bold text-white mb-5">Available Packages</h2>
+        {loading ? (
+          <div className="flex items-center justify-center py-12"><div className="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div></div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
+            {displayPackages.map(pkg => (
+              <PricingCard key={pkg.id} pkg={pkg} isLoggedIn onSelect={() => { setSelectedPkg(pkg); setShowPayment(true); }} />
+            ))}
+          </div>
+        )}
+      </div>
 
-      {/* Billing History Table */}
-      <h4 className="text-white fw-bold mb-4">Recent Invoices</h4>
-      <GlassCard className="p-0 overflow-hidden">
-        <div className="table-responsive">
-          <table className="data-table mb-0">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Package</th>
-                <th>Amount</th>
-                <th>Method</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {userPayments.length === 0 ? (
-                <tr>
-                  <td colSpan="5" className="text-center text-muted py-4">No billing history found.</td>
+      {/* Billing History */}
+      <h2 className="text-lg font-bold text-white mb-5">Billing History</h2>
+      <div className="rounded-2xl bg-slate-900/60 border border-slate-700/50 overflow-hidden backdrop-blur-sm">
+        {userPayments.length === 0 ? (
+          <div className="text-center py-12 text-slate-600">
+            <i className="fa-solid fa-receipt text-3xl mb-3 block"></i>
+            <p className="text-sm">No billing history yet.</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-slate-800">
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Date</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Package</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Amount</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Method</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Status</th>
                 </tr>
-              ) : (
-                userPayments.slice(0, 5).map(payment => (
-                  <tr key={payment.id}>
-                    <td>{payment.createdAt?.toDate().toLocaleDateString() || 'N/A'}</td>
-                    <td className="text-white fw-bold">{payment.packageName}</td>
-                    <td>LKR {payment.amount}</td>
-                    <td className="text-capitalize">{payment.method}</td>
-                    <td>
-                      {payment.status === 'approved' && <span className="text-success"><i className="fa-solid fa-check-circle me-1"></i> Paid</span>}
-                      {payment.status === 'pending' && <span className="text-warning"><i className="fa-solid fa-clock me-1"></i> Pending</span>}
-                      {payment.status === 'rejected' && <span className="text-danger"><i className="fa-solid fa-xmark-circle me-1"></i> Rejected</span>}
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </GlassCard>
+              </thead>
+              <tbody className="divide-y divide-slate-800/50">
+                {userPayments.slice(0, 10).map(p => {
+                  const sc = statusConfig[p.status] || statusConfig.pending;
+                  return (
+                    <tr key={p.id} className="hover:bg-slate-800/30 transition-colors">
+                      <td className="px-4 py-3.5 text-slate-500 text-xs">{p.createdAt?.toDate?.().toLocaleDateString() || '—'}</td>
+                      <td className="px-4 py-3.5 font-semibold text-white">{p.packageName}</td>
+                      <td className="px-4 py-3.5 text-cyan-400 font-semibold">LKR {p.amount}</td>
+                      <td className="px-4 py-3.5 text-slate-400 text-xs capitalize">{p.method}</td>
+                      <td className="px-4 py-3.5">
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${sc.cls}`}>
+                          <i className={`fa-solid ${sc.icon} text-[10px]`}></i>{sc.label}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
 
-      <PaymentModal 
-        show={showPayment} 
-        onHide={() => setShowPayment(false)} 
-        packageData={selectedPkg}
-        siteSettings={config}
-      />
+      <PaymentModal show={showPayment} onHide={() => setShowPayment(false)} packageData={selectedPkg} siteSettings={config} />
     </div>
   );
 };

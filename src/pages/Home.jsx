@@ -64,7 +64,7 @@ const Home = () => {
   return (
     <div className="home-page">
       {/* SECTION 1 — HERO */}
-      <section className="relative min-h-screen bg-[#020617] overflow-hidden flex items-center pt-14">
+      <section className="relative min-h-screen bg-[#020617] overflow-hidden flex items-center">
         {/* Background glows (above) */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute top-1/3 right-1/4 w-80 h-80 bg-blue-600/5 rounded-full blur-3xl pointer-events-none" />
@@ -198,53 +198,44 @@ const Home = () => {
       </section>
 
       {/* SECTION 2 — STATS BAR */}
-      <section className="section-bg-secondary stats-bar border-top border-bottom border-secondary">
-        <div className="container-main">
-          <div className="row justify-content-center">
-            <div className="col-6 col-md-3 stat-item reveal-on-scroll" style={{ '--delay': '0.1s' }}>
-              <div className="stat-icon"><i className="fa-solid fa-users"></i></div>
-              <div className="stat-number"><CounterStat end={5000} suffix="+" /></div>
-              <div className="stat-label">Active Users</div>
-            </div>
-            <div className="col-6 col-md-3 stat-item reveal-on-scroll" style={{ '--delay': '0.2s' }}>
-              <div className="stat-icon"><i className="fa-solid fa-server"></i></div>
-              <div className="stat-number"><CounterStat end={30} suffix="+" /></div>
-              <div className="stat-label">Global Servers</div>
-            </div>
-            <div className="col-6 col-md-3 stat-item reveal-on-scroll" style={{ '--delay': '0.3s' }}>
-              <div className="stat-icon"><i className="fa-solid fa-shield-halved"></i></div>
-              <div className="stat-number"><CounterStat end={99.9} suffix="%" /></div>
-              <div className="stat-label">Uptime SLA</div>
-            </div>
-            <div className="col-6 col-md-3 stat-item reveal-on-scroll" style={{ '--delay': '0.4s', borderRight: 'none' }}>
-              <div className="stat-icon"><i className="fa-solid fa-bolt"></i></div>
-              <div className="stat-number">&lt;<CounterStat end={10} suffix="ms" /></div>
-              <div className="stat-label">Avg Latency</div>
-            </div>
+      <section className="bg-slate-900/40 border-y border-slate-800/60 backdrop-blur-sm">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-slate-800/60">
+            {[
+              { icon:'fa-users', color:'text-cyan-400', end:5000, suffix:'+', label:'Active Users' },
+              { icon:'fa-server', color:'text-blue-400', end:30, suffix:'+', label:'Global Servers' },
+              { icon:'fa-shield-halved', color:'text-emerald-400', end:99.9, suffix:'%', label:'Uptime SLA' },
+              { icon:'fa-bolt', color:'text-amber-400', end:10, suffix:'ms', label:'Avg Latency', prefix:'<' },
+            ].map(({ icon, color, end, suffix, label, prefix }) => (
+              <div key={label} className="flex flex-col items-center justify-center py-8 px-4 gap-1">
+                <i className={`fa-solid ${icon} ${color} text-lg mb-2`}></i>
+                <div className={`text-2xl font-black ${color}`}>{prefix}<CounterStat end={end} suffix={suffix} /></div>
+                <div className="text-xs text-slate-500 uppercase tracking-wider">{label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* SECTION 3 — FEATURES */}
-      <section className="section-bg-primary section-padding">
-        <div className="container-main">
-          <div className="text-center reveal-on-scroll">
-            <div className="section-eyebrow">Why Choose Us</div>
-            <h2 className="section-title">Everything You Need <br /><span className="gradient-text">For True Privacy</span></h2>
-            <p className="section-subtitle">We have built a network designed for performance and security from the ground up.</p>
+      <section className="py-24 bg-[#020617]">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-14">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold mb-5">
+              <span className="text-[10px]">✦</span> Why Choose Us
+            </div>
+            <h2 className="text-4xl font-black text-white mb-3">Everything You Need <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">For True Privacy</span></h2>
+            <p className="text-slate-500 text-sm max-w-md mx-auto">We have built a network designed for performance and security from the ground up.</p>
           </div>
-
-          <div className="row g-4 mt-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {features.map((feat, idx) => (
-              <div className="col-12 col-md-6 col-lg-4 reveal-on-scroll" style={{ '--delay': `${idx * 0.1}s` }} key={idx}>
-                <div className="glass-card feature-card h-100">
-                  <div className="feature-icon-wrap">
-                    <i className={`fa-solid ${feat.icon}`}></i>
-                  </div>
-                  <h4 className="text-white mb-2">{feat.title}</h4>
-                  <p className="text-secondary mb-0">{feat.desc}</p>
-                  <div className="accent-line"></div>
+              <div key={idx} className="group rounded-2xl bg-slate-900/40 border border-slate-800 hover:border-cyan-500/30 p-6 transition-all duration-300 hover:bg-slate-900/70 hover:shadow-[0_0_30px_rgba(6,182,212,0.05)]">
+                <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <i className={`fa-solid ${feat.icon} text-cyan-400 text-lg`}></i>
                 </div>
+                <h3 className="text-white font-bold text-sm mb-2">{feat.title}</h3>
+                <p className="text-slate-500 text-xs leading-relaxed">{feat.desc}</p>
+                <div className="mt-4 h-px w-0 bg-gradient-to-r from-cyan-500 to-blue-500 group-hover:w-full transition-all duration-500"></div>
               </div>
             ))}
           </div>
