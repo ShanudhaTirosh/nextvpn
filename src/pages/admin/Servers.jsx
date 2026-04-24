@@ -138,38 +138,51 @@ const Servers = () => {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={closeModal}>
-          <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl bg-slate-900 border border-slate-700 shadow-2xl" onClick={e => e.stopPropagation()}>
-            <div className="p-5 border-b border-slate-800 flex items-center justify-between">
-              <h2 className="text-lg font-bold text-white">{editingServer ? 'Edit Server' : 'Add New Server'}</h2>
-              <button onClick={closeModal} className="text-slate-500 hover:text-white transition-colors"><i className="fa-solid fa-xmark text-lg"></i></button>
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md" onClick={closeModal}>
+          <div className="w-full max-w-2xl flex flex-col max-h-[90vh] rounded-2xl bg-slate-950 border border-slate-800 shadow-[0_0_60px_rgba(0,0,0,0.9)] overflow-hidden animate-fade-in" onClick={e => e.stopPropagation()}>
+            <div className="p-5 border-b border-slate-800 bg-slate-900/60 flex items-center justify-between flex-shrink-0">
+              <h2 className="text-lg font-bold text-white">{editingServer ? 'Edit Server' : 'New Server'}</h2>
+              <button onClick={closeModal} className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-all"><i className="fa-solid fa-xmark text-sm"></i></button>
             </div>
-            <form onSubmit={handleSave} className="p-5 grid grid-cols-2 gap-4">
-              <div className="col-span-2 grid grid-cols-4 gap-3">
-                <div className="col-span-3"><F label="Server Name"><input className={inp} required value={formData.name} onChange={e => setFormData({...formData,name:e.target.value})} placeholder="Singapore Premium" /></F></div>
-                <F label="Flag"><input className={inp} value={formData.flagEmoji} onChange={e => setFormData({...formData,flagEmoji:e.target.value})} /></F>
+            
+            <form onSubmit={handleSave} className="flex flex-col flex-1 min-h-0">
+              <div className="p-6 space-y-4 overflow-y-auto flex-1">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="col-span-2 md:col-span-1 flex gap-3">
+                    <F label="Server Name"><input className={inp} required value={formData.name} onChange={e => setFormData({...formData,name:e.target.value})} placeholder="e.g. SG-1 Premium" /></F>
+                    <F label="Flag"><input className={inp} value={formData.flagEmoji} onChange={e => setFormData({...formData,flagEmoji:e.target.value})} /></F>
+                  </div>
+                  <F label="Country"><input className={inp} required value={formData.country} onChange={e => setFormData({...formData,country:e.target.value})} placeholder="Singapore" /></F>
+                  <F label="Region">
+                    <select className={sel} value={formData.region} onChange={e => setFormData({...formData,region:e.target.value})}>
+                      {['Asia','Europe','America','Middle East'].map(r=><option key={r}>{r}</option>)}
+                    </select>
+                  </F>
+                  <F label="Protocol">
+                    <select className={sel} value={formData.protocol} onChange={e => setFormData({...formData,protocol:e.target.value})}>
+                      {['VMess','VLESS','Trojan','Shadowsocks'].map(p=><option key={p}>{p}</option>)}
+                    </select>
+                  </F>
+                  <F label="Domain / IP"><input className={inp} required value={formData.address} onChange={e => setFormData({...formData,address:e.target.value})} placeholder="sg1.example.net" /></F>
+                  <F label="Latency (ms)"><input type="number" className={inp} value={formData.latencyMs} onChange={e => setFormData({...formData,latencyMs:e.target.value})} /></F>
+                  <F label="Active Users"><input type="number" className={inp} value={formData.activeUsers} onChange={e => setFormData({...formData,activeUsers:e.target.value})} /></F>
+                  <F label="Max Users"><input type="number" className={inp} value={formData.maxUsers} onChange={e => setFormData({...formData,maxUsers:e.target.value})} /></F>
+                  
+                  <div className="col-span-2 flex gap-6 pt-2">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" checked={formData.isOnline} onChange={e=>setFormData({...formData,isOnline:e.target.checked})} className="w-4 h-4 rounded accent-cyan-500" />
+                      <span className="text-sm text-emerald-400 font-semibold">Server Online</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" checked={formData.isDDoSProtected} onChange={e=>setFormData({...formData,isDDoSProtected:e.target.checked})} className="w-4 h-4 rounded accent-cyan-500" />
+                      <span className="text-sm text-amber-400 font-semibold">DDoS Protected</span>
+                    </label>
+                  </div>
+                </div>
               </div>
-              <F label="Country"><input className={inp} required value={formData.country} onChange={e => setFormData({...formData,country:e.target.value})} placeholder="Singapore" /></F>
-              <F label="Region">
-                <select className={sel} value={formData.region} onChange={e => setFormData({...formData,region:e.target.value})}>
-                  {['Asia','Europe','America','Middle East'].map(r=><option key={r}>{r}</option>)}
-                </select>
-              </F>
-              <F label="Protocol">
-                <select className={sel} value={formData.protocol} onChange={e => setFormData({...formData,protocol:e.target.value})}>
-                  {['VMess','VLESS','Trojan','Shadowsocks'].map(p=><option key={p}>{p}</option>)}
-                </select>
-              </F>
-              <F label="Domain / IP"><input className={inp} required value={formData.address} onChange={e => setFormData({...formData,address:e.target.value})} placeholder="sg1.example.net" /></F>
-              <F label="Latency (ms)"><input type="number" className={inp} value={formData.latencyMs} onChange={e => setFormData({...formData,latencyMs:e.target.value})} /></F>
-              <F label="Active Users"><input type="number" className={inp} value={formData.activeUsers} onChange={e => setFormData({...formData,activeUsers:e.target.value})} /></F>
-              <F label="Max Users"><input type="number" className={inp} value={formData.maxUsers} onChange={e => setFormData({...formData,maxUsers:e.target.value})} /></F>
-              <div className="col-span-2 flex gap-6">
-                <label className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={formData.isOnline} onChange={e=>setFormData({...formData,isOnline:e.target.checked})} className="w-4 h-4 rounded accent-cyan-500" /><span className="text-sm text-slate-300">Server Online</span></label>
-                <label className="flex items-center gap-2 cursor-pointer"><input type="checkbox" checked={formData.isDDoSProtected} onChange={e=>setFormData({...formData,isDDoSProtected:e.target.checked})} className="w-4 h-4 rounded accent-cyan-500" /><span className="text-sm text-slate-300">DDoS Protected</span></label>
-              </div>
-              <div className="col-span-2 flex gap-3 pt-2 border-t border-slate-800">
-                <button type="button" onClick={closeModal} className="flex-1 py-2.5 rounded-xl border border-slate-700 text-slate-400 hover:text-white transition-all text-sm font-semibold">Cancel</button>
+
+              <div className="flex gap-3 p-5 border-t border-slate-800 bg-slate-900/60 flex-shrink-0">
+                <button type="button" onClick={closeModal} className="flex-1 py-2.5 rounded-xl border border-slate-700 text-slate-400 hover:text-white hover:bg-slate-800 transition-all text-sm font-semibold">Cancel</button>
                 <button type="submit" disabled={isSaving} className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 font-bold text-sm hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all disabled:opacity-50">
                   {isSaving ? <i className="fa-solid fa-spinner animate-spin"></i> : 'Save Server'}
                 </button>

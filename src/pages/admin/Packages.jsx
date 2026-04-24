@@ -154,60 +154,64 @@ const Packages = () => {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={closeModal}>
-          <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-slate-900 border border-slate-700 shadow-2xl" onClick={e => e.stopPropagation()}>
-            <div className="p-6 border-b border-slate-800 flex items-center justify-between">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md" onClick={closeModal}>
+          <div className="w-full max-w-2xl flex flex-col max-h-[90vh] rounded-2xl bg-slate-950 border border-slate-800 shadow-[0_0_60px_rgba(0,0,0,0.9)] overflow-hidden animate-fade-in" onClick={e => e.stopPropagation()}>
+            <div className="p-5 border-b border-slate-800 bg-slate-900/60 flex items-center justify-between flex-shrink-0">
               <h2 className="text-lg font-bold text-white">{editingPkg ? 'Edit Package' : 'New Package'}</h2>
-              <button onClick={closeModal} className="text-slate-500 hover:text-white transition-colors"><i className="fa-solid fa-xmark text-lg"></i></button>
+              <button onClick={closeModal} className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-all"><i className="fa-solid fa-xmark text-sm"></i></button>
             </div>
-            <form onSubmit={handleSave} className="p-6 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="col-span-2 md:col-span-1">
-                  <label className="block text-xs font-semibold text-slate-400 mb-1.5">Package Name</label>
-                  <input type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 focus:outline-none focus:border-cyan-500/50 text-sm" placeholder="e.g. Starter" />
+            
+            <form onSubmit={handleSave} className="flex flex-col flex-1 min-h-0">
+              <div className="p-6 space-y-5 overflow-y-auto custom-scrollbar flex-1">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="col-span-2 md:col-span-1">
+                    <label className="block text-xs font-semibold text-slate-400 mb-1.5">Package Name</label>
+                    <input type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-3 py-2.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 focus:outline-none focus:border-cyan-500/50 text-sm" placeholder="e.g. Starter" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-400 mb-1.5">Price (LKR)</label>
+                    <input type="number" required value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} className="w-full px-3 py-2.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 focus:outline-none focus:border-cyan-500/50 text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-400 mb-1.5">Duration (days)</label>
+                    <input type="number" required value={formData.durationDays} onChange={e => setFormData({...formData, durationDays: e.target.value})} className="w-full px-3 py-2.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 focus:outline-none focus:border-cyan-500/50 text-sm" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-400 mb-1.5">Icon (FA class)</label>
+                    <input type="text" required value={formData.icon} onChange={e => setFormData({...formData, icon: e.target.value})} className="w-full px-3 py-2.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 focus:outline-none focus:border-cyan-500/50 text-sm" placeholder="fa-rocket" />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-400 mb-1.5">Display Order</label>
+                    <input type="number" required value={formData.order} onChange={e => setFormData({...formData, order: e.target.value})} className="w-full px-3 py-2.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 focus:outline-none focus:border-cyan-500/50 text-sm" />
+                  </div>
+                  <div className="flex flex-col gap-2 justify-end pb-1.5">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" checked={formData.isRecommended} onChange={e => setFormData({...formData, isRecommended: e.target.checked})} className="w-4 h-4 rounded accent-cyan-500" />
+                      <span className="text-sm text-amber-400 font-semibold">Mark as Popular</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" checked={formData.isVisible} onChange={e => setFormData({...formData, isVisible: e.target.checked})} className="w-4 h-4 rounded accent-cyan-500" />
+                      <span className="text-sm text-emerald-400 font-semibold">Visible on Website</span>
+                    </label>
+                  </div>
                 </div>
+
                 <div>
-                  <label className="block text-xs font-semibold text-slate-400 mb-1.5">Price (LKR)</label>
-                  <input type="number" required value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 focus:outline-none focus:border-cyan-500/50 text-sm" />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-400 mb-1.5">Duration (days)</label>
-                  <input type="number" required value={formData.durationDays} onChange={e => setFormData({...formData, durationDays: e.target.value})} className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 focus:outline-none focus:border-cyan-500/50 text-sm" />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-400 mb-1.5">Icon (FA class)</label>
-                  <input type="text" required value={formData.icon} onChange={e => setFormData({...formData, icon: e.target.value})} className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 focus:outline-none focus:border-cyan-500/50 text-sm" placeholder="fa-rocket" />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-400 mb-1.5">Display Order</label>
-                  <input type="number" required value={formData.order} onChange={e => setFormData({...formData, order: e.target.value})} className="w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 focus:outline-none focus:border-cyan-500/50 text-sm" />
-                </div>
-                <div className="flex flex-col gap-2 justify-end pb-1">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" checked={formData.isRecommended} onChange={e => setFormData({...formData, isRecommended: e.target.checked})} className="w-4 h-4 rounded accent-cyan-500" />
-                    <span className="text-xs text-amber-400 font-semibold">Mark as Recommended</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" checked={formData.isVisible} onChange={e => setFormData({...formData, isVisible: e.target.checked})} className="w-4 h-4 rounded accent-cyan-500" />
-                    <span className="text-xs text-emerald-400 font-semibold">Visible on Website</span>
-                  </label>
+                  <div className="flex items-center justify-between mb-3 border-t border-slate-800 pt-5">
+                    <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Features List</label>
+                    <button type="button" onClick={() => setFormData({...formData, features: [...formData.features, {text: '', included: true}]})} className="px-3 py-1.5 rounded-lg bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 text-xs font-semibold transition-colors">
+                      <i className="fa-solid fa-plus mr-1"></i>Add Feature
+                    </button>
+                  </div>
+                  <div className="flex flex-col gap-2 bg-slate-900/40 p-3 rounded-xl border border-slate-800">
+                    {formData.features.map((f, i) => <FeatureRow key={i} feature={f} index={i} onChange={updateFeature} onRemove={idx => setFormData({...formData, features: formData.features.filter((_, ii) => ii !== idx)})} />)}
+                    {formData.features.length === 0 && <p className="text-center text-xs text-slate-500 py-2">No features added.</p>}
+                  </div>
                 </div>
               </div>
 
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="text-xs font-semibold text-slate-400">Features List</label>
-                  <button type="button" onClick={() => setFormData({...formData, features: [...formData.features, {text: '', included: true}]})} className="text-xs text-cyan-400 hover:text-cyan-300 font-semibold">
-                    <i className="fa-solid fa-plus mr-1"></i>Add Feature
-                  </button>
-                </div>
-                <div className="flex flex-col gap-2">
-                  {formData.features.map((f, i) => <FeatureRow key={i} feature={f} index={i} onChange={updateFeature} onRemove={idx => setFormData({...formData, features: formData.features.filter((_, ii) => ii !== idx)})} />)}
-                </div>
-              </div>
-
-              <div className="flex gap-3 pt-4 border-t border-slate-800">
-                <button type="button" onClick={closeModal} className="flex-1 py-2.5 rounded-xl border border-slate-700 text-slate-400 hover:text-white hover:border-slate-600 transition-all text-sm font-semibold">Cancel</button>
+              <div className="flex gap-3 p-5 border-t border-slate-800 bg-slate-900/60 flex-shrink-0">
+                <button type="button" onClick={closeModal} className="flex-1 py-2.5 rounded-xl border border-slate-700 text-slate-400 hover:text-white hover:bg-slate-800 transition-all text-sm font-semibold">Cancel</button>
                 <button type="submit" disabled={isSaving} className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 font-bold text-sm hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all disabled:opacity-50">
                   {isSaving ? <i className="fa-solid fa-spinner animate-spin"></i> : 'Save Package'}
                 </button>
