@@ -3,6 +3,7 @@ import { useAuth } from '../hooks/useAuth';
 import { addDocument, compressImageToBase64, getCollection } from '../firebase/firestore';
 import { where } from 'firebase/firestore';
 import { showToast } from './Toast';
+import { sendPaymentNotification } from '../utils/notifications';
 
 const STEPS = ['Method', 'Checkout', 'Done'];
 
@@ -33,20 +34,19 @@ const StepBar = ({ step }) => (
 
 const PaymentModal = ({ show, onHide, packageData, siteSettings }) => {
   const [step, setStep] = useState(1);
-  const [method, setMethod] = useState('');
+  const [method, setMethod] = useState('bank');
   const [reference, setReference] = useState('');
   const [proofBase64, setProofBase64] = useState('');
   const [loading, setLoading] = useState(false);
   const [checking, setChecking] = useState(false);
-  const { currentUser, userData } = useAuth();
+  const { currentUser } = useAuth();
 
   const generateRef = () => {
-    const ts = Date.now().toString(36).toUpperCase();
-    const uid = (currentUser?.uid || 'XX').substring(0, 4).toUpperCase();
-    return `NX-${uid}-${ts}`;
+    const random = Math.random().toString(36).substring(2, 7).toUpperCase();
+    return `NX-${random}`;
   };
 
-  const handleReset = () => { setStep(1); setMethod(''); setProofBase64(''); setLoading(false); setReference(''); };
+  const handleReset = () => { setStep(1); setMethod('bank'); setProofBase64(''); setLoading(false); setReference(''); };
   const handleClose = () => { handleReset(); onHide(); };
 
   const handleFileSelect = async (file) => {
@@ -82,70 +82,8 @@ const PaymentModal = ({ show, onHide, packageData, siteSettings }) => {
       const ref = generateRef();
       setReference(ref);
       
-      if (method === 'payhere') {
-        // Real PayHere Integration
-        if (window.payhere) {
-          const payment = {
-              "sandbox": true, // Using sandbox for testing
-              "merchant_id": "1222719", // Public sandbox merchant ID for testing
-              "return_url": window.location.origin + "/portal/dashboard",
-              "cancel_url": window.location.origin + "/portal/dashboard",
-              "notify_url": window.location.origin + "/api/notify", 
-              "order_id": ref,
-              "items": packageData.name,
-              "amount": packageData.price,
-              "currency": "LKR",
-              "hash": "", 
-              "first_name": userData?.displayName?.split(' ')[0] || "User",
-              "last_name": userData?.displayName?.split(' ')[1] || "Name",
-              "email": currentUser.email,
-              "phone": "0771234567",
-              "address": "Colombo",
-              "city": "Colombo",
-              "country": "Sri Lanka"
-          };
-
-          window.payhere.onCompleted = async function onCompleted(orderId) {
-              console.log("Payment completed. OrderID:" + orderId);
-              setLoading(true);
-              try {
-                await addDocument('payments', {
-                  uid: currentUser.uid,
-                  packageId: packageData.id,
-                  packageName: packageData.name,
-                  amount: packageData.price,
-                  method: 'payhere',
-                  reference: orderId,
-                  status: 'approved', // Auto approve since gateway confirmed
-                  autoVerify: true,
-                });
-                setStep(3);
-                showToast.success('Payment successful via PayHere!');
-              } catch (err) {
-                showToast.error('Failed to record payment in database.');
-              } finally {
-                setLoading(false);
-              }
-          };
-
-          window.payhere.onDismissed = function onDismissed() {
-              console.log("Payment dismissed");
-              showToast.error("Payment was cancelled.");
-          };
-
-          window.payhere.onError = function onError(error) {
-              console.log("Error:"  + error);
-              showToast.error("Payment Error: " + error);
-          };
-
-          window.payhere.startPayment(payment);
-        } else {
-          showToast.error('PayHere SDK not loaded.');
-        }
-      } else {
-        // Manual Bank Transfer flow
-        setStep(2);
-      }
+      // Manual Bank Transfer flow
+      setStep(2);
     } catch (err) {
       showToast.error('Could not verify payment status. Please try again.');
     } finally {
@@ -157,17 +95,23 @@ const PaymentModal = ({ show, onHide, packageData, siteSettings }) => {
     if (!proofBase64) { showToast.error('Please attach a payment proof screenshot.'); return; }
     setLoading(true);
     try {
-      await addDocument('payments', {
+      const paymentData = {
         uid: currentUser.uid,
+        userEmail: currentUser.email || 'N/A',
         packageId: packageData.id,
         packageName: packageData.name,
         amount: packageData.price,
-        method: 'bank',
+        method: method,
         proofBase64,
         reference,
         status: 'pending',
         autoVerify: false,
-      });
+      };
+      await addDocument('payments', paymentData);
+      
+      // Fire and forget notification
+      sendPaymentNotification(paymentData).catch(console.error);
+
       setStep(3);
     } catch {
       showToast.error('Failed to submit payment.');
@@ -177,8 +121,10 @@ const PaymentModal = ({ show, onHide, packageData, siteSettings }) => {
   };
 
   const paymentMethods = [
-    { id: 'payhere', name: 'PayHere Gateway', desc: 'Pay instantly with HelaPay, eZcash, or Cards', icon: 'fa-bolt', color: 'from-cyan-500 to-blue-500', badge: 'Real API' },
     { id: 'bank', name: 'Bank Transfer', desc: 'Manual transfer with screenshot proof', icon: 'fa-building-columns', color: 'from-slate-600 to-slate-800', badge: 'Manual Review' },
+    { id: 'ezcash', name: 'eZcash', desc: 'Send via Dialog eZcash', icon: 'fa-mobile-screen', color: 'from-orange-500 to-red-500', badge: 'Manual Review' },
+    { id: 'helapay', name: 'HelaPay / Helakuru', desc: 'Pay via HelaPay app', icon: 'fa-wallet', color: 'from-purple-500 to-pink-500', badge: 'Manual Review' },
+    { id: 'chat', name: 'WhatsApp / Chat Verification', desc: 'Verify via support chat', icon: 'fa-whatsapp', color: 'from-green-500 to-emerald-500', badge: 'Manual Review' },
   ];
 
   if (!show) return null;
@@ -228,21 +174,47 @@ const PaymentModal = ({ show, onHide, packageData, siteSettings }) => {
                 ))}
               </div>
               <button onClick={handleStep2} disabled={!method || checking} className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 font-bold text-sm hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all disabled:opacity-40 flex items-center justify-center gap-2">
-                {checking ? <><i className="fa-solid fa-spinner animate-spin"></i> Initializing...</> : method === 'payhere' ? <>Pay via PayHere <i className="fa-solid fa-bolt"></i></> : <>Continue <i className="fa-solid fa-arrow-right"></i></>}
+                {checking ? <><i className="fa-solid fa-spinner animate-spin"></i> Initializing...</> : <>Continue <i className="fa-solid fa-arrow-right"></i></>}
               </button>
             </div>
           )}
 
-          {/* STEP 2 — Manual Bank Upload (Skipped if PayHere) */}
-          {step === 2 && method === 'bank' && (
+          {/* STEP 2 — Manual Payment Upload */}
+          {step === 2 && (
             <div className="animate-fade-in">
               <div className="rounded-xl bg-slate-900/60 border border-slate-800 p-4 mb-4 space-y-2.5">
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Bank Transfer Details</p>
-                <div className="flex justify-between"><span className="text-sm text-slate-400">Bank</span><span className="text-white text-sm">{siteSettings?.paymentDetails?.bankAccount?.bank || 'Commercial Bank'}</span></div>
-                <div className="flex justify-between"><span className="text-sm text-slate-400">Name</span><span className="text-white text-sm">{siteSettings?.paymentDetails?.bankAccount?.name || 'ShiftLK Solutions'}</span></div>
-                <div className="flex justify-between"><span className="text-sm text-slate-400">Account No.</span><span className="text-white font-bold">{siteSettings?.paymentDetails?.bankAccount?.number || '1234567890'}</span></div>
-                <div className="pt-2 border-t border-slate-800 text-center">
-                  <p className="text-xs text-slate-500 mb-1">Include reference in remarks:</p>
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
+                  {method === 'bank' ? 'Bank Transfer Details' : method === 'ezcash' ? 'eZcash Details' : method === 'helapay' ? 'HelaPay Details' : 'Chat Verification'}
+                </p>
+                {method === 'bank' && (
+                  <>
+                    <div className="flex justify-between"><span className="text-sm text-slate-400">Bank</span><span className="text-white text-sm">{siteSettings?.paymentDetails?.bankAccount?.bank || 'Commercial Bank'}</span></div>
+                    <div className="flex justify-between"><span className="text-sm text-slate-400">Name</span><span className="text-white text-sm">{siteSettings?.paymentDetails?.bankAccount?.name || 'ShiftLK Solutions'}</span></div>
+                    <div className="flex justify-between"><span className="text-sm text-slate-400">Account No.</span><span className="text-white font-bold">{siteSettings?.paymentDetails?.bankAccount?.number || '1234567890'}</span></div>
+                  </>
+                )}
+                {method === 'ezcash' && (
+                  <>
+                    <div className="flex justify-between"><span className="text-sm text-slate-400">Mobile No.</span><span className="text-white font-bold">{siteSettings?.paymentDetails?.ezcash || '0771234567'}</span></div>
+                    <p className="text-xs text-slate-500">Send the amount to this number via eZcash app or USSD (*111#).</p>
+                  </>
+                )}
+                {method === 'helapay' && (
+                  <>
+                    <div className="flex justify-between"><span className="text-sm text-slate-400">HelaPay ID/Number</span><span className="text-white font-bold">{siteSettings?.paymentDetails?.helapay || '0771234567'}</span></div>
+                    <p className="text-xs text-slate-500">Transfer using the HelaPay app to this number.</p>
+                  </>
+                )}
+                {method === 'chat' && (
+                  <>
+                    <div className="flex justify-between"><span className="text-sm text-slate-400">WhatsApp No.</span><span className="text-white font-bold">{siteSettings?.contactPhone || '0771234567'}</span></div>
+                    <p className="text-xs text-slate-500">Send your payment slip to our WhatsApp with the reference number.</p>
+                  </>
+                )}
+                
+                <div className="flex justify-between border-t border-slate-800/50 pt-2 mt-2"><span className="text-sm text-slate-400">Total to pay</span><span className="text-emerald-400 font-black text-lg">LKR {packageData?.price?.toLocaleString()}</span></div>
+                <div className="pt-2 border-t border-slate-800 text-center mt-2">
+                  <p className="text-xs text-slate-500 mb-1">Include reference in remarks/message:</p>
                   <span className="font-mono text-amber-400 font-bold text-sm">{reference}</span>
                 </div>
               </div>
@@ -276,11 +248,7 @@ const PaymentModal = ({ show, onHide, packageData, siteSettings }) => {
                 <i className="fa-solid fa-circle-check text-emerald-400 text-3xl"></i>
               </div>
               <h3 className="text-xl font-black text-white mb-2">Payment Successful!</h3>
-              {method === 'payhere' ? (
-                <p className="text-sm text-slate-400 mb-1">Your payment was securely processed via PayHere. Your plan is <span className="text-cyan-400 font-semibold">now active</span>.</p>
-              ) : (
-                <p className="text-sm text-slate-400 mb-1">Our admin will verify your bank transfer and activate your plan within <span className="text-white font-semibold">2–24 hours</span>.</p>
-              )}
+              <p className="text-sm text-slate-400 mb-1">Our admin will verify your manual payment and activate your plan within <span className="text-white font-semibold">2–24 hours</span>.</p>
               <p className="text-xs text-slate-600 mb-5">Reference: <span className="font-mono text-amber-400">{reference}</span></p>
               <button onClick={handleClose} className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 font-bold text-sm hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all">
                 Back to Dashboard

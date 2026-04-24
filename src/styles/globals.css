@@ -18,36 +18,38 @@
   --bg-panel:          #1F2937;
 
   /* Accent / Brand */
-  --accent-cyan:       #00E5FF;
-  --accent-blue:       #3B82F6;
-  --accent-purple:     #8B5CF6;
-  --accent-green:      #22C55E;
+  --accent-cyan:       #22D3EE;
+  --accent-blue:       #6366F1;
+  --accent-purple:     #C084FC;
+  --accent-pink:       #F472B6;
+  --accent-green:      #10B981;
 
   /* Text */
   --text-primary:      #FFFFFF;
-  --text-secondary:    #9CA3AF;
-  --text-muted:        #6B7280;
+  --text-secondary:    #94A3B8;
+  --text-muted:        #64748B;
 
   /* Glassmorphism Tokens */
-  --glass-bg:          rgba(18, 24, 38, 0.60);
-  --glass-border:      rgba(0, 229, 255, 0.10);
-  --glass-border-hover:rgba(0, 229, 255, 0.30);
-  --glass-blur:        blur(20px);
-  --glass-shadow:      0 8px 32px rgba(0, 0, 0, 0.50),
-                       inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --glass-bg:          rgba(15, 23, 42, 0.60);
+  --glass-border:      rgba(99, 102, 241, 0.15);
+  --glass-border-hover:rgba(99, 102, 241, 0.40);
+  --glass-blur:        blur(24px);
+  --glass-shadow:      0 12px 40px rgba(0, 0, 0, 0.60),
+                       inset 0 1px 0 rgba(255, 255, 255, 0.05);
 
   /* Gradients */
-  --gradient-hero:     linear-gradient(135deg, #0B0F1A 0%, #121826 60%, #1a1f35 100%);
-  --gradient-brand:    linear-gradient(135deg, #00E5FF 0%, #3B82F6 50%, #8B5CF6 100%);
-  --gradient-btn:      linear-gradient(135deg, #00E5FF 0%, #3B82F6 100%);
-  --gradient-card:     linear-gradient(145deg, rgba(18,24,38,0.8), rgba(31,41,55,0.4));
+  --gradient-hero:     linear-gradient(135deg, #020617 0%, #0F172A 60%, #1E1B4B 100%);
+  --gradient-brand:    linear-gradient(135deg, #6366F1 0%, #C084FC 50%, #22D3EE 100%);
+  --gradient-btn:      linear-gradient(135deg, #6366F1 0%, #C084FC 100%);
+  --gradient-card:     linear-gradient(145deg, rgba(15,23,42,0.8), rgba(30,27,75,0.4));
 
   /* Glow Effects */
-  --glow-cyan:         0 0 20px rgba(0, 229, 255, 0.35),
-                       0 0 60px rgba(0, 229, 255, 0.10);
-  --glow-blue:         0 0 20px rgba(59, 130, 246, 0.40);
-  --glow-purple:       0 0 20px rgba(139, 92, 246, 0.35);
-  --glow-green:        0 0 12px rgba(34, 197, 94, 0.50);
+  --glow-cyan:         0 0 20px rgba(34, 211, 238, 0.35),
+                       0 0 60px rgba(34, 211, 238, 0.10);
+  --glow-blue:         0 0 20px rgba(99, 102, 241, 0.40),
+                       0 0 60px rgba(99, 102, 241, 0.15);
+  --glow-purple:       0 0 20px rgba(192, 132, 252, 0.35);
+  --glow-green:        0 0 12px rgba(16, 185, 129, 0.50);
 
   /* Danger */
   --accent-red:        #EF4444;
@@ -132,8 +134,8 @@ a:hover {
 /* ── Glass Card ── */
 .glass-card {
   background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
   border-radius: 16px;
   box-shadow: var(--glass-shadow);
@@ -155,13 +157,13 @@ a:hover {
 /* ── Buttons ── */
 .btn-gradient {
   background: var(--gradient-btn);
-  color: #0B0F1A;
+  color: #FFFFFF;
   font-weight: 700;
   border: none;
   border-radius: 10px;
   padding: 12px 28px;
   font-size: 0.95rem;
-  box-shadow: var(--glow-cyan);
+  box-shadow: var(--glow-blue);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: inline-flex;
@@ -170,9 +172,9 @@ a:hover {
   text-decoration: none;
 }
 .btn-gradient:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 30px rgba(0, 229, 255, 0.5), 0 0 80px rgba(0, 229, 255, 0.15);
-  color: #0B0F1A;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 0 30px rgba(99, 102, 241, 0.5), 0 0 80px rgba(192, 132, 252, 0.2);
+  color: #FFFFFF;
 }
 .btn-gradient:active {
   transform: translateY(0);

@@ -66,9 +66,9 @@ const Home = () => {
       {/* SECTION 1 — HERO */}
       <section className="relative min-h-screen bg-[#020617] overflow-hidden flex items-center">
         {/* Background glows (above) */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-1/3 right-1/4 w-80 h-80 bg-blue-600/5 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-1/2 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/4 left-1/4 w-[30rem] h-[30rem] bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none animate-pulse duration-1000" />
+        <div className="absolute top-1/3 right-1/4 w-80 h-80 bg-purple-500/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute bottom-10 left-1/2 w-96 h-96 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none animate-pulse" style={{ animationDuration: '4s' }} />
         
         <div className="max-w-7xl mx-auto px-6 w-full">
           <div className="grid lg:grid-cols-2 gap-16 items-center py-20">
@@ -76,16 +76,16 @@ const Home = () => {
             {/* LEFT — Text content */}
             <div>
               {/* Badge pill */}
-              <div className="inline-flex items-center gap-2 border border-slate-700 bg-slate-900/50 backdrop-blur-sm rounded-full px-4 py-2 text-sm text-slate-300 cursor-pointer hover:border-slate-500 transition-colors group mb-6">
-                <span className="text-cyan-400">✦</span>
+              <div className="inline-flex items-center gap-2 border border-indigo-500/20 bg-indigo-500/5 backdrop-blur-md rounded-full px-4 py-2 text-sm text-indigo-200 cursor-pointer hover:border-indigo-500/40 hover:bg-indigo-500/10 transition-all group mb-6 shadow-[0_0_20px_rgba(99,102,241,0.1)]">
+                <span className="text-cyan-400 animate-pulse">✦</span>
                 #1 in Sri Lanka &amp; Trusted Across Asia
-                <span className="text-slate-500 group-hover:translate-x-0.5 transition-transform">›</span>
+                <span className="text-indigo-400 group-hover:translate-x-0.5 transition-transform">›</span>
               </div>
 
               {/* H1 — white + slate-400 second line */}
-              <h1 className="text-5xl lg:text-6xl font-bold leading-tight mb-6 m-0">
-                <span className="text-white">#1 in Sri Lanka</span><br/>
-                <span className="text-slate-400">&amp; Trusted Across Asia</span>
+              <h1 className="text-5xl lg:text-7xl font-black leading-tight mb-6 m-0 tracking-tight">
+                <span className="text-white drop-shadow-lg">Experience The</span><br/>
+                <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent drop-shadow-md">Next-Gen Privacy</span>
               </h1>
               {/* Body */}
               <p className="text-slate-400 text-lg mb-8 max-w-md leading-relaxed">
@@ -94,14 +94,14 @@ const Home = () => {
               </p>
               {/* Button row */}
               <div className="flex flex-wrap items-center gap-4 mb-10">
-                {/* Primary CTA — cyan-to-blue gradient */}
-                <Link to="/pricing" className="text-decoration-none flex items-center gap-2 px-6 py-3 rounded-lg font-semibold text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 transition-all duration-200 shadow-lg shadow-cyan-500/20 border-0">
-                  Explore <span>↓</span>
+                {/* Primary CTA */}
+                <Link to="/pricing" className="text-decoration-none flex items-center gap-2 px-8 py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 transition-all duration-300 shadow-[0_0_30px_rgba(99,102,241,0.4)] hover:shadow-[0_0_40px_rgba(192,132,252,0.6)] hover:-translate-y-1 border-0">
+                  Explore Now <i className="fa-solid fa-arrow-right text-sm"></i>
                 </Link>
 
                 {/* Secondary — dark glass */}
-                <Link to="/contact" className="text-decoration-none flex items-center gap-2 px-6 py-3 rounded-lg font-medium text-slate-300 bg-slate-800/80 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 transition-all duration-200 backdrop-blur-sm">
-                  <span>💬</span> Contact Us
+                <Link to="/contact" className="text-decoration-none flex items-center gap-2 px-8 py-3.5 rounded-xl font-semibold text-slate-300 bg-slate-800/50 border border-slate-700 hover:bg-slate-700/80 hover:border-indigo-500/50 hover:text-white transition-all duration-300 backdrop-blur-md">
+                  Contact Us
                 </Link>
               </div>
               {/* Trust bar */}
@@ -113,20 +113,20 @@ const Home = () => {
             </div>
 
             {/* RIGHT — Floating dashboard card */}
-            <div className="relative">
+            <div className="relative widget-float">
               {/* Outer glow behind the card */}
-              <div className="absolute inset-0 bg-cyan-500/10 blur-3xl rounded-3xl -z-10" />
+              <div className="absolute inset-0 bg-indigo-500/20 blur-[80px] rounded-3xl -z-10" />
               
               {/* Main floating card */}
-              <div className="bg-[#0d1117] border border-[#1e293b] rounded-2xl overflow-hidden shadow-2xl shadow-black/50">
+              <div className="bg-[#0f172a]/80 backdrop-blur-xl border border-indigo-500/20 rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.8)] shadow-indigo-500/10">
                 
                 {/* macOS-style title bar */}
                 <div className="flex items-center justify-between px-4 py-3 border-b border-[#1e293b]">
                   <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 bg-red-500 rounded-full" />
-                    <span className="w-3 h-3 bg-yellow-500 rounded-full" />
-                    <span className="w-3 h-3 bg-green-500 rounded-full" />
-                    <span className="text-slate-400 text-xs ml-3">Server Dashboard</span>
+                    <span className="w-3 h-3 bg-red-500/80 rounded-full shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
+                    <span className="w-3 h-3 bg-yellow-500/80 rounded-full shadow-[0_0_8px_rgba(234,179,8,0.5)]" />
+                    <span className="w-3 h-3 bg-green-500/80 rounded-full shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
+                    <span className="text-slate-400 text-xs ml-3 font-semibold tracking-wide">NextVPN Console</span>
                   </div>
                   <span className="flex items-center gap-1.5 text-xs text-green-400">
                     <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
@@ -163,11 +163,11 @@ const Home = () => {
                     </div>
                   </div>
                   {/* SVG sparkline chart — two smooth lines */}
-                  <svg viewBox="0 0 300 60" className="w-full h-14">
+                  <svg viewBox="0 0 300 60" className="w-full h-14 drop-shadow-md">
                     <polyline points="0,50 60,45 120,35 180,25 240,15 300,5"
-                      fill="none" stroke="#22d3ee" strokeWidth="2" strokeLinecap="round"/>
+                      fill="none" stroke="#22d3ee" strokeWidth="2.5" strokeLinecap="round"/>
                     <polyline points="0,55 60,50 120,45 180,38 240,30 300,22"
-                      fill="none" stroke="#c084fc" strokeWidth="2" strokeLinecap="round"/>
+                      fill="none" stroke="#818cf8" strokeWidth="2.5" strokeLinecap="round"/>
                   </svg>
                 </div>
 
