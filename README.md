@@ -1,70 +1,83 @@
-# Getting Started with Create React App
+# ShiftLK Netch Solutions - Full Stack VPN Portal
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A premium, dark-themed, glassmorphism-style VPN service platform built with React, Firebase, and React-Bootstrap.
 
-## Available Scripts
+## Features Included
 
-In the project directory, you can run:
+**Public Website**
+- **12-Section Dynamic Homepage** featuring floating dashboards, server monitoring (Chart.js), protocol comparisons, and pricing.
+- Complete public pages: About, Services, Pricing, FAQ, Contact, and Legal.
+- Automated dark-mode aesthetics using a custom CSS variable design system (`globals.css`).
 
-### `npm start`
+**Authentication & Client Portal**
+- Google & Email/Password Authentication.
+- Secure, protected routing for the Client Portal.
+- Dashboard for viewing active plans, days remaining, and fetching V2Ray configuration links.
+- 4-step Manual Payment Modal with auto-compressing image upload for proof of payment.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+**Admin Panel**
+- Secure, RBAC (Role-Based Access Control) protected routes.
+- **Overview:** Real-time stats, revenue calculation, and server status.
+- **Users:** Manage accounts, toggle active status, grant admin privileges.
+- **Payments:** Review uploaded payment screenshots, approve/reject to automatically extend user subscriptions via Firestore triggers.
+- **Servers:** Full CRUD operations for managing V2Ray nodes, capacities, and online status.
+- **Packages:** Customize pricing plans, prices, and feature lists dynamically.
+- **Settings:** Update contact emails, social links, and bank account details globally across the site without changing code.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Tech Stack
+- **Frontend:** React 19, React-Router-Dom v6, React-Bootstrap, Vanilla CSS (Custom Design System).
+- **Backend:** Firebase Authentication, Firestore Database.
+- **Libraries:** Chart.js, React-Hot-Toast, FontAwesome 6.
 
-### `npm test`
+## Getting Started
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 1. Installation
+Clone the repository and install dependencies:
+```bash
+npm install
+```
 
-### `npm run build`
+### 2. Firebase Setup
+1. Create a Firebase project at [console.firebase.google.com](https://console.firebase.google.com).
+2. Enable **Authentication** (Email/Password & Google providers).
+3. Enable **Firestore Database**.
+4. Deploy the included Firestore security rules:
+   ```bash
+   firebase deploy --only firestore:rules
+   ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 3. Environment Variables
+Create a `.env` file in the root directory and copy the contents from `.env.example`. Replace the values with your Firebase project configuration:
+```env
+REACT_APP_FIREBASE_API_KEY=your_api_key
+REACT_APP_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+REACT_APP_FIREBASE_PROJECT_ID=your_project_id
+REACT_APP_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+REACT_APP_FIREBASE_APP_ID=your_app_id
+REACT_APP_FIREBASE_MEASUREMENT_ID=your_measurement_id
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 4. Running Locally
+Start the development server:
+```bash
+npm start
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 5. Admin Access Setup
+Since the app uses manual registration initially, you need to make the first user an admin manually via the Firebase Console:
+1. Register an account on the website.
+2. Go to your Firebase Firestore console.
+3. Find your user document in the `users` collection.
+4. Add a boolean field: `isAdmin: true`.
+5. Refresh the website, and you will now see the Admin Panel link in the navbar dropdown.
 
-### `npm run eject`
+## Deployment
+This app is ready to be deployed to Firebase Hosting.
+```bash
+npm run build
+firebase deploy --only hosting
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Design System Notes
+All visual elements are controlled via `src/styles/globals.css`. If you wish to change the primary colors (Cyan, Blue, Purple), simply update the `--accent-cyan`, `--accent-blue`, and `--accent-purple` variables at the top of the file. All glowing effects, gradients, and buttons will adapt automatically.

@@ -1,0 +1,110 @@
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase/firebaseConfig';
+
+const Footer = () => {
+  const [settings, setSettings] = useState({
+    contactEmail: 'support@shiftlk.net',
+    phone: '+94 77 123 4567',
+    address: 'Colombo, Sri Lanka',
+    footerText: 'Premium V2Ray VPN & proxy service built for speed, privacy, and zero restrictions.',
+    socialLinks: {
+      facebook: '#',
+      telegram: '#',
+      instagram: '#',
+      whatsapp: '#'
+    }
+  });
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const docSnap = await getDoc(doc(db, 'siteSettings', 'config'));
+        if (docSnap.exists()) {
+          setSettings(prev => ({ ...prev, ...docSnap.data() }));
+        }
+      } catch (err) {
+        console.error('Failed to load footer settings', err);
+      }
+    };
+    fetchSettings();
+  }, []);
+
+  return (
+    <footer className="footer-main">
+      <div className="footer-gradient-line"></div>
+      
+      <div className="container-main footer-content">
+        <div className="row g-4">
+          
+          {/* Brand Col */}
+          <div className="col-12 col-lg-4 reveal-on-scroll">
+            <div className="d-flex align-items-center mb-3">
+              <i className="fa-solid fa-shield-halved navbar-brand-icon"></i>
+              <div className="footer-brand-text">ShiftLK <span>Netch</span> Solutions</div>
+            </div>
+            <p className="footer-tagline">{settings.footerText}</p>
+            <div className="footer-social">
+              {settings.socialLinks?.facebook && <a href={settings.socialLinks.facebook} target="_blank" rel="noreferrer"><i className="fa-brands fa-facebook"></i></a>}
+              {settings.socialLinks?.telegram && <a href={settings.socialLinks.telegram} target="_blank" rel="noreferrer"><i className="fa-brands fa-telegram"></i></a>}
+              {settings.socialLinks?.instagram && <a href={settings.socialLinks.instagram} target="_blank" rel="noreferrer"><i className="fa-brands fa-instagram"></i></a>}
+              {settings.socialLinks?.whatsapp && <a href={settings.socialLinks.whatsapp} target="_blank" rel="noreferrer"><i className="fa-brands fa-whatsapp"></i></a>}
+            </div>
+          </div>
+
+          {/* Company Col */}
+          <div className="col-6 col-md-4 col-lg-2 reveal-on-scroll">
+            <h4 className="footer-heading">Company</h4>
+            <ul className="footer-links">
+              <li><Link to="/">Home</Link></li>
+              <li><Link to="/about">About Us</Link></li>
+              <li><Link to="/services">Services</Link></li>
+              <li><Link to="/pricing">Pricing</Link></li>
+              <li><Link to="/contact">Contact</Link></li>
+            </ul>
+          </div>
+
+          {/* Legal Col */}
+          <div className="col-6 col-md-4 col-lg-3 reveal-on-scroll">
+            <h4 className="footer-heading">Legal</h4>
+            <ul className="footer-links">
+              <li><Link to="/privacy">Privacy Policy</Link></li>
+              <li><Link to="/terms">Terms of Service</Link></li>
+              <li><Link to="/sla">SLA Agreement</Link></li>
+              <li><Link to="/faq">FAQ</Link></li>
+            </ul>
+          </div>
+
+          {/* Contact Col */}
+          <div className="col-12 col-md-4 col-lg-3 reveal-on-scroll">
+            <h4 className="footer-heading">Contact</h4>
+            <div className="footer-contact-item">
+              <i className="fa-solid fa-envelope"></i>
+              <span>{settings.contactEmail}</span>
+            </div>
+            <div className="footer-contact-item">
+              <i className="fa-solid fa-phone"></i>
+              <span>{settings.phone}</span>
+            </div>
+            <div className="footer-contact-item">
+              <i className="fa-solid fa-location-dot"></i>
+              <span>{settings.address}</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      {/* Bottom Bar */}
+      <div className="container-main">
+        <div className="footer-bottom reveal-on-scroll">
+          <p>© {new Date().getFullYear()} ShiftLK Netch Solutions · All rights reserved.</p>
+          <p>Made with <span className="text-danger">❤️</span> in Sri Lanka</p>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;

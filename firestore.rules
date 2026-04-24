@@ -1,0 +1,84 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper Functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isSignedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+    
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // ── User Profiles ──
+    match /users/{userId} {
+      // Users can read/write their own data
+      allow read: if isOwner(userId) || isAdmin();
+      // Users can only update specific fields on themselves (no self-admin)
+      allow create: if isOwner(userId);
+      allow update: if isAdmin() || (isOwner(userId) && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['isAdmin', 'subscriptionExpiry', 'plan', 'isActive', 'paymentStatus']));
+      allow delete: if isAdmin() || isOwner(userId);
+    }
+
+    // ── Site Settings & Config ──
+    match /siteSettings/{document=**} {
+      // Anyone can read public settings
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── Pricing Packages ──
+    match /packages/{packageId} {
+      // Anyone can see available packages
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── Servers / Nodes ──
+    match /servers/{serverId} {
+      // Anyone can see server stats
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── Testimonials ──
+    match /testimonials/{testimonialId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    
+    // ── Announcements ──
+    match /announcements/{announcementId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── Support Tickets ──
+    match /tickets/{ticketId} {
+      // Users can read/create their own tickets
+      allow read: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow create: if isSignedIn() && request.resource.data.uid == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+
+    // ── Manual Payments ──
+    match /payments/{paymentId} {
+      // Users can read their own payments and create new ones
+      allow read: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow create: if isSignedIn() && request.resource.data.uid == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+    
+    // ── Subscribers (Newsletter) ──
+    match /subscribers/{subscriberId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+  }
+}
