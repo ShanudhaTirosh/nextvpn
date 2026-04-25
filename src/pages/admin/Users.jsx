@@ -8,8 +8,10 @@ import { formatBytes } from '../../utils/usageService';
 
 const Users = () => {
   const { data: users, loading } = useRealtimeCollection('users');
+  const { data: packages } = useRealtimeCollection('packages');
   const [searchTerm, setSearchTerm] = useState('');
   const [configModal, setConfigModal] = useState({ show: false, user: null, config: '', subId: '', uuid: '', inboundId: '1' });
+  const [planModal, setPlanModal] = useState({ show: false, user: null, packageId: '', durationDays: 30, isSaving: false });
   const [xuiStats, setXuiStats] = useState({ loading: false, clients: {}, totalUpload: 0, totalDownload: 0, totalActive: 0 });
 
   const fetchXuiStats = async () => {
@@ -121,6 +123,37 @@ const Users = () => {
       showToast.success('User plan canceled successfully.');
     } catch {
       showToast.error('Failed to cancel user plan.');
+    }
+  };
+
+  const handleAssignPlan = async () => {
+    if (!planModal.user || !planModal.packageId) {
+      showToast.error('Please select a package.');
+      return;
+    }
+
+    setPlanModal(prev => ({ ...prev, isSaving: true }));
+    try {
+      const pkg = packages.find(p => p.id === planModal.packageId);
+      const expiry = new Date();
+      expiry.setDate(expiry.getDate() + Number(planModal.durationDays || 30));
+
+      await updateDocument('users', planModal.user.id, {
+        plan: pkg.name.toLowerCase(),
+        isActive: true,
+        paymentStatus: 'paid',
+        subscriptionExpiry: expiry,
+        planDurationDays: Number(planModal.durationDays || 30)
+      });
+
+      await logActivity('user', `Manually assigned "${pkg.name}" plan to user "${planModal.user.displayName || planModal.user.email}".`, 'success');
+      showToast.success('Plan assigned successfully!');
+      setPlanModal({ show: false, user: null, packageId: '', durationDays: 30, isSaving: false });
+    } catch (err) {
+      console.error(err);
+      showToast.error('Failed to assign plan.');
+    } finally {
+      setPlanModal(prev => ({ ...prev, isSaving: false }));
     }
   };
 
@@ -266,8 +299,16 @@ const Users = () => {
                          <button
                           onClick={() => setConfigModal({ show: true, user, config: user.vpnConfig || '', subId: user.subscriptionId || '', uuid: user.v2rayUuid || '', inboundId: user.inboundId || '1' })}
                           className="p-2 rounded-lg bg-brand-bg border border-brand-border text-brand-primary hover:bg-brand-panel transition-colors"
+                          title="Proxy Config"
                         >
                           <i className="fa-solid fa-server"></i>
+                        </button>
+                        <button
+                          onClick={() => setPlanModal({ show: true, user, packageId: '', durationDays: 30, isSaving: false })}
+                          className="p-2 rounded-lg bg-brand-bg border border-brand-border text-amber-500 hover:bg-brand-panel transition-colors"
+                          title="Assign Plan"
+                        >
+                          <i className="fa-solid fa-calendar-plus"></i>
                         </button>
                         <button
                           onClick={() => toggleUserStatus(user)}
@@ -392,6 +433,82 @@ const Users = () => {
                   Save Changes
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {planModal.show && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md" onClick={() => setPlanModal({ show: false, user: null, packageId: '', durationDays: 30, isSaving: false })}>
+          <div className="w-full max-w-md rounded-2xl bg-brand-surface border border-brand-border shadow-2xl p-6" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-white">Assign Manual Plan</h3>
+              <button onClick={() => setPlanModal({ show: false, user: null, packageId: '', durationDays: 30, isSaving: false })} className="text-slate-500 hover:text-white"><i className="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div className="space-y-5 mb-8">
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Target User</label>
+                <div className="p-3 rounded-xl bg-brand-bg border border-brand-border flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-brand-panel flex items-center justify-center text-brand-primary text-xs font-bold">
+                    {(planModal.user?.displayName || planModal.user?.email || 'U')[0].toUpperCase()}
+                  </div>
+                  <div>
+                    <div className="text-sm font-semibold text-white">{planModal.user?.displayName || 'Unnamed User'}</div>
+                    <div className="text-[10px] text-slate-500">{planModal.user?.email}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Select Package</label>
+                <select 
+                  className="w-full p-3 rounded-xl bg-brand-bg border border-brand-border text-slate-300 text-sm focus:border-brand-primary/50 focus:outline-none"
+                  value={planModal.packageId}
+                  onChange={(e) => {
+                    const pkgId = e.target.value;
+                    const pkg = packages?.find(p => p.id === pkgId);
+                    setPlanModal(prev => ({ 
+                      ...prev, 
+                      packageId: pkgId, 
+                      durationDays: pkg ? pkg.durationDays : 30 
+                    }));
+                  }}
+                >
+                  <option value="">Select a package...</option>
+                  {packages?.map(pkg => (
+                    <option key={pkg.id} value={pkg.id}>{pkg.name} (LKR {pkg.price})</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Duration (Days)</label>
+                <input 
+                  type="number"
+                  className="w-full p-3 rounded-xl bg-brand-bg border border-brand-border text-slate-300 text-sm focus:border-brand-primary/50 focus:outline-none"
+                  value={planModal.durationDays}
+                  onChange={(e) => setPlanModal(prev => ({ ...prev, durationDays: e.target.value }))}
+                  placeholder="e.g. 30"
+                />
+                <p className="text-[10px] text-slate-500 mt-2 italic">Expiry date will be calculated from today.</p>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setPlanModal({ show: false, user: null, packageId: '', durationDays: 30, isSaving: false })}
+                className="flex-1 py-3 rounded-xl text-slate-400 hover:text-white border border-brand-border hover:bg-brand-panel transition-colors font-bold text-sm"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAssignPlan}
+                disabled={planModal.isSaving || !planModal.packageId}
+                className="flex-1 py-3 rounded-xl bg-gradient-to-r from-brand-primary to-brand-glow text-white font-bold hover:shadow-[0_0_20px_rgba(255,106,0,0.4)] transition-all disabled:opacity-50 text-sm"
+              >
+                {planModal.isSaving ? <i className="fa-solid fa-spinner animate-spin"></i> : 'Confirm Assignment'}
+              </button>
             </div>
           </div>
         </div>
