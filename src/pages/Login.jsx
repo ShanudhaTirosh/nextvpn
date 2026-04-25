@@ -82,7 +82,7 @@ const Login = () => {
           <h1 className="text-4xl font-black text-white leading-tight mb-4">
             Fast. Secure.<br/><span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">Unrestricted.</span>
           </h1>
-          <p className="text-slate-400 text-sm leading-relaxed mb-8">Access your high-speed V2Ray servers across 30+ global locations. Your privacy, guaranteed.</p>
+          <p className="text-slate-400 text-sm leading-relaxed mb-8">Access your high-speed V2Ray servers across 5+ global locations. Your privacy, guaranteed.</p>
           <div className="flex flex-col gap-3">
             {[['fa-bolt','Sub-10ms average latency'],['fa-shield-halved','Military-grade AES-256 encryption'],['fa-eye-slash','Strict zero-logs policy']].map(([icon, text]) => (
               <div key={text} className="flex items-center gap-3 text-slate-400 text-sm">

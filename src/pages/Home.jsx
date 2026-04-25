@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import ServerDashboardWidget from '../components/ServerDashboardWidget';
 import PricingCard from '../components/PricingCard';
 import TestimonialCard from '../components/TestimonialCard';
 import LocationCard from '../components/LocationCard';
@@ -36,7 +35,7 @@ const Home = () => {
     { icon:"fa-infinity", title:"Unlimited Bandwidth", desc:"No caps, no throttling." },
     { icon:"fa-network-wired", title:"V2Ray Protocol", desc:"VMess, VLESS, Trojan support." },
     { icon:"fa-lock", title:"AES-256 Encryption", desc:"Military-grade security." },
-    { icon:"fa-globe", title:"30+ Locations", desc:"Servers across 4 continents." },
+    { icon:"fa-globe", title:"5+ Locations", desc:"Servers across 4 continents." },
     { icon:"fa-shield-halved", title:"DDoS Protection", desc:"Every server protected." },
     { icon:"fa-eye-slash", title:"Zero Logs Policy", desc:"We never track you." }
   ];
@@ -202,8 +201,8 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-slate-800/60">
             {[
-              { icon:'fa-users', color:'text-cyan-400', end:5000, suffix:'+', label:'Active Users' },
-              { icon:'fa-server', color:'text-blue-400', end:30, suffix:'+', label:'Global Servers' },
+              { icon:'fa-users', color:'text-cyan-400', end:50, suffix:'+', label:'Active Users' },
+              { icon:'fa-server', color:'text-blue-400', end:5, suffix:'+', label:'Global Servers' },
               { icon:'fa-shield-halved', color:'text-emerald-400', end:99.9, suffix:'%', label:'Uptime SLA' },
               { icon:'fa-bolt', color:'text-amber-400', end:10, suffix:'ms', label:'Avg Latency', prefix:'<' },
             ].map(({ icon, color, end, suffix, label, prefix }) => (
@@ -242,44 +241,13 @@ const Home = () => {
         </div>
       </section>
 
-      {/* SECTION 4 — SERVER DASHBOARD WIDGET */}
-      <section className="section-bg-secondary section-padding border-top border-secondary">
-        <div className="container-main">
-          <div className="row align-items-center">
-            <div className="col-12 col-lg-5 mb-5 mb-lg-0 reveal-on-scroll">
-              <div className="section-eyebrow">Live Infrastructure</div>
-              <h2 className="section-title text-white">Real-Time Server <br /><span className="gradient-text">Intelligence</span></h2>
-              <p className="text-secondary mb-4 fs-6 lh-lg">
-                We monitor our infrastructure 24/7 to ensure optimal performance. 
-                Our automated load balancing dynamically routes your traffic to the fastest available node.
-              </p>
-              
-              <ul className="list-unstyled mb-4">
-                <li className="mb-3 d-flex align-items-center text-white">
-                  <i className="fa-solid fa-check text-success me-3 fs-5 bg-success bg-opacity-25 rounded-circle p-1"></i> Proactive DDoS Mitigation
-                </li>
-                <li className="mb-3 d-flex align-items-center text-white">
-                  <i className="fa-solid fa-check text-success me-3 fs-5 bg-success bg-opacity-25 rounded-circle p-1"></i> 10Gbps Uplink Ports
-                </li>
-                <li className="mb-3 d-flex align-items-center text-white">
-                  <i className="fa-solid fa-check text-success me-3 fs-5 bg-success bg-opacity-25 rounded-circle p-1"></i> Automated Failover
-                </li>
-              </ul>
-              
-              <Link to="/about" className="btn-ghost">Learn about our network</Link>
-            </div>
-            <div className="col-12 col-lg-7 d-flex justify-content-center justify-content-lg-end reveal-on-scroll" style={{ '--delay': '0.2s' }}>
-              <ServerDashboardWidget />
-            </div>
-          </div>
-        </div>
-      </section>
+ 
 
-      {/* SECTION 5 — AVAILABLE LOCATIONS */}
+      {/* SECTION 4 — AVAILABLE LOCATIONS */}
       <section className="section-bg-primary section-padding">
         <div className="container-main">
           <div className="text-center reveal-on-scroll mb-5">
-            <h2 className="section-title text-white">30+ Servers Worldwide</h2>
+            <h2 className="section-title text-white">5+ Servers Worldwide</h2>
             <p className="section-subtitle">Connect to any region with a single click.</p>
             
             <div className="d-flex flex-wrap justify-content-center gap-2 mt-4">
@@ -310,7 +278,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* SECTION 6 — PROTOCOLS */}
+      {/* SECTION 5 — PROTOCOLS */}
       <section className="section-bg-secondary section-padding border-top border-secondary">
         <div className="container-main">
           <h2 className="section-title text-center text-white mb-5 reveal-on-scroll">Supported Protocols</h2>
@@ -335,7 +303,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* SECTION 7 — PRICING PREVIEW */}
+      {/* SECTION 6 — PRICING PREVIEW */}
       <section className="section-bg-primary section-padding">
         <div className="container-main">
           <div className="text-center reveal-on-scroll mb-5">
@@ -362,7 +330,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* SECTION 8 — TESTIMONIALS */}
+      {/* SECTION 7 — TESTIMONIALS */}
       <section className="section-bg-secondary section-padding border-top border-secondary overflow-hidden">
         <div className="container-main">
           <div className="text-center reveal-on-scroll mb-5">
@@ -380,7 +348,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* SECTION 9 — HOW IT WORKS */}
+      {/* SECTION 8 — HOW IT WORKS */}
       <section className="section-bg-primary section-padding position-relative">
         <div className="container-main">
           <h2 className="section-title text-center text-white mb-5 reveal-on-scroll">Get Connected in Minutes</h2>
@@ -412,7 +380,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* SECTION 10 — PAYMENT METHODS */}
+      {/* SECTION 9 — PAYMENT METHODS */}
       <section className="section-bg-secondary section-padding border-top border-secondary">
         <div className="container-main">
           <div className="text-center reveal-on-scroll mb-5">
@@ -447,10 +415,10 @@ const Home = () => {
         </div>
       </section>
 
-      {/* SECTION 11 — STAY UPDATED */}
+      {/* SECTION 10 — STAY UPDATED */}
       <StayUpdatedBanner />
 
-      {/* SECTION 12 — CONTACT PREVIEW */}
+      {/* SECTION 11 — CONTACT PREVIEW */}
       <section className="section-bg-secondary section-padding border-top border-secondary">
         <div className="container-main text-center">
           <h2 className="section-title text-white mb-5 reveal-on-scroll">Need Help?</h2>

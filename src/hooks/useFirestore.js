@@ -77,18 +77,26 @@ export const useRealtimeCollection = (collectionName, constraints = []) => {
   const constraintsString = JSON.stringify(constraints);
 
   useEffect(() => {
+    let unsubscribe;
     setLoading(true);
     const parsedConstraints = JSON.parse(constraintsString);
-    const unsubscribe = subscribeToCollection(
-      collectionName,
-      (fetchedData) => {
-        setData(fetchedData);
-        setLoading(false);
-      },
-      parsedConstraints
-    );
+    
+    // Defer subscription to avoid React Strict Mode synchronous mount/unmount crashes (Firestore bug ca9)
+    const timeoutId = setTimeout(() => {
+      unsubscribe = subscribeToCollection(
+        collectionName,
+        (fetchedData) => {
+          setData(fetchedData);
+          setLoading(false);
+        },
+        parsedConstraints
+      );
+    }, 10);
 
-    return () => unsubscribe();
+    return () => {
+      clearTimeout(timeoutId);
+      if (unsubscribe) unsubscribe();
+    };
   }, [collectionName, constraintsString]);
 
   return { data, loading };
@@ -99,18 +107,24 @@ export const useRealtimeDocument = (collectionName, docId) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let unsubscribe;
     if (!docId) {
       setLoading(false);
       return;
     }
     
     setLoading(true);
-    const unsubscribe = subscribeToDocument(collectionName, docId, (fetchedData) => {
-      setData(fetchedData);
-      setLoading(false);
-    });
+    const timeoutId = setTimeout(() => {
+      unsubscribe = subscribeToDocument(collectionName, docId, (fetchedData) => {
+        setData(fetchedData);
+        setLoading(false);
+      });
+    }, 10);
 
-    return () => unsubscribe();
+    return () => {
+      clearTimeout(timeoutId);
+      if (unsubscribe) unsubscribe();
+    };
   }, [collectionName, docId]);
 
   return { data, loading };

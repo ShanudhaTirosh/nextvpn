@@ -8,6 +8,7 @@ import Servers from './admin/Servers';
 import Packages from './admin/Packages';
 import Settings from './admin/Settings';
 import SupportChat from './admin/SupportChat';
+import AdminTutorials from './admin/AdminTutorials';
 
 const AdminPanel = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -21,6 +22,7 @@ const AdminPanel = () => {
     { name: 'Servers', path: '/admin/servers', icon: 'fa-server' },
     { name: 'Packages', path: '/admin/packages', icon: 'fa-box-open' },
     { name: 'Settings', path: '/admin/settings', icon: 'fa-gears' },
+    { name: 'Tutorials', path: '/admin/tutorials', icon: 'fa-book' },
     { name: 'Support Chat', path: '/admin/chat', icon: 'fa-comments' },
   ];
 
@@ -115,6 +117,7 @@ const AdminPanel = () => {
               <Route path="servers" element={<Servers />} />
               <Route path="packages" element={<Packages />} />
               <Route path="settings" element={<Settings />} />
+              <Route path="tutorials" element={<AdminTutorials />} />
               <Route path="chat" element={<SupportChat />} />
             </Routes>
           </div>

@@ -68,7 +68,7 @@ const ProxyDashboardWidget = () => {
         {/* Locations Pill */}
         <div className="text-center mb-3">
           <span className="badge-cyan py-2 px-3">
-            <i className="fa-solid fa-globe me-2"></i> 30+ Regions Available
+            <i className="fa-solid fa-globe me-2"></i> 5+ Regions Available
           </span>
         </div>
 

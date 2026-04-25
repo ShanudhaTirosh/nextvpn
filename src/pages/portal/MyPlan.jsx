@@ -100,7 +100,8 @@ const MyPlan = () => {
               ></textarea>
               <button
                 onClick={() => {
-                  navigator.clipboard.writeText(userData.vpnConfig);
+                  const cleanConfig = userData.vpnConfig.trim().replace(/\s+/g, '');
+                  navigator.clipboard.writeText(cleanConfig);
                   showToast.success('Config copied to clipboard!');
                 }}
                 className="absolute top-3 right-3 p-2 rounded-lg bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors text-xs flex items-center gap-2"

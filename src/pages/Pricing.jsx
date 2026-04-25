@@ -39,7 +39,7 @@ const Pricing = () => {
         <div className="container-main pt-5">
           <div className="section-eyebrow">Pricing Plans</div>
           <h1 className="section-title text-white">Simple, Transparent <span className="gradient-text">Pricing</span></h1>
-          <p className="section-subtitle mt-3">Choose the power you need. All plans include 30+ global servers.</p>
+          <p className="section-subtitle mt-3">Choose the power you need. All plans include 5+ global servers.</p>
 
           {/* Toggle */}
           <div className="d-flex justify-content-center align-items-center gap-3 mb-5 mt-4 reveal-on-scroll">

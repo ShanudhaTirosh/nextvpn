@@ -82,7 +82,7 @@ const Register = () => {
 
           <div className="grid grid-cols-2 gap-3">
             {[
-              { label: '30+', sub: 'Global Servers', icon: 'fa-server', color: 'text-cyan-400' },
+              { label: '5+', sub: 'Global Servers', icon: 'fa-server', color: 'text-cyan-400' },
               { label: '99.9%', sub: 'Uptime SLA', icon: 'fa-shield-halved', color: 'text-emerald-400' },
               { label: '<10ms', sub: 'Avg Latency', icon: 'fa-bolt', color: 'text-amber-400' },
               { label: '24/7', sub: 'Expert Support', icon: 'fa-headset', color: 'text-blue-400' },

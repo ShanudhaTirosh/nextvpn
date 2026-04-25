@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useRealtimeCollection } from '../../hooks/useFirestore';
 import LocationCard from '../../components/LocationCard';
 import SkeletonLoader from '../../components/SkeletonLoader';
-import { showToast } from '../../components/Toast';
 
 const StatCard = ({ label, value, sub, icon, color }) => (
   <div className={`relative overflow-hidden rounded-2xl bg-slate-900/60 border p-5 backdrop-blur-sm ${color.border}`}>
@@ -22,7 +21,6 @@ const StatCard = ({ label, value, sub, icon, color }) => (
 const Dashboard = () => {
   const { userData } = useAuth();
   const { data: servers, loading } = useRealtimeCollection('servers', []);
-  const [selectedServer, setSelectedServer] = useState(null);
 
   const isActive = userData?.isActive && userData?.plan !== 'none';
 
@@ -36,20 +34,6 @@ const Dashboard = () => {
   // We don't store max days, so we assume 30 for monthly and 365 for anything > 30
   const maxDays = userData?.planDurationDays || 30;
   const daysProgress = maxDays > 0 ? Math.min(100, Math.max(0, ((maxDays - daysLeft) / maxDays) * 100)) : 0;
-
-  const handleCopyConfig = (server) => {
-    if (!isActive) { showToast.error('Active plan required to view configs.'); return; }
-    const uid = userData?.uid || 'unknown';
-    const config = {
-      v: '2', ps: `ShiftLK-${server.name}`,
-      add: server.address, port: '443',
-      id: uid, aid: '0', net: 'ws',
-      type: 'none', host: '', path: '/shiftlk', tls: 'tls',
-    };
-    const link = `vmess://${btoa(JSON.stringify(config))}`;
-    navigator.clipboard.writeText(link);
-    showToast.success(`Config copied for ${server.name}`);
-  };
 
   return (
     <div className="animate-fade-in">
@@ -115,35 +99,8 @@ const Dashboard = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {servers.map(server => (
-            <div key={server.id} className="relative">
-              <div
-                className={`cursor-pointer ${!isActive ? 'opacity-60 cursor-not-allowed' : ''}`}
-                onClick={() => isActive && setSelectedServer(selectedServer === server.id ? null : server.id)}
-              >
-                <LocationCard server={server} />
-              </div>
-
-              {selectedServer === server.id && isActive && (
-                <div className="absolute inset-0 rounded-2xl bg-slate-950/90 backdrop-blur-md flex flex-col items-center justify-center p-5 animate-fade-in z-10">
-                  <button onClick={() => setSelectedServer(null)} className="absolute top-3 right-3 text-slate-500 hover:text-white transition-colors">
-                    <i className="fa-solid fa-xmark text-lg"></i>
-                  </button>
-                  <i className="fa-solid fa-lock-open text-cyan-400 text-2xl mb-3"></i>
-                  <h3 className="text-white font-bold text-sm mb-4 text-center">{server.name} Config</h3>
-                  <button
-                    onClick={() => handleCopyConfig(server)}
-                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 font-bold text-sm mb-2 hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all"
-                  >
-                    <i className="fa-solid fa-copy mr-2"></i> Copy VMess Link
-                  </button>
-                  <button
-                    onClick={() => showToast.info('QR generation coming soon.')}
-                    className="w-full py-2.5 rounded-xl border border-slate-700 text-slate-400 text-sm hover:border-slate-600 hover:text-white transition-all"
-                  >
-                    <i className="fa-solid fa-qrcode mr-2"></i> Show QR Code
-                  </button>
-                </div>
-              )}
+            <div key={server.id} className={`relative ${!isActive ? 'opacity-60' : ''}`}>
+              <LocationCard server={server} />
             </div>
           ))}
         </div>

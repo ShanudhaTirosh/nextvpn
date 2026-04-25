@@ -8,6 +8,7 @@ const INITIAL = {
   name: '', country: '', flagEmoji: '🌐', protocol: 'VMess',
   address: '', latencyMs: 50, activeUsers: 0, maxUsers: 100,
   region: 'Asia', isOnline: true, isDDoSProtected: true,
+  features: 'Unlimited Bandwidth',
 };
 
 const ServerCard = ({ server, onEdit, onDelete, onToggle }) => {
@@ -41,6 +42,14 @@ const ServerCard = ({ server, onEdit, onDelete, onToggle }) => {
           {server.isOnline ? 'Online' : 'Offline'}
         </span>
       </div>
+
+      {(server.features && server.features.length > 0) && (
+        <div className="flex flex-wrap gap-1.5 mt-1">
+          {Array.isArray(server.features) ? server.features.map((f, i) => (
+            <span key={i} className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-[10px]"><i className="fa-solid fa-check mr-1 text-cyan-500"></i>{f}</span>
+          )) : <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-[10px]"><i className="fa-solid fa-check mr-1 text-cyan-500"></i>{server.features}</span>}
+        </div>
+      )}
 
       <div>
         <div className="flex justify-between text-xs text-slate-500 mb-1">
@@ -77,7 +86,7 @@ const Servers = () => {
 
   const openModal = (server = null) => {
     setEditingServer(server);
-    setFormData(server ? { ...server } : { ...INITIAL });
+    setFormData(server ? { ...server, features: Array.isArray(server.features) ? server.features.join(', ') : (server.features || '') } : { ...INITIAL });
     setShowModal(true);
   };
   const closeModal = () => { setShowModal(false); setEditingServer(null); };
@@ -86,7 +95,13 @@ const Servers = () => {
     e.preventDefault();
     setIsSaving(true);
     try {
-      const parsed = { ...formData, latencyMs: +formData.latencyMs, activeUsers: +formData.activeUsers, maxUsers: +formData.maxUsers };
+      const parsed = { 
+        ...formData, 
+        latencyMs: +formData.latencyMs, 
+        activeUsers: +formData.activeUsers, 
+        maxUsers: +formData.maxUsers,
+        features: typeof formData.features === 'string' ? formData.features.split(',').map(f => f.trim()).filter(Boolean) : formData.features
+      };
       if (editingServer) {
         await updateDocument('servers', editingServer.id, parsed);
         await logActivity('server', `Server "${parsed.name}" configuration updated.`, 'info');
@@ -169,6 +184,11 @@ const Servers = () => {
                   <F label="Latency (ms)"><input type="number" className={inp} value={formData.latencyMs} onChange={e => setFormData({...formData,latencyMs:e.target.value})} /></F>
                   <F label="Active Users"><input type="number" className={inp} value={formData.activeUsers} onChange={e => setFormData({...formData,activeUsers:e.target.value})} /></F>
                   <F label="Max Users"><input type="number" className={inp} value={formData.maxUsers} onChange={e => setFormData({...formData,maxUsers:e.target.value})} /></F>
+                  <div className="col-span-2">
+                    <F label="Server Features (Comma Separated)">
+                      <input className={inp} value={formData.features} onChange={e => setFormData({...formData,features:e.target.value})} placeholder="Unlimited Bandwidth, 10Gbps Speed, No Logs" />
+                    </F>
+                  </div>
                   
                   <div className="col-span-2 flex gap-6 pt-2">
                     <label className="flex items-center gap-2 cursor-pointer">

@@ -36,19 +36,6 @@ const PricingCard = ({ pkg, isLoggedIn, onSelect }) => {
       <div className="divider mx-auto" style={{ width: '60%' }}></div>
       
       <ul className="pricing-features">
-        <li>
-          <i className="fa-solid fa-check"></i> 
-          <span className="text-white fw-bold">Unlimited Bandwidth</span>
-        </li>
-        <li>
-          <i className="fa-solid fa-check"></i> V2Ray (VMess/VLESS) Support
-        </li>
-        <li>
-          <i className="fa-solid fa-check"></i> 30+ Global Locations
-        </li>
-        <li>
-          <i className="fa-solid fa-check"></i> High Speed NVMe Nodes
-        </li>
         {pkg.features?.map((feature, idx) => (
           <li key={idx}>
             <i className={`fa-solid ${feature.included !== false ? 'fa-check' : 'fa-xmark'}`}></i> 

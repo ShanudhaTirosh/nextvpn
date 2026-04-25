@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useRealtimeCollection } from '../../hooks/useFirestore';
 import { addDocument, updateDocument } from '../../firebase/firestore';
 
@@ -9,33 +9,38 @@ const SupportChat = () => {
   const messagesEndRef = useRef(null);
 
   // Group messages by uid
-  const chats = (allMessages || []).reduce((acc, msg) => {
-    if (!acc[msg.uid]) {
-      acc[msg.uid] = {
-        uid: msg.uid,
-        userEmail: msg.userEmail || 'Unknown',
-        userName: msg.userName || 'User',
-        messages: [],
-        unreadCount: 0,
-        lastMessage: null,
-        lastActive: 0
-      };
-    }
-    acc[msg.uid].messages.push(msg);
-    acc[msg.uid].lastActive = Math.max(acc[msg.uid].lastActive, msg.createdAt?.toDate?.() || 0);
-    
-    // Unread count for admin (messages sent by client that are not read)
-    if (msg.sender === 'client' && !msg.read) {
-      acc[msg.uid].unreadCount++;
-    }
-    
-    return acc;
-  }, {});
+  const chats = useMemo(() => {
+    return (allMessages || []).reduce((acc, msg) => {
+      if (!acc[msg.uid]) {
+        acc[msg.uid] = {
+          uid: msg.uid,
+          userEmail: msg.userEmail || 'Unknown',
+          userName: msg.userName || 'User',
+          messages: [],
+          unreadCount: 0,
+          lastMessage: null,
+          lastActive: 0
+        };
+      }
+      acc[msg.uid].messages.push(msg);
+      acc[msg.uid].lastActive = Math.max(acc[msg.uid].lastActive, msg.createdAt?.toDate?.() || 0);
+      
+      // Unread count for admin (messages sent by client that are not read)
+      if (msg.sender === 'client' && !msg.read) {
+        acc[msg.uid].unreadCount++;
+      }
+      
+      return acc;
+    }, {});
+  }, [allMessages]);
 
-  const chatList = Object.values(chats).sort((a, b) => b.lastActive - a.lastActive);
+  const chatList = useMemo(() => Object.values(chats).sort((a, b) => b.lastActive - a.lastActive), [chats]);
   
   const activeChat = activeUid ? chats[activeUid] : null;
-  const activeMessages = activeChat ? activeChat.messages.sort((a, b) => (a.createdAt?.toDate?.() || 0) - (b.createdAt?.toDate?.() || 0)) : [];
+  const activeMessages = useMemo(() => {
+    if (!activeChat) return [];
+    return [...activeChat.messages].sort((a, b) => (a.createdAt?.toDate?.() || 0) - (b.createdAt?.toDate?.() || 0));
+  }, [activeChat]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -69,6 +74,33 @@ const SupportChat = () => {
     } catch (err) {
       console.error('Failed to send admin message', err);
     }
+  };
+
+  const renderMessageText = (text) => {
+    const trimmed = text.trim();
+    const isConfig = trimmed.startsWith('vmess://') || trimmed.startsWith('vless://') || trimmed.startsWith('trojan://') || trimmed.startsWith('ss://');
+    
+    if (isConfig) {
+      const protocol = trimmed.split('://')[0].toUpperCase();
+      return (
+        <div className="flex flex-col gap-2 min-w-[180px]">
+          <div className="flex items-center gap-2 text-xs font-bold bg-black/20 px-2 py-1.5 rounded-lg w-fit">
+            <i className="fa-solid fa-server text-cyan-400"></i> {protocol} Config
+          </div>
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(trimmed.replace(/\s+/g, ''));
+              import('../../components/Toast').then(m => m.showToast.success('Config copied!'));
+            }}
+            className="w-full py-2 bg-slate-950/40 hover:bg-slate-950/80 rounded-lg text-xs font-semibold flex justify-center items-center gap-2 transition-colors border border-white/10"
+            title="Copy Configuration"
+          >
+            <i className="fa-regular fa-copy"></i> Copy
+          </button>
+        </div>
+      );
+    }
+    return text;
   };
 
   return (
@@ -126,11 +158,11 @@ const SupportChat = () => {
                 {activeMessages.map(msg => {
                   const isMine = msg.sender === 'admin';
                   return (
-                    <div key={msg.id} className={`flex flex-col max-w-[70%] ${isMine ? 'self-end' : 'self-start'}`}>
-                      <div className={`p-3 rounded-2xl text-sm ${isMine ? 'bg-cyan-600 text-white rounded-tr-sm' : 'bg-slate-800 text-slate-200 border border-slate-700 rounded-tl-sm'}`}>
-                        {msg.text}
+                    <div key={msg.id} className={`flex flex-col max-w-[75%] ${isMine ? 'self-end' : 'self-start'}`}>
+                      <div className={`p-3 shadow-md text-sm break-words ${isMine ? 'bg-cyan-600 text-white rounded-2xl rounded-tr-sm' : 'bg-slate-800 text-slate-200 border border-slate-700 rounded-2xl rounded-tl-sm'}`}>
+                        {renderMessageText(msg.text)}
                       </div>
-                      <span className={`text-[10px] text-slate-500 mt-1 ${isMine ? 'text-right' : 'text-left'}`}>
+                      <span className={`text-[10px] text-slate-500 mt-1 ${isMine ? 'text-right pr-1' : 'text-left pl-1'}`}>
                         {msg.createdAt?.toDate?.().toLocaleString([], {month:'short', day:'numeric', hour: '2-digit', minute:'2-digit'}) || 'Now'}
                       </span>
                     </div>

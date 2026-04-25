@@ -48,6 +48,33 @@ const ChatWidget = () => {
     }
   };
 
+  const renderMessageText = (text) => {
+    const trimmed = text.trim();
+    const isConfig = trimmed.startsWith('vmess://') || trimmed.startsWith('vless://') || trimmed.startsWith('trojan://') || trimmed.startsWith('ss://');
+    
+    if (isConfig) {
+      const protocol = trimmed.split('://')[0].toUpperCase();
+      return (
+        <div className="flex flex-col gap-2 min-w-[160px]">
+          <div className="flex items-center gap-2 text-xs font-bold bg-black/20 px-2 py-1.5 rounded-lg w-fit">
+            <i className="fa-solid fa-server text-cyan-400"></i> {protocol} Config
+          </div>
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(trimmed.replace(/\s+/g, ''));
+              import('../components/Toast').then(m => m.showToast.success('Config copied!'));
+            }}
+            className="w-full py-2 bg-slate-950/40 hover:bg-slate-950/80 rounded-lg text-xs font-semibold flex justify-center items-center gap-2 transition-colors border border-white/10"
+            title="Copy Configuration"
+          >
+            <i className="fa-regular fa-copy"></i> Copy
+          </button>
+        </div>
+      );
+    }
+    return text;
+  };
+
   if (!currentUser) return null;
 
   return (
@@ -79,11 +106,11 @@ const ChatWidget = () => {
             {messages.map(msg => {
               const isMine = msg.sender === 'client';
               return (
-                <div key={msg.id} className={`flex flex-col max-w-[80%] ${isMine ? 'self-end' : 'self-start'}`}>
-                  <div className={`p-3 rounded-2xl text-sm ${isMine ? 'bg-cyan-600 text-white rounded-tr-sm' : 'bg-slate-800 text-slate-200 border border-slate-700 rounded-tl-sm'}`}>
-                    {msg.text}
+                <div key={msg.id} className={`flex flex-col max-w-[85%] ${isMine ? 'self-end' : 'self-start'}`}>
+                  <div className={`p-3 text-sm shadow-md break-words ${isMine ? 'bg-cyan-600 text-white rounded-2xl rounded-tr-sm' : 'bg-slate-800 text-slate-200 border border-slate-700 rounded-2xl rounded-tl-sm'}`}>
+                    {renderMessageText(msg.text)}
                   </div>
-                  <span className={`text-[9px] text-slate-500 mt-1 ${isMine ? 'text-right' : 'text-left'}`}>
+                  <span className={`text-[9px] text-slate-500 mt-1 ${isMine ? 'text-right pr-1' : 'text-left pl-1'}`}>
                     {msg.createdAt?.toDate?.().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) || 'Now'}
                   </span>
                 </div>

@@ -58,11 +58,23 @@ const LocationCard = ({ server, onClick }) => {
           ></div>
         </div>
 
-        {server.isDDoSProtected && (
-          <div className="badge-active justify-content-center" style={{ fontSize: '0.7rem' }}>
-            <i className="fa-solid fa-shield-halved"></i> DDoS Protected
-          </div>
-        )}
+        <div className="d-flex flex-wrap gap-1 mt-2">
+          {server.isDDoSProtected && (
+            <div className="badge-active justify-content-center" style={{ fontSize: '0.7rem' }}>
+              <i className="fa-solid fa-shield-halved"></i> DDoS Protected
+            </div>
+          )}
+          {server.features && Array.isArray(server.features) && server.features.map((feat, i) => (
+            <div key={i} className="badge-active justify-content-center" style={{ fontSize: '0.7rem' }}>
+              <i className="fa-solid fa-check"></i> {feat}
+            </div>
+          ))}
+          {server.features && typeof server.features === 'string' && server.features.split(',').map((feat, i) => (
+            <div key={i} className="badge-active justify-content-center" style={{ fontSize: '0.7rem' }}>
+              <i className="fa-solid fa-check"></i> {feat.trim()}
+            </div>
+          ))}
+        </div>
       </GlassCard>
     </div>
   );
