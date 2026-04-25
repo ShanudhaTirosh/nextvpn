@@ -21,7 +21,7 @@ const Services = () => {
             <div className="col-12 col-lg-5 reveal-on-scroll">
               <img src="/v2ray.png" 
                    alt="V2Ray Logo" 
-                   style={{ width: '200px', filter: 'drop-shadow(0 0 20px rgba(0,229,255,0.4))' }} 
+                   style={{ width: '200px', filter: 'drop-shadow(0 0 20px rgba(255,106,0,0.4))' }} 
                    className="mx-auto d-block mb-4" />
             </div>
             <div className="col-12 col-lg-7 reveal-on-scroll" style={{ '--delay': '0.2s' }}>
@@ -50,7 +50,7 @@ const Services = () => {
             <table className="data-table mb-0">
               <thead>
                 <tr>
-                  <th style={{ color: 'var(--accent-cyan)' }}>Protocol</th>
+                  <th style={{ color: 'var(--orange-main)' }}>Protocol</th>
                   <th>Speed</th>
                   <th>Security</th>
                   <th>Bypass Capability</th>
@@ -60,7 +60,7 @@ const Services = () => {
               </thead>
               <tbody>
                 <tr>
-                  <td><span className="fw-bold text-white"><i className="fa-solid fa-network-wired text-cyan me-2"></i>VMess</span></td>
+                  <td><span className="fw-bold text-white"><i className="fa-solid fa-network-wired text-brand-primary me-2"></i>VMess</span></td>
                   <td>Excellent</td>
                   <td>High</td>
                   <td><span className="badge-active bg-transparent">Very High</span></td>
@@ -68,7 +68,7 @@ const Services = () => {
                   <td>General browsing, bypassing strict firewalls</td>
                 </tr>
                 <tr>
-                  <td><span className="fw-bold text-white"><i className="fa-solid fa-shield-halved text-blue me-2" style={{ color: 'var(--accent-blue)' }}></i>VLESS (XTLS)</span></td>
+                  <td><span className="fw-bold text-white"><i className="fa-solid fa-shield-halved text-brand-glow me-2"></i>VLESS (XTLS)</span></td>
                   <td><span className="badge-active bg-transparent">Blazing Fast</span></td>
                   <td>Very High</td>
                   <td>High</td>
@@ -76,7 +76,7 @@ const Services = () => {
                   <td>Gaming, 4K Streaming</td>
                 </tr>
                 <tr>
-                  <td><span className="fw-bold text-white"><i className="fa-solid fa-horse text-purple me-2" style={{ color: 'var(--accent-purple)' }}></i>Trojan</span></td>
+                  <td><span className="fw-bold text-white"><i className="fa-solid fa-horse text-brand-primary me-2"></i>Trojan</span></td>
                   <td>Fast</td>
                   <td><span className="badge-active bg-transparent">Maximum</span></td>
                   <td>Excellent</td>
@@ -84,7 +84,7 @@ const Services = () => {
                   <td>Maximum stealth, undetected traffic</td>
                 </tr>
                 <tr>
-                  <td><span className="fw-bold text-white"><i className="fa-solid fa-mask text-success me-2" style={{ color: 'var(--accent-green)' }}></i>Shadowsocks</span></td>
+                  <td><span className="fw-bold text-white"><i className="fa-solid fa-mask text-brand-glow me-2"></i>Shadowsocks</span></td>
                   <td>Fast</td>
                   <td>Good</td>
                   <td>Moderate</td>
@@ -104,20 +104,20 @@ const Services = () => {
           
           <div className="row g-4">
             <div className="col-12 col-md-6 reveal-on-scroll">
-              <GlassCard className="p-4 d-flex align-items-start gap-4 h-100">
-                <i className="fa-solid fa-gamepad fs-1" style={{ color: 'var(--accent-purple)' }}></i>
+              <GlassCard className="p-4 d-flex align-items-start gap-4 h-100 group hover:border-brand-primary/40 transition-all">
+                <i className="fa-solid fa-gamepad fs-1 text-brand-primary"></i>
                 <div>
                   <h5 className="text-white">Low-Latency Gaming</h5>
-                  <p className="text-secondary small mb-0">Our direct routing and premium bandwidth ensure stable, low-ping connections to gaming servers across Asia and Europe.</p>
+                  <p className="text-slate-500 text-sm mb-0">Our direct routing and premium bandwidth ensure stable, low-ping connections to gaming servers across Asia and Europe.</p>
                 </div>
               </GlassCard>
             </div>
             <div className="col-12 col-md-6 reveal-on-scroll" style={{ '--delay': '0.1s' }}>
-              <GlassCard className="p-4 d-flex align-items-start gap-4 h-100">
-                <i className="fa-solid fa-film fs-1 text-cyan" style={{ color: 'var(--accent-cyan)' }}></i>
+              <GlassCard className="p-4 d-flex align-items-start gap-4 h-100 group hover:border-brand-primary/40 transition-all">
+                <i className="fa-solid fa-film fs-1 text-brand-glow"></i>
                 <div>
                   <h5 className="text-white">4K Streaming</h5>
-                  <p className="text-secondary small mb-0">Unblock streaming platforms worldwide and watch in 4K without buffering thanks to our uncapped bandwidth.</p>
+                  <p className="text-slate-500 text-sm mb-0">Unblock streaming platforms worldwide and watch in 4K without buffering thanks to our uncapped bandwidth.</p>
                 </div>
               </GlassCard>
             </div>
@@ -131,18 +131,20 @@ const Services = () => {
               </GlassCard>
             </div>
             <div className="col-12 col-md-6 reveal-on-scroll" style={{ '--delay': '0.1s' }}>
-              <GlassCard className="p-4 d-flex align-items-start gap-4 h-100">
-                <i className="fa-solid fa-building fs-1 text-success" style={{ color: 'var(--accent-green)' }}></i>
+              <GlassCard className="p-4 d-flex align-items-start gap-4 h-100 group hover:border-brand-primary/40 transition-all">
+                <i className="fa-solid fa-building fs-1 text-brand-primary"></i>
                 <div>
                   <h5 className="text-white">Business Ready</h5>
-                  <p className="text-secondary small mb-0">Reliable connections for remote workers needing secure access to international resources and tools.</p>
+                  <p className="text-slate-500 text-sm mb-0">Reliable connections for remote workers needing secure access to international resources and tools.</p>
                 </div>
               </GlassCard>
             </div>
           </div>
           
           <div className="text-center mt-5 pt-4 reveal-on-scroll">
-            <Link to="/pricing" className="btn-gradient px-5 py-3 fs-5">Get Started Now</Link>
+            <Link to="/pricing" className="btn-premium px-8 py-4 text-base rounded-2xl shadow-[0_0_30px_rgba(255,106,0,0.3)] hover:shadow-[0_0_40px_rgba(255,106,0,0.5)]">
+              Get Started Now <i className="fa-solid fa-arrow-right ml-2"></i>
+            </Link>
           </div>
         </div>
       </section>

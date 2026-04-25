@@ -7,8 +7,8 @@ const LocationCard = ({ server, onClick }) => {
   const usagePercentage = Math.round((server.activeUsers / server.maxUsers) * 100) || 0;
 
   return (
-    <div className="reveal-on-scroll h-100" onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default' }}>
-      <GlassCard className="location-card h-100 d-flex flex-column">
+    <div className="reveal-on-scroll h-full" onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default' }}>
+      <GlassCard className="location-card glass-card h-full flex flex-col p-5 group transition-all duration-500 hover:border-brand-primary/40">
         <div className="location-card-top">
           <div className="d-flex align-items-center">
             <span className="location-flag">{server.flagEmoji || '🌐'}</span>
@@ -21,13 +21,13 @@ const LocationCard = ({ server, onClick }) => {
             <div className="d-flex align-items-center gap-2 mb-2">
               {server.isOnline ? (
                 <>
-                  <span className="text-white" style={{ fontSize: '0.8rem' }}>Online</span>
-                  <span className="online-dot"></span>
+                  <span className="text-white font-bold text-[10px] uppercase tracking-widest">Online</span>
+                  <span className="w-2 h-2 rounded-full bg-brand-primary shadow-[0_0_10px_rgba(255,106,0,0.8)] animate-pulse"></span>
                 </>
               ) : (
                 <>
-                  <span className="text-muted" style={{ fontSize: '0.8rem' }}>Offline</span>
-                  <span className="online-dot" style={{ background: 'var(--accent-red)', boxShadow: 'none' }}></span>
+                  <span className="text-slate-600 font-bold text-[10px] uppercase tracking-widest">Offline</span>
+                  <span className="w-2 h-2 rounded-full bg-slate-800"></span>
                 </>
               )}
             </div>
@@ -37,8 +37,8 @@ const LocationCard = ({ server, onClick }) => {
 
         <div className="location-stats">
           <div className="d-flex align-items-center gap-1">
-            <i className="fa-solid fa-bolt text-warning"></i> 
-            <span>{server.latencyMs}ms</span>
+            <i className="fa-solid fa-bolt text-brand-primary"></i> 
+            <span className="text-white/80 font-bold">{server.latencyMs}ms</span>
           </div>
           <div className="d-flex align-items-center gap-1 ms-auto">
             <i className="fa-solid fa-users text-muted"></i>
@@ -48,13 +48,10 @@ const LocationCard = ({ server, onClick }) => {
           </div>
         </div>
 
-        <div className="progress-track mt-auto mb-3" style={{ height: '6px' }}>
+        <div className="w-full h-1 bg-brand-bg rounded-full mt-auto mb-4 overflow-hidden">
           <div 
-            className="progress-fill" 
-            style={{ 
-              width: `${usagePercentage}%`, 
-              background: isFull ? 'var(--accent-red)' : 'var(--gradient-btn)' 
-            }}
+            className="h-full bg-gradient-to-r from-brand-primary to-brand-glow transition-all duration-1000" 
+            style={{ width: `${usagePercentage}%` }}
           ></div>
         </div>
 

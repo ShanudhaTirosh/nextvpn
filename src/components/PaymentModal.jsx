@@ -17,14 +17,14 @@ const StepBar = ({ step }) => (
         <React.Fragment key={label}>
           <div className="flex flex-col items-center">
             <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
-              done ? 'bg-emerald-500 text-white shadow-[0_0_12px_rgba(16,185,129,0.5)]' : active ? 'bg-gradient-to-br from-cyan-400 to-blue-500 text-slate-950 shadow-[0_0_12px_rgba(6,182,212,0.5)]' : 'bg-slate-800 border border-slate-700 text-slate-500'
+              done ? 'bg-emerald-500 text-white shadow-[0_0_12px_rgba(16,185,129,0.5)]' : active ? 'bg-gradient-to-br from-brand-primary to-brand-glow text-black shadow-[0_0_12px_rgba(255,106,0,0.5)]' : 'bg-slate-800 border border-slate-700 text-slate-500'
             }`}>
               {done ? <i className="fa-solid fa-check text-[10px]"></i> : idx}
             </div>
-            <span className={`text-[10px] mt-1 font-medium ${active ? 'text-cyan-400' : done ? 'text-emerald-400' : 'text-slate-600'}`}>{label}</span>
+            <span className={`text-[10px] mt-1 font-medium ${active ? 'text-brand-primary' : done ? 'text-emerald-400' : 'text-slate-600'}`}>{label}</span>
           </div>
           {i < STEPS.length - 1 && (
-            <div className={`flex-1 h-px mx-1 mb-4 transition-colors ${step > idx ? 'bg-emerald-500' : step > i ? 'bg-cyan-500/50' : 'bg-slate-800'}`} />
+            <div className={`flex-1 h-px mx-1 mb-4 transition-colors ${step > idx ? 'bg-emerald-500' : step > i ? 'bg-brand-primary/50' : 'bg-slate-800'}`} />
           )}
         </React.Fragment>
       );
@@ -130,8 +130,8 @@ const PaymentModal = ({ show, onHide, packageData, siteSettings }) => {
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-slate-800 bg-slate-900/60">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center">
-              <i className="fa-solid fa-lock text-slate-950 text-xs"></i>
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-brand-primary to-brand-glow flex items-center justify-center">
+              <i className="fa-solid fa-lock text-black text-xs"></i>
             </div>
             <span className="font-bold text-white text-sm">Secure Checkout</span>
           </div>
@@ -149,12 +149,12 @@ const PaymentModal = ({ show, onHide, packageData, siteSettings }) => {
               <div className="text-center mb-5">
                 <p className="text-xs text-slate-500 uppercase tracking-widest mb-1">Total to pay</p>
                 <div className="text-4xl font-black text-white">LKR {packageData?.price?.toLocaleString()}</div>
-                <span className="inline-block mt-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-medium">{packageData?.name} Package</span>
+                <span className="inline-block mt-2 px-3 py-1 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-xs font-medium">{packageData?.name} Package</span>
               </div>
 
               <div className="flex flex-col gap-3 mb-5">
                 {paymentMethods.map(m => (
-                  <button key={m.id} onClick={() => setMethod(m.id)} className={`flex items-center gap-4 p-4 rounded-xl border text-left transition-all ${method === m.id ? 'border-cyan-500/50 bg-cyan-500/5 shadow-[0_0_20px_rgba(6,182,212,0.1)]' : 'border-slate-800 bg-slate-900/40 hover:border-slate-700'}`}>
+                  <button key={m.id} onClick={() => setMethod(m.id)} className={`flex items-center gap-4 p-4 rounded-xl border text-left transition-all ${method === m.id ? 'border-brand-primary/50 bg-brand-primary/5 shadow-[0_0_20px_rgba(255,106,0,0.1)]' : 'border-slate-800 bg-slate-900/40 hover:border-slate-700'}`}>
                     <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${m.color} flex items-center justify-center flex-shrink-0`}>
                       <i className={`fa-solid ${m.icon} text-white text-sm`}></i>
                     </div>
@@ -162,13 +162,13 @@ const PaymentModal = ({ show, onHide, packageData, siteSettings }) => {
                       <div className="font-semibold text-white text-sm">{m.name}</div>
                       <div className="text-[10px] text-slate-400 mt-0.5">{m.desc}</div>
                     </div>
-                    <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${method === m.id ? 'border-cyan-400 bg-cyan-400' : 'border-slate-600'}`}>
-                      {method === m.id && <div className="w-1.5 h-1.5 rounded-full bg-slate-950"></div>}
+                    <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${method === m.id ? 'border-brand-primary bg-brand-primary' : 'border-slate-600'}`}>
+                      {method === m.id && <div className="w-1.5 h-1.5 rounded-full bg-black"></div>}
                     </div>
                   </button>
                 ))}
               </div>
-              <button onClick={handleStep2} disabled={!method || checking} className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 font-bold text-sm hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all disabled:opacity-40 flex items-center justify-center gap-2">
+              <button onClick={handleStep2} disabled={!method || checking} className="w-full py-3 rounded-xl bg-gradient-to-r from-brand-primary to-brand-glow text-black font-black text-xs uppercase tracking-widest hover:shadow-[0_0_20px_rgba(255,106,0,0.4)] transition-all disabled:opacity-40 flex items-center justify-center gap-2">
                 {checking ? <><i className="fa-solid fa-spinner animate-spin"></i> Initializing...</> : <>Continue <i className="fa-solid fa-arrow-right"></i></>}
               </button>
             </div>
@@ -221,8 +221,8 @@ const PaymentModal = ({ show, onHide, packageData, siteSettings }) => {
                   <button onClick={() => setProofBase64('')} className="absolute top-2 right-2 w-7 h-7 rounded-full bg-slate-950/90 border border-slate-700 text-red-400 hover:text-red-300 flex items-center justify-center text-xs transition-colors"><i className="fa-solid fa-xmark"></i></button>
                 </div>
               ) : (
-                <label className="flex flex-col items-center justify-center gap-3 p-8 mb-4 rounded-xl border-2 border-dashed border-slate-700 hover:border-cyan-500/50 bg-slate-900/40 cursor-pointer transition-all group">
-                  <div className="w-10 h-10 rounded-2xl bg-slate-800 group-hover:bg-cyan-500/10 flex items-center justify-center transition-all"><i className="fa-solid fa-cloud-arrow-up text-slate-500 group-hover:text-cyan-400 text-lg transition-colors"></i></div>
+                <label className="flex flex-col items-center justify-center gap-3 p-8 mb-4 rounded-xl border-2 border-dashed border-slate-700 hover:border-brand-primary/50 bg-slate-900/40 cursor-pointer transition-all group">
+                  <div className="w-10 h-10 rounded-2xl bg-slate-800 group-hover:bg-brand-primary/10 flex items-center justify-center transition-all"><i className="fa-solid fa-cloud-arrow-up text-slate-500 group-hover:text-brand-primary text-lg transition-colors"></i></div>
                   <div className="text-center"><p className="text-white font-semibold text-sm">Upload receipt</p><p className="text-[10px] text-slate-500">JPG, PNG · Max 500KB</p></div>
                   <input type="file" className="hidden" accept="image/*" onChange={e => handleFileSelect(e.target.files[0])} />
                 </label>
@@ -230,7 +230,7 @@ const PaymentModal = ({ show, onHide, packageData, siteSettings }) => {
 
               <div className="flex gap-3">
                 <button onClick={() => setStep(1)} disabled={loading} className="flex-1 py-2.5 rounded-xl border border-slate-700 text-slate-400 hover:text-white text-sm font-semibold transition-all disabled:opacity-50">Back</button>
-                <button onClick={handleManualSubmit} disabled={!proofBase64 || loading} className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 font-bold text-sm hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all disabled:opacity-40">
+                <button onClick={handleManualSubmit} disabled={!proofBase64 || loading} className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-brand-primary to-brand-glow text-black font-black text-xs uppercase tracking-widest hover:shadow-[0_0_20px_rgba(255,106,0,0.4)] transition-all disabled:opacity-40">
                   {loading ? <i className="fa-solid fa-spinner animate-spin"></i> : 'Submit Proof'}
                 </button>
               </div>
@@ -246,7 +246,7 @@ const PaymentModal = ({ show, onHide, packageData, siteSettings }) => {
               <h3 className="text-xl font-black text-white mb-2">Payment Successful!</h3>
               <p className="text-sm text-slate-400 mb-1">Our admin will verify your manual payment and activate your plan within <span className="text-white font-semibold">2–24 hours</span>.</p>
               <p className="text-xs text-slate-600 mb-5">Reference: <span className="font-mono text-amber-400">{reference}</span></p>
-              <button onClick={handleClose} className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 font-bold text-sm hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all">
+              <button onClick={handleClose} className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-brand-primary to-brand-glow text-black font-black text-xs uppercase tracking-widest hover:shadow-[0_0_20px_rgba(255,106,0,0.4)] transition-all">
                 Back to Dashboard
               </button>
             </div>

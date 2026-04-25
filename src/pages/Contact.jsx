@@ -3,6 +3,7 @@ import { addDocument } from '../firebase/firestore';
 import { useAuth } from '../hooks/useAuth';
 import { useDocument } from '../hooks/useFirestore';
 import { showToast } from '../components/Toast';
+import { sendSupportNotification } from '../utils/notifications';
 
 const Inp = ({ label, children }) => (
   <div>
@@ -10,7 +11,7 @@ const Inp = ({ label, children }) => (
     {children}
   </div>
 );
-const inp = "w-full px-4 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700/70 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/20 transition-all text-sm disabled:opacity-50";
+const inp = "w-full px-4 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700/70 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-brand-primary/60 focus:ring-1 focus:ring-brand-primary/20 transition-all text-sm disabled:opacity-50";
 
 const ContactCard = ({ href, icon, iconClass, label, value, target }) => (
   <a href={href} target={target} rel={target ? "noreferrer" : undefined}
@@ -20,7 +21,7 @@ const ContactCard = ({ href, icon, iconClass, label, value, target }) => (
     </div>
     <div>
       <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-0.5">{label}</p>
-      <p className="text-white font-semibold text-sm group-hover:text-cyan-400 transition-colors">{value}</p>
+      <p className="text-white font-semibold text-sm group-hover:text-brand-primary transition-colors">{value}</p>
     </div>
   </a>
 );
@@ -40,6 +41,7 @@ const Contact = () => {
     setLoading(true);
     try {
       await addDocument('tickets', { ...form, uid: currentUser?.uid || 'guest', status: 'open' });
+      sendSupportNotification(form, config).catch(console.error);
       setSent(true);
     } catch { showToast.error('Failed to send. Please try again.'); }
     finally { setLoading(false); }
@@ -48,18 +50,18 @@ const Contact = () => {
   return (
     <div className="min-h-screen bg-[#020617]">
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/4 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-blue-600/4 rounded-full blur-3xl" />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-primary/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-brand-glow/10 rounded-full blur-3xl" />
       </div>
 
       <div className="relative max-w-6xl mx-auto px-6 py-16">
         {/* Header */}
         <div className="text-center mb-14">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold mb-5">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-xs font-semibold mb-5">
             <i className="fa-solid fa-headset text-[10px]"></i> 24/7 Support
           </div>
           <h1 className="text-4xl font-black text-white mb-3">
-            We're Here to <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">Help</span>
+            We're Here to <span className="bg-gradient-to-r from-brand-primary to-brand-glow bg-clip-text text-transparent">Help</span>
           </h1>
           <p className="text-slate-500 text-sm max-w-md mx-auto">Have a question or need technical support? Reach out and our team will get back to you fast.</p>
         </div>
@@ -95,7 +97,7 @@ const Contact = () => {
                   <Inp label="Message">
                     <textarea className={`${inp} min-h-[130px] resize-none`} value={form.message} onChange={e => set('message', e.target.value)} placeholder="How can we help you?" disabled={loading} />
                   </Inp>
-                  <button type="submit" disabled={loading} className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 font-bold text-sm hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all disabled:opacity-50 flex items-center justify-center gap-2">
+                  <button type="submit" disabled={loading} className="w-full py-3 rounded-xl bg-gradient-to-r from-brand-primary to-brand-glow text-black font-bold text-sm hover:shadow-[0_0_20px_rgba(255,106,0,0.4)] transition-all disabled:opacity-50 flex items-center justify-center gap-2">
                     {loading ? <i className="fa-solid fa-spinner animate-spin"></i> : <><i className="fa-solid fa-paper-plane"></i> Send Message</>}
                   </button>
                 </form>
@@ -105,13 +107,13 @@ const Contact = () => {
 
           {/* Contact info */}
           <div className="lg:col-span-2 flex flex-col gap-4">
-            <ContactCard href={`mailto:${config?.contactEmail || 'support@shiftlk.net'}`} icon="envelope" iconClass="bg-cyan-500/10 border border-cyan-500/20 text-cyan-400" label="Email Us" value={config?.contactEmail || 'support@shiftlk.net'} />
+            <ContactCard href={`mailto:${config?.contactEmail || 'skg.kenjigaming@gmail.com'}`} icon="envelope" iconClass="bg-brand-primary/10 border border-brand-primary/20 text-brand-primary" label="Email Us" value={config?.contactEmail || 'skg.kenjigaming@gmail.com'} />
             <ContactCard 
-              href={config?.socialLinks?.telegram || 'https://t.me/ShiftLK_Community'} 
+              href={config?.socialLinks?.telegram || 'https://t.me/shiftlk'} 
               icon="fa-brands fa-telegram" 
               iconClass="bg-blue-500/10 border border-blue-500/20 text-sky-400" 
               label="Telegram Group" 
-              value={config?.socialLinks?.telegram ? "@" + config.socialLinks.telegram.split('/').pop() : "@ShiftLK_Community"} 
+              value={config?.socialLinks?.telegram ? "@" + config.socialLinks.telegram.split('/').pop() : "@shiftlk"} 
               target="_blank" 
             />
             <ContactCard 
@@ -123,10 +125,10 @@ const Contact = () => {
               target="_blank" 
             />
 
-            <div className="rounded-2xl bg-gradient-to-br from-cyan-500/5 to-blue-500/5 border border-slate-800 p-5 mt-2">
+            <div className="rounded-2xl bg-gradient-to-br from-brand-primary/5 to-brand-glow/5 border border-slate-800 p-5 mt-2">
               <h3 className="text-sm font-bold text-white mb-3">Response Times</h3>
               <div className="space-y-2.5">
-                {[['Telegram / WhatsApp','< 1 hour','text-emerald-400'],['Email','< 24 hours','text-amber-400'],['HelaPay / eZcash', 'Auto-verified','text-cyan-400'],['Bank Transfer','2–24 hours','text-blue-400']].map(([ch, time, cls]) => (
+                {[['Telegram / WhatsApp','< 1 hour','text-emerald-400'],['Email','< 24 hours','text-amber-400'],['HelaPay / eZcash', 'Auto-verified','text-brand-primary'],['Bank Transfer','2–24 hours','text-blue-400']].map(([ch, time, cls]) => (
                   <div key={ch} className="flex items-center justify-between">
                     <span className="text-xs text-slate-400">{ch}</span>
                     <span className={`text-xs font-semibold ${cls}`}>{time}</span>

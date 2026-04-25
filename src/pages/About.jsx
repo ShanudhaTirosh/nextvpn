@@ -2,7 +2,7 @@ import React from 'react';
 import CounterStat from '../components/CounterStat';
 
 const VALUES = [
-  { icon:'fa-user-shield', color:'text-cyan-400', bg:'bg-cyan-500/10 border-cyan-500/20', title:'Absolute Privacy', desc:'A strict zero-logs policy. We never track, store, or share your data with anyone.' },
+  { icon:'fa-user-shield', color:'text-brand-primary', bg:'bg-brand-primary/10 border-brand-primary/20', title:'Absolute Privacy', desc:'A strict zero-logs policy. We never track, store, or share your data with anyone.' },
   { icon:'fa-gauge-high', color:'text-blue-400', bg:'bg-blue-500/10 border-blue-500/20', title:'Unmatched Speed', desc:'Premium routing and dedicated bandwidth for zero buffering and low latency.' },
   { icon:'fa-server', color:'text-purple-400', bg:'bg-purple-500/10 border-purple-500/20', title:'Reliability', desc:'Enterprise-grade servers with automated failover and proactive DDoS mitigation.' },
   { icon:'fa-headset', color:'text-emerald-400', bg:'bg-emerald-500/10 border-emerald-500/20', title:'24/7 Support', desc:'Real human support via Telegram and WhatsApp to assist you anytime.' },
@@ -18,17 +18,17 @@ const TIMELINE = [
 const About = () => (
   <div className="min-h-screen bg-[#020617]">
     <div className="fixed inset-0 pointer-events-none overflow-hidden">
-      <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-cyan-500/4 rounded-full blur-3xl" />
-      <div className="absolute bottom-1/3 left-1/4 w-80 h-80 bg-blue-600/4 rounded-full blur-3xl" />
+      <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-brand-primary/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-1/3 left-1/4 w-80 h-80 bg-brand-glow/10 rounded-full blur-3xl" />
     </div>
 
     {/* Hero */}
     <section className="relative max-w-6xl mx-auto px-6 py-20 text-center">
-      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold mb-6">
+      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-xs font-semibold mb-6">
         <i className="fa-solid fa-globe text-[10px]"></i> Our Story
       </div>
       <h1 className="text-5xl font-black text-white mb-4 leading-tight">
-        About <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">ShiftLK Netch</span>
+        About <span className="bg-gradient-to-r from-brand-primary to-brand-glow bg-clip-text text-transparent">ShiftLK Netch</span>
       </h1>
       <p className="text-slate-400 max-w-xl mx-auto text-base leading-relaxed">
         We're on a mission to provide unrestricted, lightning-fast internet access to users across Sri Lanka and Asia.
@@ -39,7 +39,7 @@ const About = () => (
     <section className="max-w-6xl mx-auto px-6 pb-16">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { end:50, suffix:'+', label:'Users Served', color:'from-cyan-500/10', border:'border-cyan-500/20', text:'text-cyan-400' },
+          { end:50, suffix:'+', label:'Users Served', color:'from-brand-primary/10', border:'border-brand-primary/20', text:'text-brand-primary' },
           { end:5, suffix:'+', label:'Global Servers', color:'from-blue-500/10', border:'border-blue-500/20', text:'text-blue-400' },
           { end:3, suffix:'+', label:'Countries', color:'from-purple-500/10', border:'border-purple-500/20', text:'text-purple-400' },
           { end:99.9, suffix:'%', label:'Uptime Record', color:'from-emerald-500/10', border:'border-emerald-500/20', text:'text-emerald-400' },
@@ -85,11 +85,11 @@ const About = () => (
           {TIMELINE.map((item, i) => (
             <div key={item.year} className="flex gap-4">
               <div className="flex flex-col items-center">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 flex items-center justify-center flex-shrink-0 text-[10px] font-bold text-cyan-400">{item.year.replace('Now','★')}</div>
-                {i < TIMELINE.length - 1 && <div className="w-px flex-1 bg-gradient-to-b from-cyan-500/20 to-transparent mt-1"></div>}
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-brand-primary/20 to-brand-glow/20 border border-brand-primary/30 flex items-center justify-center flex-shrink-0 text-[10px] font-bold text-brand-primary">{item.year.replace('Now','★')}</div>
+                {i < TIMELINE.length - 1 && <div className="w-px flex-1 bg-gradient-to-b from-brand-primary/20 to-transparent mt-1"></div>}
               </div>
               <div className="pb-8">
-                <p className="text-xs text-cyan-400 font-semibold mb-0.5">{item.year}</p>
+                <p className="text-xs text-brand-primary font-semibold mb-0.5">{item.year}</p>
                 <h3 className="text-white font-bold text-sm mb-1">{item.title}</h3>
                 <p className="text-slate-500 text-xs leading-relaxed">{item.desc}</p>
               </div>

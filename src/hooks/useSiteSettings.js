@@ -15,6 +15,8 @@ export const useSiteSettings = () => {
     address: data?.address || '',
     footerText: data?.footerText || '',
     paymentDetails: data?.paymentDetails || {},
+    notifications: data?.notifications || {},
+    xuiBaseUrl: data?.xuiBaseUrl || '',
   };
 
   return { settings, loading, error };

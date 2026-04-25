@@ -56,7 +56,7 @@ const Tutorials = () => {
               ))}
             </ol>
             
-            <a href={data.android.linkUrl} target="_blank" rel="noreferrer" className="btn-ghost d-inline-flex w-100 justify-content-center border-slate-700 text-white hover:border-cyan-500/50 hover:bg-cyan-500/5">
+            <a href={data.android.linkUrl} target="_blank" rel="noreferrer" className="btn-ghost d-inline-flex w-100 justify-content-center border-white/10 text-white hover:border-brand-primary/50 hover:bg-brand-primary/5 transition-all">
               {data.android.linkText}
             </a>
           </GlassCard>
@@ -76,7 +76,7 @@ const Tutorials = () => {
               ))}
             </ol>
             
-            <a href={data.ios.linkUrl} target="_blank" rel="noreferrer" className="btn-ghost d-inline-flex w-100 justify-content-center border-slate-700 text-white hover:border-cyan-500/50 hover:bg-cyan-500/5">
+            <a href={data.ios.linkUrl} target="_blank" rel="noreferrer" className="btn-ghost d-inline-flex w-100 justify-content-center border-white/10 text-white hover:border-brand-primary/50 hover:bg-brand-primary/5 transition-all">
               {data.ios.linkText}
             </a>
           </GlassCard>
@@ -86,7 +86,7 @@ const Tutorials = () => {
         <div className="col-12">
           <GlassCard className="p-4">
             <div className="d-flex align-items-center gap-3 mb-4">
-              <i className="fa-brands fa-windows fs-1 text-info"></i>
+              <i className="fa-brands fa-windows fs-1 text-brand-glow"></i>
               <h4 className="text-white mb-0">{data.windows.title}</h4>
             </div>
             
@@ -101,14 +101,14 @@ const Tutorials = () => {
               <div className="col-md-6">
                 <div className="bg-slate-950/40 rounded-xl p-3 border border-slate-800 h-100 d-flex flex-column">
                   <div>
-                    <h6 className="text-amber-400 mb-2 font-bold text-sm"><i className="fa-solid fa-triangle-exclamation me-2"></i> Important Note</h6>
+                    <h6 className="text-brand-primary mb-2 font-black text-xs uppercase tracking-widest"><i className="fa-solid fa-triangle-exclamation me-2"></i> Important Note</h6>
                     <p className="text-slate-500 text-xs mb-4 leading-relaxed">
                       {data.windows.note}
                     </p>
                   </div>
                   
                   {data.windows.linkUrl && (
-                    <a href={data.windows.linkUrl} target="_blank" rel="noreferrer" className="btn-ghost mt-auto d-inline-flex w-100 justify-content-center border-slate-700 text-white hover:border-cyan-500/50 hover:bg-cyan-500/5">
+                    <a href={data.windows.linkUrl} target="_blank" rel="noreferrer" className="btn-ghost mt-auto d-inline-flex w-100 justify-content-center border-white/10 text-white hover:border-brand-primary/50 hover:bg-brand-primary/5 transition-all">
                       {data.windows.linkText || 'Download App'}
                     </a>
                   )}

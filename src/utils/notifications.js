@@ -97,6 +97,74 @@ export const sendEmailNotification = async (paymentData) => {
 };
 
 /**
+ * Sends a notification for a new support ticket.
+ */
+export const sendSupportNotification = async (ticketData, config) => {
+  const url = config?.notifications?.supportWebhook;
+  if (!url) return;
+
+  const payload = {
+    content: "📩 **New Support Ticket Received!**",
+    embeds: [
+      {
+        title: `Subject: ${ticketData.subject}`,
+        color: 16753920, // Orange color
+        fields: [
+          { name: "User Name", value: ticketData.name || "Unknown", inline: true },
+          { name: "User Email", value: ticketData.email || "Unknown", inline: true },
+          { name: "Message", value: ticketData.message || "No message" }
+        ],
+        timestamp: new Date().toISOString(),
+      }
+    ]
+  };
+
+  try {
+    await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+  } catch (error) {
+    console.error('Support notification failed:', error);
+  }
+};
+
+/**
+ * Sends a notification for a new live chat message.
+ */
+export const sendChatNotification = async (chatData, config) => {
+  const url = config?.notifications?.chatWebhook;
+  if (!url) return;
+
+  const payload = {
+    content: "💬 **New Live Chat Message!**",
+    embeds: [
+      {
+        title: `From: ${chatData.userName || "User"}`,
+        color: 3447003, // Blue color
+        fields: [
+          { name: "Message", value: chatData.text || "No text" },
+          { name: "Email", value: chatData.userEmail || "Unknown", inline: true },
+          { name: "Chat ID", value: `\`${chatData.chatId}\``, inline: true }
+        ],
+        timestamp: new Date().toISOString(),
+      }
+    ]
+  };
+
+  try {
+    await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+  } catch (error) {
+    console.error('Chat notification failed:', error);
+  }
+};
+
+/**
  * Wrapper function to trigger all notifications for a new payment.
  */
 export const sendPaymentNotification = async (paymentData, config) => {

@@ -14,16 +14,18 @@ const PricingCard = ({ pkg, isLoggedIn, onSelect }) => {
   };
 
   return (
-    <GlassCard className={`pricing-card h-100 ${pkg.isRecommended ? 'recommended' : ''}`}>
+    <GlassCard className={`pricing-card h-100 ${pkg.isRecommended ? 'recommended' : ''} glass-card relative group`}>
       {pkg.isRecommended && (
-        <div className="pricing-badge">Most Popular</div>
+        <div className="absolute -top-3 right-8">
+          <span className="badge-orange shadow-[0_0_20px_rgba(255,106,0,0.3)]">Most Popular</span>
+        </div>
       )}
       
-      <div className="feature-icon-wrap mx-auto mt-2">
-        <i className={`fa-solid ${pkg.icon || 'fa-server'}`}></i>
+      <div className="w-12 h-12 rounded-2xl bg-brand-primary/10 border border-brand-primary/20 flex items-center justify-center mx-auto mt-2 group-hover:scale-110 transition-transform duration-500">
+        <i className={`fa-solid ${pkg.icon || 'fa-server'} text-brand-primary text-xl`}></i>
       </div>
       
-      <h3 className="pricing-name">{pkg.name}</h3>
+      <h3 className="text-xl font-black text-white mt-4 mb-1">{pkg.name}</h3>
       <div className="pricing-period mb-4 text-muted">Ideal for standard usage</div>
       
       <div className="pricing-price gradient-text">
@@ -47,10 +49,10 @@ const PricingCard = ({ pkg, isLoggedIn, onSelect }) => {
       </ul>
       
       <button 
-        className={`w-100 mt-auto ${pkg.isRecommended ? 'btn-gradient' : 'btn-ghost'}`}
+        className={`w-full mt-auto ${pkg.isRecommended ? 'btn-premium' : 'btn-outline'} text-sm`}
         onClick={handleAction}
       >
-        Get Started
+        Get Started Now
       </button>
     </GlassCard>
   );

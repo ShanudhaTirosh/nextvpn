@@ -17,7 +17,7 @@ const FeatureRow = ({ feature, index, onChange, onRemove }) => (
       value={feature.text}
       onChange={e => onChange(index, 'text', e.target.value)}
       placeholder="e.g. 3 Devices"
-      className="flex-1 px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-cyan-500/50 text-sm"
+      className="flex-1 px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-brand-primary/50 text-sm"
     />
     <select
       value={feature.included.toString()}
@@ -99,14 +99,14 @@ const Packages = () => {
             <h1 className="text-2xl font-bold text-white mb-1">Pricing Packages</h1>
             <p className="text-slate-500 text-sm">Manage subscription plans displayed on the website.</p>
           </div>
-          <button onClick={() => openModal()} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 font-bold text-sm hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all">
+          <button onClick={() => openModal()} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-brand-primary to-brand-glow text-brand-bg font-black text-xs uppercase tracking-widest hover:shadow-[0_0_20px_rgba(255,106,0,0.4)] transition-all">
             <i className="fa-solid fa-plus"></i> Add Package
           </button>
         </div>
 
         <div className="rounded-2xl bg-slate-900/60 border border-slate-700/50 overflow-hidden backdrop-blur-sm">
           {loading ? (
-            <div className="flex items-center justify-center py-16"><div className="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div></div>
+            <div className="flex items-center justify-center py-16"><div className="w-6 h-6 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div></div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -126,12 +126,12 @@ const Packages = () => {
                       <td className="px-4 py-3.5 text-slate-600 text-xs">{pkg.order}</td>
                       <td className="px-4 py-3.5">
                         <div className="flex items-center gap-2">
-                          <i className={`fa-solid ${pkg.icon} text-cyan-400`}></i>
+                          <i className={`fa-solid ${pkg.icon} text-brand-primary`}></i>
                           <span className="font-semibold text-white">{pkg.name}</span>
                           {pkg.isRecommended && <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs">Popular</span>}
                         </div>
                       </td>
-                      <td className="px-4 py-3.5 text-cyan-400 font-semibold">{pkg.price.toLocaleString()}</td>
+                      <td className="px-4 py-3.5 text-brand-primary font-bold">{pkg.price.toLocaleString()}</td>
                       <td className="px-4 py-3.5 text-slate-400 text-xs">{pkg.durationDays} days</td>
                       <td className="px-4 py-3.5">
                         {pkg.isVisible
@@ -141,7 +141,7 @@ const Packages = () => {
                       </td>
                       <td className="px-4 py-3.5 text-right">
                         <div className="flex items-center justify-end gap-2">
-                          <button onClick={() => openModal(pkg)} className="p-1.5 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20 transition-colors text-xs"><i className="fa-solid fa-pen"></i></button>
+                          <button onClick={() => openModal(pkg)} className="p-1.5 rounded-lg bg-brand-primary/10 text-brand-primary border border-brand-primary/20 hover:bg-brand-primary/20 transition-colors text-xs"><i className="fa-solid fa-pen"></i></button>
                           <button onClick={() => handleDelete(pkg.id, pkg.name)} className="p-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors text-xs"><i className="fa-solid fa-trash"></i></button>
                         </div>
                       </td>
@@ -168,31 +168,31 @@ const Packages = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="col-span-2 md:col-span-1">
                     <label className="block text-xs font-semibold text-slate-400 mb-1.5">Package Name</label>
-                    <input type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-3 py-2.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 focus:outline-none focus:border-cyan-500/50 text-sm" placeholder="e.g. Starter" />
+                    <input type="text" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full px-3 py-2.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 focus:outline-none focus:border-brand-primary/50 text-sm" placeholder="e.g. Starter" />
                   </div>
                   <div>
                     <label className="block text-xs font-semibold text-slate-400 mb-1.5">Price (LKR)</label>
-                    <input type="number" required value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} className="w-full px-3 py-2.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 focus:outline-none focus:border-cyan-500/50 text-sm" />
+                    <input type="number" required value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} className="w-full px-3 py-2.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 focus:outline-none focus:border-brand-primary/50 text-sm" />
                   </div>
                   <div>
                     <label className="block text-xs font-semibold text-slate-400 mb-1.5">Duration (days)</label>
-                    <input type="number" required value={formData.durationDays} onChange={e => setFormData({...formData, durationDays: e.target.value})} className="w-full px-3 py-2.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 focus:outline-none focus:border-cyan-500/50 text-sm" />
+                    <input type="number" required value={formData.durationDays} onChange={e => setFormData({...formData, durationDays: e.target.value})} className="w-full px-3 py-2.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 focus:outline-none focus:border-brand-primary/50 text-sm" />
                   </div>
                   <div>
                     <label className="block text-xs font-semibold text-slate-400 mb-1.5">Icon (FA class)</label>
-                    <input type="text" required value={formData.icon} onChange={e => setFormData({...formData, icon: e.target.value})} className="w-full px-3 py-2.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 focus:outline-none focus:border-cyan-500/50 text-sm" placeholder="fa-rocket" />
+                    <input type="text" required value={formData.icon} onChange={e => setFormData({...formData, icon: e.target.value})} className="w-full px-3 py-2.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 focus:outline-none focus:border-brand-primary/50 text-sm" placeholder="fa-rocket" />
                   </div>
                   <div>
                     <label className="block text-xs font-semibold text-slate-400 mb-1.5">Display Order</label>
-                    <input type="number" required value={formData.order} onChange={e => setFormData({...formData, order: e.target.value})} className="w-full px-3 py-2.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 focus:outline-none focus:border-cyan-500/50 text-sm" />
+                    <input type="number" required value={formData.order} onChange={e => setFormData({...formData, order: e.target.value})} className="w-full px-3 py-2.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 focus:outline-none focus:border-brand-primary/50 text-sm" />
                   </div>
                   <div className="flex flex-col gap-2 justify-end pb-1.5">
                     <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" checked={formData.isRecommended} onChange={e => setFormData({...formData, isRecommended: e.target.checked})} className="w-4 h-4 rounded accent-cyan-500" />
+                      <input type="checkbox" checked={formData.isRecommended} onChange={e => setFormData({...formData, isRecommended: e.target.checked})} className="w-4 h-4 rounded accent-brand-primary" />
                       <span className="text-sm text-amber-400 font-semibold">Mark as Popular</span>
                     </label>
                     <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" checked={formData.isVisible} onChange={e => setFormData({...formData, isVisible: e.target.checked})} className="w-4 h-4 rounded accent-cyan-500" />
+                      <input type="checkbox" checked={formData.isVisible} onChange={e => setFormData({...formData, isVisible: e.target.checked})} className="w-4 h-4 rounded accent-brand-primary" />
                       <span className="text-sm text-emerald-400 font-semibold">Visible on Website</span>
                     </label>
                   </div>
@@ -201,7 +201,7 @@ const Packages = () => {
                 <div>
                   <div className="flex items-center justify-between mb-3 border-t border-slate-800 pt-5">
                     <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Features List</label>
-                    <button type="button" onClick={() => setFormData({...formData, features: [...formData.features, {text: '', included: true}]})} className="px-3 py-1.5 rounded-lg bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 text-xs font-semibold transition-colors">
+                    <button type="button" onClick={() => setFormData({...formData, features: [...formData.features, {text: '', included: true}]})} className="px-3 py-1.5 rounded-lg bg-brand-primary/10 text-brand-primary hover:bg-brand-primary/20 text-xs font-semibold transition-colors">
                       <i className="fa-solid fa-plus mr-1"></i>Add Feature
                     </button>
                   </div>
@@ -214,7 +214,7 @@ const Packages = () => {
 
               <div className="flex gap-3 p-5 border-t border-slate-800 bg-slate-900/60 flex-shrink-0">
                 <button type="button" onClick={closeModal} className="flex-1 py-2.5 rounded-xl border border-slate-700 text-slate-400 hover:text-white hover:bg-slate-800 transition-all text-sm font-semibold">Cancel</button>
-                <button type="submit" disabled={isSaving} className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 font-bold text-sm hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all disabled:opacity-50">
+                <button type="submit" disabled={isSaving} className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-brand-primary to-brand-glow text-brand-bg font-black text-xs uppercase tracking-widest hover:shadow-[0_0_20px_rgba(255,106,0,0.4)] transition-all disabled:opacity-50">
                   {isSaving ? <i className="fa-solid fa-spinner animate-spin"></i> : 'Save Package'}
                 </button>
               </div>

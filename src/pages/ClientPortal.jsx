@@ -20,17 +20,17 @@ const ClientPortal = () => {
   ];
 
   return (
-    <div className="flex h-screen bg-slate-950 text-slate-300 overflow-hidden font-sans">
+    <div className="flex h-screen bg-[#0D0D0D] text-slate-300 overflow-hidden font-sans">
       {/* Sidebar */}
       <aside 
-        className={`fixed md:relative z-40 w-64 h-full bg-[#0d1117] border-r border-slate-800 flex flex-col transition-transform duration-300 ease-in-out ${
+        className={`fixed md:relative z-40 w-64 h-full bg-[#121212] border-r border-slate-800 flex flex-col transition-transform duration-300 ease-in-out ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         }`}
       >
         <div className="flex items-center justify-between p-4 border-b border-slate-800">
-          <Link to="/" className="flex items-center no-underline">
-            <i className="fa-solid fa-shield-halved text-2xl text-cyan-400 mr-2"></i>
-            <span className="font-bold text-white text-xl">ShiftLK <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">Netch</span></span>
+          <Link to="/" className="flex items-center no-underline group">
+            <i className="fa-solid fa-shield-halved text-2xl text-brand-primary mr-2 shadow-[0_0_15px_rgba(255,106,0,0.4)]"></i>
+            <span className="font-black text-white text-xl tracking-tighter uppercase">ShiftLK <span className="bg-gradient-to-r from-brand-primary to-brand-glow bg-clip-text text-transparent">Netch</span></span>
           </Link>
           <button className="text-slate-400 hover:text-white md:hidden" onClick={() => setSidebarOpen(false)}>
             <i className="fa-solid fa-xmark text-2xl"></i>
@@ -46,7 +46,7 @@ const ClientPortal = () => {
             />
             <div className="overflow-hidden">
               <div className="text-white font-bold truncate text-sm">{userData?.displayName || 'User'}</div>
-              <div className="inline-block px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-xs font-medium mt-1 capitalize">
+              <div className="inline-block px-2 py-0.5 rounded-full bg-brand-primary/10 text-brand-primary border border-brand-primary/20 text-[10px] font-black uppercase tracking-wider mt-1">
                 {userData?.plan === 'none' || !userData?.plan ? 'Free User' : `${userData?.plan} Plan`}
               </div>
             </div>
@@ -64,8 +64,8 @@ const ClientPortal = () => {
                   to={item.path} 
                   className={`flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                     isActive 
-                      ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' 
-                      : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                      ? 'bg-brand-primary/10 text-brand-primary border border-brand-primary/20' 
+                      : 'text-slate-400 hover:bg-white/5 hover:text-white'
                   }`}
                   onClick={() => setSidebarOpen(false)}
                 >
@@ -80,23 +80,23 @@ const ClientPortal = () => {
             <Link to="/contact" className="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition-all" onClick={() => setSidebarOpen(false)}>
               <i className="fa-solid fa-headset w-6"></i> Contact Support
             </Link>
-            <a href="https://t.me/ShiftLK_Community" target="_blank" rel="noreferrer" className="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition-all">
+            <a href="https://t.me/shiftlk" target="_blank" rel="noreferrer" className="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition-all">
               <i className="fa-brands fa-telegram w-6 text-blue-400"></i> Telegram Group
             </a>
           </div>
         </nav>
 
-        <div className="p-4 mt-auto border-t border-slate-800">
-          <button className="w-full flex justify-center items-center py-2.5 px-4 rounded-lg border border-red-500/50 text-red-400 hover:bg-red-500/10 transition-colors font-medium text-sm" onClick={logOut}>
-            <i className="fa-solid fa-right-from-bracket mr-2"></i> Log Out
+        <div className="p-4 mt-auto border-t border-white/5">
+          <button className="w-full flex justify-center items-center py-3 px-4 rounded-xl border border-red-500/20 bg-red-500/10 text-red-400 hover:text-red-300 hover:bg-red-500/20 hover:border-red-500/40 transition-all font-bold text-xs uppercase tracking-widest shadow-[0_0_15px_rgba(239,68,68,0.05)]" onClick={logOut}>
+            <i className="fa-solid fa-right-from-bracket mr-2 text-sm"></i> Log Out
           </button>
         </div>
       </aside>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 bg-[#020617] relative">
+      <div className="flex-1 flex flex-col min-w-0 bg-[#0D0D0D] relative">
         {/* Mobile Header */}
-        <div className="md:hidden flex items-center justify-between p-4 border-b border-slate-800 bg-[#0d1117] sticky top-0 z-30">
+        <div className="md:hidden flex items-center justify-between p-4 border-b border-slate-800 bg-[#121212] sticky top-0 z-30">
           <div className="flex items-center gap-3">
             <button className="text-slate-300 hover:text-white focus:outline-none" onClick={() => setSidebarOpen(true)}>
               <i className="fa-solid fa-bars text-xl"></i>

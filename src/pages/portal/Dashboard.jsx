@@ -3,9 +3,11 @@ import { useAuth } from '../../hooks/useAuth';
 import { useRealtimeCollection } from '../../hooks/useFirestore';
 import LocationCard from '../../components/LocationCard';
 import SkeletonLoader from '../../components/SkeletonLoader';
+import { formatBytes } from '../../utils/usageService';
+import { xuiGetMyStats } from '../../utils/xuiApi';
 
 const StatCard = ({ label, value, sub, icon, color }) => (
-  <div className={`relative overflow-hidden rounded-2xl bg-slate-900/60 border p-5 backdrop-blur-sm ${color.border}`}>
+  <div className={`glass-card relative overflow-hidden p-5 transition-all duration-500 hover:border-brand-primary/40 ${color.border}`}>
     <div className={`absolute inset-0 bg-gradient-to-br ${color.grad} opacity-30 pointer-events-none`} />
     <div className="relative">
       <div className="flex items-center justify-between mb-3">
@@ -21,6 +23,31 @@ const StatCard = ({ label, value, sub, icon, color }) => (
 const Dashboard = () => {
   const { userData } = useAuth();
   const { data: servers, loading } = useRealtimeCollection('servers', []);
+  const [usage, setUsage] = React.useState(null);
+
+  React.useEffect(() => {
+    let intervalId;
+
+    const fetchUsage = async () => {
+      if (!userData?.subscriptionId && !userData?.v2rayUuid) return;
+
+      try {
+        const response = await xuiGetMyStats();
+        if (response.success) {
+          setUsage(response);
+        }
+      } catch (err) {
+        console.error("Dashboard Usage Fetch Error:", err);
+      }
+    };
+
+    fetchUsage();
+    intervalId = setInterval(fetchUsage, 30000);
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [userData?.subscriptionId, userData?.v2rayUuid]);
 
   const isActive = userData?.isActive && userData?.plan !== 'none';
 
@@ -31,7 +58,6 @@ const Dashboard = () => {
   };
 
   const daysLeft = getDaysRemaining();
-  // We don't store max days, so we assume 30 for monthly and 365 for anything > 30
   const maxDays = userData?.planDurationDays || 30;
   const daysProgress = maxDays > 0 ? Math.min(100, Math.max(0, ((maxDays - daysLeft) / maxDays) * 100)) : 0;
 
@@ -43,8 +69,8 @@ const Dashboard = () => {
       </div>
 
       {!isActive && (
-        <div className="mb-6 p-4 rounded-2xl bg-red-500/5 border border-red-500/20 flex items-start gap-3">
-          <i className="fa-solid fa-circle-exclamation text-red-400 mt-0.5"></i>
+        <div className="mb-6 p-4 rounded-2xl bg-brand-primary/5 border border-brand-primary/20 flex items-start gap-3">
+          <i className="fa-solid fa-circle-exclamation text-brand-primary mt-0.5"></i>
           <div>
             <h3 className="font-semibold text-white text-sm">No Active Plan</h3>
             <p className="text-xs text-slate-500 mt-1">You don't have an active subscription. Purchase a plan under "My Plan" to access server configs.</p>
@@ -59,27 +85,55 @@ const Dashboard = () => {
           value={userData?.plan === 'none' || !userData?.plan ? 'Free' : userData.plan}
           sub={isActive ? 'Subscription active' : 'No active plan'}
           icon="fa-id-card"
-          color={{ border: 'border-cyan-500/20', grad: 'from-cyan-500/10 to-transparent', text: 'text-cyan-400' }}
+          color={{ border: 'border-brand-primary/20', grad: 'from-brand-primary/10 to-transparent', text: 'text-brand-primary' }}
         />
         <StatCard
           label="Days Remaining"
           value={`${daysLeft} days`}
           sub={
-            <div className="w-full h-1 bg-slate-800 rounded-full mt-2 overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full transition-all" style={{ width: `${daysProgress}%` }}></div>
+            <div className="w-full h-1 bg-brand-bg rounded-full mt-2 overflow-hidden">
+              <div className="h-full bg-gradient-to-r from-brand-primary to-brand-glow rounded-full transition-all" style={{ width: `${daysProgress}%` }}></div>
             </div>
           }
           icon="fa-calendar-days"
-          color={{ border: 'border-blue-500/20', grad: 'from-blue-500/10 to-transparent', text: 'text-blue-400' }}
+          color={{ border: 'border-brand-primary/20', grad: 'from-brand-primary/10 to-transparent', text: 'text-brand-primary' }}
         />
         <StatCard
           label="Data Usage"
-          value={`${userData?.dataUsageGB?.toFixed(2) || '0.00'} GB`}
-          sub={<span className="text-emerald-400"><i className="fa-solid fa-infinity mr-1"></i>Unlimited bandwidth</span>}
+          value={usage ? formatBytes(usage.used) : `${userData?.dataUsageGB?.toFixed(2) || '0.00'} GB`}
+          sub={usage ? (
+            <div className="mt-2 space-y-1">
+              <div className="flex justify-between text-[10px]">
+                <span className="text-slate-500">Total: {formatBytes(usage.total)}</span>
+                <span className="text-brand-primary font-bold">{Math.min(100, Math.round((usage.used / usage.total) * 100))}%</span>
+              </div>
+              <div className="w-full h-1 bg-brand-bg rounded-full overflow-hidden">
+                <div className="h-full bg-brand-primary rounded-full" style={{ width: `${Math.min(100, (usage.used / usage.total) * 100)}%` }}></div>
+              </div>
+            </div>
+          ) : <span className="text-brand-primary"><i className="fa-solid fa-infinity mr-1"></i>Unlimited bandwidth</span>}
           icon="fa-chart-area"
-          color={{ border: 'border-emerald-500/20', grad: 'from-emerald-500/10 to-transparent', text: 'text-emerald-400' }}
+          color={{ border: 'border-brand-primary/20', grad: 'from-brand-primary/10 to-transparent', text: 'text-brand-primary' }}
         />
       </div>
+
+      {usage && (
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8 animate-fade-in">
+          <div className="p-3 rounded-xl bg-brand-surface/40 border border-brand-primary/20 hover:bg-brand-surface/60 transition-colors cursor-default">
+            <div className="text-[10px] font-bold text-slate-500 uppercase mb-1 tracking-wider">Upload</div>
+            <div className="text-sm font-bold text-white">{formatBytes(usage.upload)}</div>
+          </div>
+          <div className="p-3 rounded-xl bg-brand-surface/40 border border-brand-primary/20 hover:bg-brand-surface/60 transition-colors cursor-default">
+            <div className="text-[10px] font-bold text-slate-500 uppercase mb-1 tracking-wider">Download</div>
+            <div className="text-sm font-bold text-white">{formatBytes(usage.download)}</div>
+          </div>
+          <div className="p-3 rounded-xl bg-brand-surface/40 border border-brand-primary/20 hover:bg-brand-surface/60 transition-colors cursor-default">
+            <div className="text-[10px] font-bold text-slate-500 uppercase mb-1 tracking-wider">Remaining</div>
+            <div className="text-sm font-bold text-brand-primary">{usage.total > 0 ? formatBytes(usage.total - usage.used) : 'Unlimited'}</div>
+          </div>
+
+        </div>
+      )}
 
       {/* Servers */}
       <div className="flex items-center justify-between mb-5">
@@ -93,7 +147,7 @@ const Dashboard = () => {
         </div>
       ) : !servers?.length ? (
         <div className="text-center py-16 rounded-2xl bg-slate-900/40 border border-slate-800">
-          <i className="fa-solid fa-server text-3xl text-slate-700 mb-3 block"></i>
+          <i className="fa-solid fa-server text-3xl text-brand-primary mb-3 block"></i>
           <p className="text-slate-600 text-sm">No servers available. Check back soon.</p>
         </div>
       ) : (

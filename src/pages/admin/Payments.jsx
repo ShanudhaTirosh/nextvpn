@@ -3,6 +3,7 @@ import { useRealtimeCollection } from '../../hooks/useFirestore';
 import { updateDocument, getDocument, deleteDocument } from '../../firebase/firestore';
 import { showToast } from '../../components/Toast';
 import { logActivity } from '../../hooks/useActivityLog';
+import { xuiAddClient } from '../../utils/xuiApi';
 
 const StatusBadge = ({ status }) => {
   const config = {
@@ -39,13 +40,35 @@ const Payments = () => {
           const currentExpiry = userDoc.subscriptionExpiry ? userDoc.subscriptionExpiry.toDate() : new Date();
           const newExpiry = new Date(Math.max(currentExpiry.getTime(), Date.now()));
           newExpiry.setDate(newExpiry.getDate() + Number(durationDays || 30));
-          await updateDocument('users', uid, {
+          let newSubId = null;
+
+          // Attempt to auto-provision in X-UI if enabled
+          try {
+            // We use inbound ID 1 as default for auto-provisioning. 
+            // In a more complex setup, you could map packages to inbounds.
+            const result = await xuiAddClient('1', userDoc.email, 0, newExpiry.getTime(), 0, true);
+            if (result && result.success && result.subId) {
+              newSubId = result.subId;
+              showToast.success('User auto-provisioned in X-UI.');
+            }
+          } catch (xuiErr) {
+            console.warn('X-UI Auto-provision skipped or failed:', xuiErr);
+            // Non-fatal error, continue with approval
+          }
+
+          const updateData = {
             plan: packageName.toLowerCase(),
             isActive: true,
             paymentStatus: 'paid',
             subscriptionExpiry: newExpiry,
             planDurationDays: Number(durationDays || 30),
-          });
+          };
+          if (newSubId) {
+            updateData.subscriptionId = newSubId;
+            updateData.inboundId = '1';
+          }
+
+          await updateDocument('users', uid, updateData);
         }
         await logActivity('payment', `Payment of LKR ${amount} for "${packageName}" approved for UID: ${uid?.slice(0,8)}...`, 'success');
         showToast.success('Payment approved and user plan activated!');
@@ -126,9 +149,9 @@ const Payments = () => {
                 <button
                   key={f}
                   onClick={() => setFilter(f)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize transition-all ${
+                  className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${
                     filter === f
-                      ? 'bg-cyan-500 text-slate-950'
+                      ? 'bg-brand-primary text-brand-bg shadow-[0_0_15px_rgba(255,106,0,0.3)]'
                       : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white border border-slate-700'
                   }`}
                 >
@@ -146,7 +169,7 @@ const Payments = () => {
         <div className="rounded-2xl bg-slate-900/60 border border-slate-700/50 overflow-hidden backdrop-blur-sm">
           {loading ? (
             <div className="flex items-center justify-center py-16">
-              <div className="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-6 h-6 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
             </div>
           ) : filteredPayments.length === 0 ? (
             <div className="text-center py-16 text-slate-600">
@@ -177,7 +200,7 @@ const Payments = () => {
                         <div className="text-white text-xs font-medium truncate max-w-[120px]" title={payment.userEmail}>{payment.userEmail || 'N/A'}</div>
                         <div className="text-[10px] text-slate-600 font-mono">{payment.uid?.slice(0, 8)}...</div>
                       </td>
-                      <td className="px-4 py-3.5 font-mono text-amber-400 text-xs">{payment.reference || '—'}</td>
+                      <td className="px-4 py-3.5 font-mono text-brand-glow text-xs">{payment.reference || '—'}</td>
                       <td className="px-4 py-3.5">
                         <div className="font-semibold text-white">{payment.packageName}</div>
                         <div className="text-xs text-slate-500">LKR {payment.amount}</div>
@@ -189,7 +212,7 @@ const Payments = () => {
                           {payment.proofBase64 && (
                             <button
                               onClick={() => setSelectedProof(payment.proofBase64)}
-                              className="p-1.5 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20 transition-colors text-xs"
+                              className="p-1.5 rounded-lg bg-brand-glow/10 text-brand-glow border border-brand-glow/20 hover:bg-brand-glow/20 transition-colors text-xs"
                               title="View Proof"
                             >
                               <i className="fa-solid fa-image"></i>

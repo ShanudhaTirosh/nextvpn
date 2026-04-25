@@ -28,7 +28,7 @@ const FAQ = () => {
   const catColors = { 
     Technical: 'text-indigo-400 bg-indigo-500/10 border-indigo-500/20', 
     Payments: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20', 
-    Plans: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20', 
+    Plans: 'text-brand-primary bg-brand-primary/10 border-brand-primary/20', 
     General: 'text-purple-400 bg-purple-500/10 border-purple-500/20' 
   };
 
@@ -36,20 +36,20 @@ const FAQ = () => {
     <div className="min-h-screen bg-[#020617]">
       {/* Glow orbs */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-cyan-500/3 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-blue-600/3 rounded-full blur-3xl" />
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-brand-primary/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-brand-glow/5 rounded-full blur-3xl" />
       </div>
 
       <div className="relative max-w-3xl mx-auto px-6 py-16">
         {/* Header */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold mb-5">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-xs font-semibold mb-5">
             <i className="fa-solid fa-circle-question text-[10px]"></i> Support Center
           </div>
           <h1 className="text-4xl font-black text-white mb-3">
-            Frequently Asked <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">Questions</span>
+            Frequently Asked <span className="bg-gradient-to-r from-brand-primary to-brand-glow bg-clip-text text-transparent">Questions</span>
           </h1>
-          <p className="text-slate-500 text-sm">Can't find what you're looking for? <a href="/contact" className="text-cyan-400 no-underline hover:underline">Contact us</a></p>
+          <p className="text-slate-500 text-sm">Can't find what you're looking for? <a href="/contact" className="text-brand-primary no-underline hover:underline">Contact us</a></p>
 
           {/* Search */}
           <div className="relative mt-6 max-w-md mx-auto">
@@ -59,7 +59,7 @@ const FAQ = () => {
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search questions..."
-              className="w-full pl-11 pr-4 py-3 rounded-2xl bg-slate-900/60 border border-slate-700/70 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/10 transition-all text-sm backdrop-blur-sm"
+              className="w-full pl-11 pr-4 py-3 rounded-2xl bg-slate-900/60 border border-slate-700/70 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-brand-primary/50 focus:ring-1 focus:ring-brand-primary/10 transition-all text-sm backdrop-blur-sm"
             />
           </div>
         </div>
@@ -72,7 +72,7 @@ const FAQ = () => {
               onClick={() => setCategory(c)}
               className={`px-4 py-1.5 rounded-full text-xs font-semibold border transition-all ${
                 category === c
-                  ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 border-transparent shadow-[0_0_12px_rgba(6,182,212,0.3)]'
+                  ? 'bg-gradient-to-r from-brand-primary to-brand-glow text-black border-transparent shadow-[0_0_12px_rgba(255,106,0,0.3)]'
                   : 'border-slate-700 text-slate-400 hover:border-slate-600 hover:text-white bg-slate-900/40'
               }`}
             >
@@ -95,7 +95,7 @@ const FAQ = () => {
               return (
                 <div
                   key={faq.id}
-                  className={`rounded-2xl border transition-all duration-300 overflow-hidden backdrop-blur-sm ${isOpen ? 'border-cyan-500/40 bg-slate-900/90 shadow-[0_0_30px_rgba(6,182,212,0.1)]' : 'border-slate-800 bg-slate-900/40 hover:border-slate-700'}`}
+                  className={`rounded-2xl border transition-all duration-300 overflow-hidden backdrop-blur-sm ${isOpen ? 'border-brand-primary/40 bg-slate-900/90 shadow-[0_0_30px_rgba(255,106,0,0.1)]' : 'border-slate-800 bg-slate-900/40 hover:border-slate-700'}`}
                 >
                   <button
                     onClick={() => setOpen(isOpen ? null : faq.id)}
@@ -105,7 +105,7 @@ const FAQ = () => {
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border flex-shrink-0 ${catCls}`}>{faq.category}</span>
                       <span className={`font-semibold text-sm ${isOpen ? 'text-white' : 'text-slate-300'}`}>{faq.question}</span>
                     </div>
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${isOpen ? 'bg-cyan-500 text-slate-950 shadow-[0_0_12px_rgba(6,182,212,0.4)]' : 'bg-slate-800 border border-slate-700'}`}>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${isOpen ? 'bg-brand-primary text-black shadow-[0_0_12px_rgba(255,106,0,0.4)]' : 'bg-slate-800 border border-slate-700'}`}>
                       <i className={`fa-solid fa-chevron-down text-[10px] transition-transform duration-300 ${isOpen ? 'rotate-180' : 'text-slate-500'}`}></i>
                     </div>
                   </button>
@@ -123,11 +123,11 @@ const FAQ = () => {
         )}
 
         {/* CTA */}
-        <div className="mt-12 text-center p-8 rounded-2xl bg-gradient-to-br from-cyan-500/5 to-blue-500/5 border border-slate-800">
-          <i className="fa-solid fa-headset text-cyan-400 text-2xl mb-3 block"></i>
+        <div className="mt-12 text-center p-8 rounded-2xl bg-gradient-to-br from-brand-primary/5 to-brand-glow/5 border border-slate-800">
+          <i className="fa-solid fa-headset text-brand-primary text-2xl mb-3 block"></i>
           <h3 className="text-white font-bold mb-2">Still have questions?</h3>
           <p className="text-slate-500 text-sm mb-4">Our support team is available 24/7 on Telegram and WhatsApp.</p>
-          <a href="/contact" className="no-underline inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 font-bold text-sm hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all">
+          <a href="/contact" className="no-underline inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-primary to-brand-glow text-black font-bold text-sm hover:shadow-[0_0_20px_rgba(255,106,0,0.4)] transition-all">
             <i className="fa-solid fa-paper-plane"></i> Contact Support
           </a>
         </div>

@@ -56,8 +56,8 @@ const MyPlan = () => {
       )}
 
       {/* Current Plan Card */}
-      <div className="mb-8 p-6 rounded-2xl bg-slate-900/60 border border-cyan-500/20 backdrop-blur-sm relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-blue-500/5 pointer-events-none" />
+      <div className="mb-8 p-6 rounded-2xl bg-slate-900/60 border border-brand-primary/20 backdrop-blur-sm relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 to-brand-glow/5 pointer-events-none" />
         <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <p className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Current Status</p>
@@ -71,14 +71,14 @@ const MyPlan = () => {
             {isActive && (
               <p className="text-sm text-slate-500">
                 Expires <span className="text-slate-300 font-medium">{userData.subscriptionExpiry?.toDate().toLocaleDateString()}</span>
-                <span className="ml-2 text-cyan-400">({daysLeft} days remaining)</span>
+                <span className="ml-2 text-brand-primary font-bold">({daysLeft} days remaining)</span>
               </p>
             )}
           </div>
           <div className="flex gap-3">
             <button
               onClick={() => document.getElementById('plans-section')?.scrollIntoView({behavior:'smooth'})}
-              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 font-bold text-sm hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all"
+              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-primary to-brand-glow text-brand-bg font-black text-xs uppercase tracking-widest hover:shadow-[0_0_20px_rgba(255,106,0,0.4)] transition-all"
             >
               <i className="fa-solid fa-arrow-up-right-dots mr-2"></i> Upgrade Plan
             </button>
@@ -96,7 +96,7 @@ const MyPlan = () => {
                 readOnly
                 value={userData.vpnConfig}
                 rows={6}
-                className="w-full p-4 rounded-xl bg-slate-950 border border-slate-800 text-cyan-400 font-mono text-xs focus:outline-none resize-none"
+                className="w-full p-4 rounded-xl bg-slate-950 border border-slate-800 text-brand-primary font-mono text-xs focus:outline-none resize-none"
               ></textarea>
               <button
                 onClick={() => {
@@ -122,7 +122,7 @@ const MyPlan = () => {
       <div id="plans-section">
         <h2 className="text-lg font-bold text-white mb-5">Available Packages</h2>
         {loading ? (
-          <div className="flex items-center justify-center py-12"><div className="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div></div>
+          <div className="flex items-center justify-center py-12"><div className="w-6 h-6 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div></div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
             {displayPackages.map(pkg => (
@@ -156,10 +156,10 @@ const MyPlan = () => {
                 {userPayments.slice(0, 10).map(p => {
                   const sc = statusConfig[p.status] || statusConfig.pending;
                   return (
-                    <tr key={p.id} className="hover:bg-slate-800/30 transition-colors">
+                    <tr key={p.id} className="hover:bg-white/5 transition-colors">
                       <td className="px-4 py-3.5 text-slate-500 text-xs">{p.createdAt?.toDate?.().toLocaleDateString() || '—'}</td>
-                      <td className="px-4 py-3.5 font-semibold text-white">{p.packageName}</td>
-                      <td className="px-4 py-3.5 text-cyan-400 font-semibold">LKR {p.amount}</td>
+                      <td className="px-4 py-3.5 font-bold text-white tracking-tight">{p.packageName}</td>
+                      <td className="px-4 py-3.5 text-brand-primary font-black">LKR {p.amount}</td>
                       <td className="px-4 py-3.5 text-slate-400 text-xs capitalize">{p.method}</td>
                       <td className="px-4 py-3.5">
                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${sc.cls}`}>

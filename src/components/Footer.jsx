@@ -6,7 +6,7 @@ const Footer = () => {
   const { settings } = useSiteSettings();
 
   return (
-    <footer className="footer-main">
+    <footer className="footer-main mt-16">
       <div className="footer-gradient-line"></div>
       
       <div className="container-main footer-content">
@@ -74,8 +74,18 @@ const Footer = () => {
       {/* Bottom Bar */}
       <div className="container-main">
         <div className="footer-bottom reveal-on-scroll">
-          <p>© {new Date().getFullYear()} {settings.siteName} · All rights reserved.</p>
-          <p>Made with <span className="text-danger">❤️</span> in Sri Lanka</p>
+          <p className="mb-0">© {new Date().getFullYear()} {settings.siteName} · All rights reserved.</p>
+          <p className="mb-0">
+            Design and Develop by{' '}
+            <a 
+              href="https://shanudhatirosh.github.io/" 
+              target="_blank" 
+              rel="noreferrer" 
+              className="text-brand-primary hover:text-brand-glow underline decoration-brand-primary/40 hover:decoration-brand-glow transition-all font-medium"
+            >
+              Shanudha Tirosh
+            </a>
+          </p>
         </div>
       </div>
     </footer>

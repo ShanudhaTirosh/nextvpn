@@ -13,7 +13,7 @@ import Testimonials from './admin/Testimonials';
 
 const AdminPanel = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { userData } = useAuth();
+  const { userData, logOut } = useAuth();
   const location = useLocation();
 
   const adminNav = [
@@ -29,17 +29,17 @@ const AdminPanel = () => {
   ];
 
   return (
-    <div className="flex h-screen bg-slate-950 text-slate-300 overflow-hidden font-sans">
+    <div className="flex h-screen bg-[#0D0D0D] text-slate-300 overflow-hidden font-sans">
       {/* Sidebar */}
       <aside 
-        className={`fixed md:relative z-40 w-64 h-full bg-[#0d1117] border-r border-amber-900/30 flex flex-col transition-transform duration-300 ease-in-out ${
+        className={`fixed md:relative z-40 w-64 h-full bg-[#121212] border-r border-white/5 flex flex-col transition-transform duration-300 ease-in-out ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         }`}
       >
-        <div className="flex items-center justify-between p-4 border-b border-amber-900/30">
-          <Link to="/" className="flex items-center no-underline">
-            <i className="fa-solid fa-crown text-2xl text-amber-500 mr-2"></i>
-            <span className="font-bold text-white text-xl">Admin <span className="bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">Panel</span></span>
+        <div className="flex items-center justify-between p-4 border-b border-white/5">
+          <Link to="/" className="flex items-center no-underline group">
+            <i className="fa-solid fa-crown text-2xl text-brand-primary mr-2 shadow-[0_0_15px_rgba(255,106,0,0.3)]"></i>
+            <span className="font-black text-white text-xl tracking-tighter uppercase">Admin <span className="bg-gradient-to-r from-brand-primary to-brand-glow bg-clip-text text-transparent">Panel</span></span>
           </Link>
           <button className="text-slate-400 hover:text-white md:hidden" onClick={() => setSidebarOpen(false)}>
             <i className="fa-solid fa-xmark text-2xl"></i>
@@ -47,15 +47,15 @@ const AdminPanel = () => {
         </div>
 
         <div className="px-4 py-4 mb-2">
-          <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center gap-3">
+          <div className="p-3 rounded-xl bg-brand-primary/10 border border-brand-primary/20 flex items-center gap-3">
             <img 
-              src={userData?.photoBase64 || 'https://placehold.co/40x40/121826/FFB020?text=A'}
+              src={userData?.photoBase64 || 'https://placehold.co/40x40/121826/FF6A00?text=A'}
               alt="Avatar" 
-              className="rounded-full w-10 h-10 object-cover border border-amber-500/50" 
+              className="rounded-full w-10 h-10 object-cover border border-brand-primary/30" 
             />
             <div className="overflow-hidden">
-              <div className="text-amber-400 font-bold truncate text-sm">{userData?.displayName || 'Admin'}</div>
-              <div className="inline-block px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-500 border border-amber-500/30 text-xs font-medium mt-1">
+              <div className="text-white font-bold truncate text-sm">{userData?.displayName || 'Admin'}</div>
+              <div className="inline-block px-2 py-0.5 rounded-full bg-brand-primary/10 text-brand-primary border border-brand-primary/20 text-[10px] font-black uppercase tracking-wider mt-1">
                 System Admin
               </div>
             </div>
@@ -73,8 +73,8 @@ const AdminPanel = () => {
                   to={item.path} 
                   className={`flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                     isActive 
-                      ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' 
-                      : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                      ? 'bg-brand-primary/10 text-brand-primary border border-brand-primary/20' 
+                      : 'text-slate-400 hover:bg-white/5 hover:text-white'
                   }`}
                   onClick={() => setSidebarOpen(false)}
                 >
@@ -86,25 +86,31 @@ const AdminPanel = () => {
 
           <div className="text-slate-500 text-xs uppercase font-bold tracking-wider mb-2 px-2 mt-6">System</div>
           <div className="flex flex-col gap-1">
-            <Link to="/portal/dashboard" className="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-cyan-400 hover:bg-slate-800 hover:text-white transition-all" onClick={() => setSidebarOpen(false)}>
+            <Link to="/portal/dashboard" className="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-brand-primary hover:bg-white/5 hover:text-white transition-all" onClick={() => setSidebarOpen(false)}>
               <i className="fa-solid fa-arrow-left w-6"></i> Client Portal
             </Link>
-            <Link to="/" className="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-cyan-400 hover:bg-slate-800 hover:text-white transition-all">
+            <Link to="/" className="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-brand-primary hover:bg-white/5 hover:text-white transition-all">
               <i className="fa-solid fa-globe w-6"></i> View Website
             </Link>
           </div>
         </nav>
+
+        <div className="p-4 mt-auto border-t border-white/5">
+          <button className="w-full flex justify-center items-center py-3 px-4 rounded-xl border border-red-500/20 bg-red-500/10 text-red-400 hover:text-red-300 hover:bg-red-500/20 hover:border-red-500/40 transition-all font-bold text-xs uppercase tracking-widest shadow-[0_0_15px_rgba(239,68,68,0.05)]" onClick={logOut}>
+            <i className="fa-solid fa-right-from-bracket mr-2 text-sm"></i> Log Out
+          </button>
+        </div>
       </aside>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 bg-[#020617] relative">
+      <div className="flex-1 flex flex-col min-w-0 bg-[#0D0D0D] relative">
         {/* Mobile Header */}
-        <div className="md:hidden flex items-center justify-between p-4 border-b border-amber-900/30 bg-[#0d1117] sticky top-0 z-30">
+        <div className="md:hidden flex items-center justify-between p-4 border-b border-white/5 bg-[#121212] sticky top-0 z-30">
           <div className="flex items-center gap-3">
             <button className="text-slate-300 hover:text-white focus:outline-none" onClick={() => setSidebarOpen(true)}>
               <i className="fa-solid fa-bars text-xl"></i>
             </button>
-            <span className="font-bold text-amber-400">Admin Console</span>
+            <span className="font-black text-brand-primary uppercase tracking-widest text-sm">Admin Console</span>
           </div>
         </div>
 

@@ -33,6 +33,11 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // ── Private Settings & Credentials ──
+    match /privateSettings/{document=**} {
+      allow read, write: if isAdmin();
+    }
+
     // ── Pricing Packages ──
     match /packages/{packageId} {
       // Anyone can see available packages

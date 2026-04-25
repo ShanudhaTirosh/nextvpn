@@ -32,40 +32,44 @@ const StayUpdatedBanner = () => {
     <section className="container-main py-5">
       {/* Announcement Banner */}
       {visibleAnnouncements.length > 0 && (
-        <div className="announcement-banner reveal-on-scroll">
-          <i className="fa-solid fa-bullhorn"></i>
+        <div className="glass-card mb-4 p-4 flex items-center gap-4 reveal-on-scroll border-brand-primary/20">
+          <div className="w-10 h-10 rounded-full bg-brand-primary/10 flex items-center justify-center text-brand-primary">
+            <i className="fa-solid fa-bullhorn"></i>
+          </div>
           <div>
-            <h5 className="mb-1 fw-bold text-white">{visibleAnnouncements[0].title}</h5>
-            <p className="mb-0 text-secondary small">{visibleAnnouncements[0].body}</p>
+            <h5 className="m-0 font-black text-white text-sm uppercase tracking-wider">{visibleAnnouncements[0].title}</h5>
+            <p className="m-0 text-slate-500 text-xs">{visibleAnnouncements[0].body}</p>
           </div>
         </div>
       )}
 
       {/* Subscribe Box */}
-      <div className="stay-updated reveal-on-scroll" style={{ '--delay': '0.1s' }}>
-        <div className="d-flex align-items-start gap-3">
-          <div className="feature-icon-wrap mb-0" style={{ width: '56px', height: '56px', flexShrink: 0 }}>
-            <i className="fa-solid fa-bell fs-4"></i>
+      <div className="glass-card p-6 reveal-on-scroll" style={{ '--delay': '0.1s' }}>
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-4 text-start">
+            <div className="w-12 h-12 rounded-2xl bg-brand-primary/10 border border-brand-primary/20 flex items-center justify-center text-brand-primary">
+              <i className="fa-solid fa-bell text-xl"></i>
+            </div>
+            <div>
+              <h3 className="text-xl font-black text-white mb-1">Stay in the Loop</h3>
+              <p className="text-slate-500 text-sm m-0">Get notified about new servers, protocol updates, and special offers.</p>
+            </div>
           </div>
-          <div>
-            <h3 className="mb-1 text-white fw-bold">Stay in the Loop</h3>
-            <p className="mb-0 text-secondary">Get notified about new servers, protocol updates, and special offers.</p>
-          </div>
+          
+          <form className="flex items-center gap-2 w-full md:w-auto" onSubmit={handleSubscribe}>
+            <input 
+              type="email" 
+              className="modern-input w-full md:w-64" 
+              placeholder="Enter your email" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={loading}
+            />
+            <button type="submit" className="btn-premium" disabled={loading}>
+              {loading ? <div className="spinner"></div> : 'Subscribe'}
+            </button>
+          </form>
         </div>
-        
-        <form className="stay-updated-form" onSubmit={handleSubscribe}>
-          <input 
-            type="email" 
-            className="form-input" 
-            placeholder="Enter your email address" 
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            disabled={loading}
-          />
-          <button type="submit" className="btn-gradient" disabled={loading}>
-            {loading ? <div className="spinner"></div> : 'Subscribe'}
-          </button>
-        </form>
       </div>
     </section>
   );

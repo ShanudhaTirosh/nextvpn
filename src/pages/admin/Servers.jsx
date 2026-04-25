@@ -26,7 +26,7 @@ const ServerCard = ({ server, onEdit, onDelete, onToggle }) => {
           </div>
         </div>
         <div className="flex gap-1.5">
-          <button onClick={() => onEdit(server)} className="p-1.5 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20 transition-colors text-xs"><i className="fa-solid fa-pen"></i></button>
+          <button onClick={() => onEdit(server)} className="p-1.5 rounded-lg bg-brand-primary/10 text-brand-primary border border-brand-primary/20 hover:bg-brand-primary/20 transition-colors text-xs"><i className="fa-solid fa-pen"></i></button>
           <button onClick={() => onToggle(server.id, server.isOnline)} className={`p-1.5 rounded-lg border text-xs transition-colors ${server.isOnline ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'}`}>
             <i className={`fa-solid ${server.isOnline ? 'fa-power-off' : 'fa-plug'}`}></i>
           </button>
@@ -35,7 +35,7 @@ const ServerCard = ({ server, onEdit, onDelete, onToggle }) => {
       </div>
 
       <div className="flex gap-2 flex-wrap">
-        <span className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-medium">{server.protocol}</span>
+        <span className="px-2 py-0.5 rounded-full bg-brand-glow/10 text-brand-glow border border-brand-glow/20 text-[10px] font-black uppercase tracking-widest">{server.protocol}</span>
         {server.isDDoSProtected && <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-medium"><i className="fa-solid fa-shield-halved mr-1"></i>Protected</span>}
         <span className={`px-2 py-0.5 rounded-full border text-xs font-medium ${server.isOnline ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' : 'bg-red-500/10 text-red-400 border-red-500/30'}`}>
           <span className={`inline-block w-1.5 h-1.5 rounded-full mr-1 ${server.isOnline ? 'bg-emerald-400' : 'bg-red-400'}`}></span>
@@ -46,8 +46,8 @@ const ServerCard = ({ server, onEdit, onDelete, onToggle }) => {
       {(server.features && server.features.length > 0) && (
         <div className="flex flex-wrap gap-1.5 mt-1">
           {Array.isArray(server.features) ? server.features.map((f, i) => (
-            <span key={i} className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-[10px]"><i className="fa-solid fa-check mr-1 text-cyan-500"></i>{f}</span>
-          )) : <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-[10px]"><i className="fa-solid fa-check mr-1 text-cyan-500"></i>{server.features}</span>}
+            <span key={i} className="px-2 py-0.5 rounded bg-white/5 text-slate-300 text-[10px]"><i className="fa-solid fa-check mr-1 text-brand-primary"></i>{f}</span>
+          )) : <span className="px-2 py-0.5 rounded bg-white/5 text-slate-300 text-[10px]"><i className="fa-solid fa-check mr-1 text-brand-primary"></i>{server.features}</span>}
         </div>
       )}
 
@@ -137,13 +137,13 @@ const Servers = () => {
             <h1 className="text-2xl font-bold text-white mb-1">Server Nodes</h1>
             <p className="text-slate-500 text-sm">Manage VPN and proxy infrastructure.</p>
           </div>
-          <button onClick={() => openModal()} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 font-bold text-sm hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all">
+          <button onClick={() => openModal()} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-brand-primary to-brand-glow text-brand-bg font-black text-xs uppercase tracking-widest hover:shadow-[0_0_20px_rgba(255,106,0,0.4)] transition-all">
             <i className="fa-solid fa-plus"></i> Add Server
           </button>
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center py-24"><div className="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div></div>
+          <div className="flex items-center justify-center py-24"><div className="w-6 h-6 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div></div>
         ) : !servers?.length ? (
           <div className="text-center py-24 text-slate-600"><i className="fa-solid fa-server text-4xl mb-4 block"></i><p>No servers configured yet.</p></div>
         ) : (
@@ -192,11 +192,11 @@ const Servers = () => {
                   
                   <div className="col-span-2 flex gap-6 pt-2">
                     <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" checked={formData.isOnline} onChange={e=>setFormData({...formData,isOnline:e.target.checked})} className="w-4 h-4 rounded accent-cyan-500" />
+                      <input type="checkbox" checked={formData.isOnline} onChange={e=>setFormData({...formData,isOnline:e.target.checked})} className="w-4 h-4 rounded accent-brand-primary" />
                       <span className="text-sm text-emerald-400 font-semibold">Server Online</span>
                     </label>
                     <label className="flex items-center gap-2 cursor-pointer">
-                      <input type="checkbox" checked={formData.isDDoSProtected} onChange={e=>setFormData({...formData,isDDoSProtected:e.target.checked})} className="w-4 h-4 rounded accent-cyan-500" />
+                      <input type="checkbox" checked={formData.isDDoSProtected} onChange={e=>setFormData({...formData,isDDoSProtected:e.target.checked})} className="w-4 h-4 rounded accent-brand-primary" />
                       <span className="text-sm text-amber-400 font-semibold">DDoS Protected</span>
                     </label>
                   </div>
@@ -205,7 +205,7 @@ const Servers = () => {
 
               <div className="flex gap-3 p-5 border-t border-slate-800 bg-slate-900/60 flex-shrink-0">
                 <button type="button" onClick={closeModal} className="flex-1 py-2.5 rounded-xl border border-slate-700 text-slate-400 hover:text-white hover:bg-slate-800 transition-all text-sm font-semibold">Cancel</button>
-                <button type="submit" disabled={isSaving} className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 font-bold text-sm hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all disabled:opacity-50">
+                <button type="submit" disabled={isSaving} className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-brand-primary to-brand-glow text-brand-bg font-black text-xs uppercase tracking-widest hover:shadow-[0_0_20px_rgba(255,106,0,0.4)] transition-all disabled:opacity-50">
                   {isSaving ? <i className="fa-solid fa-spinner animate-spin"></i> : 'Save Server'}
                 </button>
               </div>

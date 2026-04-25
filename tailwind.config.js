@@ -10,12 +10,16 @@ module.exports = {
     extend: {
       colors: {
         brand: {
-          bg:        '#020617',
-          surface:   '#0d1117',
-          card:      '#0f172a',
-          cardHover: '#111827',
-          border:    '#1e293b',
-          borderHi:  '#334155',
+          primary:   '#FF6A00',
+          hover:     '#FF7F1F',
+          active:    '#E65C00',
+          dark:      '#CC5200',
+          glow:      '#FF8C42',
+          bg:        '#0D0D0D',
+          surface:   '#121212',
+          panel:     '#1A1A1A',
+          border:    '#2A2A2A',
+          input:     '#333333',
         }
       }
     },

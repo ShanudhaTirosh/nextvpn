@@ -7,9 +7,11 @@ import {
   sendMessage, 
   markMessagesRead 
 } from '../firebase/chatService';
-
+import { useSiteSettings } from '../hooks/useSiteSettings';
+import { sendChatNotification } from '../utils/notifications';
 const ChatWidget = () => {
   const { currentUser, userData } = useAuth();
+  const { settings: config } = useSiteSettings();
   const [isOpen, setIsOpen] = useState(false);
   const [text, setText] = useState('');
   const [messages, setMessages] = useState([]);
@@ -60,9 +62,16 @@ const ChatWidget = () => {
       await sendMessage(currentUser.uid, {
         text: msgText,
         sender: 'client',
-        userName: userData?.displayName,
         userEmail: currentUser.email
       });
+
+      // Notify admin
+      sendChatNotification({
+        chatId: currentUser.uid,
+        userName: userData?.displayName || 'User',
+        userEmail: currentUser.email,
+        text: msgText
+      }, config).catch(console.error);
     } catch (err) {
       console.error('Failed to send message', err);
     }
@@ -103,14 +112,14 @@ const ChatWidget = () => {
       {isOpen && (
         <div className="w-80 sm:w-96 h-[400px] mb-4 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-fade-in">
           {/* Header */}
-          <div className="p-4 bg-gradient-to-r from-cyan-600 to-blue-600 flex items-center justify-between">
+          <div className="p-4 bg-gradient-to-r from-brand-primary to-brand-glow flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
                 <i className="fa-solid fa-headset text-white text-sm"></i>
               </div>
               <div>
                 <h3 className="font-bold text-white text-sm">Support Chat</h3>
-                <p className="text-[10px] text-cyan-100">We typically reply in a few minutes</p>
+                <p className="text-[10px] text-white/80">We typically reply in a few minutes</p>
               </div>
             </div>
             <button onClick={() => setIsOpen(false)} className="w-8 h-8 rounded-full hover:bg-white/20 flex items-center justify-center text-white transition-colors">
@@ -127,7 +136,7 @@ const ChatWidget = () => {
               const isMine = msg.sender === 'client';
               return (
                 <div key={msg.id} className={`flex flex-col max-w-[85%] ${isMine ? 'self-end' : 'self-start'}`}>
-                  <div className={`p-3 text-sm shadow-md break-words ${isMine ? 'bg-cyan-600 text-white rounded-2xl rounded-tr-sm' : 'bg-slate-800 text-slate-200 border border-slate-700 rounded-2xl rounded-tl-sm'}`}>
+                  <div className={`p-3 text-sm shadow-md break-words ${isMine ? 'bg-brand-primary text-black font-semibold rounded-2xl rounded-tr-sm' : 'bg-slate-800 text-slate-200 border border-slate-700 rounded-2xl rounded-tl-sm'}`}>
                     {renderMessageText(msg.text)}
                   </div>
                   <span className={`text-[9px] text-slate-500 mt-1 ${isMine ? 'text-right pr-1' : 'text-left pl-1'}`}>
@@ -146,12 +155,12 @@ const ChatWidget = () => {
               value={text}
               onChange={e => setText(e.target.value)}
               placeholder="Type your message..."
-              className="flex-1 bg-slate-800 border border-slate-700 rounded-full px-4 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
+              className="flex-1 bg-slate-800 border border-slate-700 rounded-full px-4 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-primary/50"
             />
             <button
               type="submit"
               disabled={!text.trim()}
-              className="w-10 h-10 rounded-full bg-cyan-600 text-white flex items-center justify-center disabled:opacity-50 disabled:bg-slate-700 hover:bg-cyan-500 transition-colors"
+              className="w-10 h-10 rounded-full bg-brand-primary text-black flex items-center justify-center disabled:opacity-50 disabled:bg-slate-700 hover:bg-brand-hover transition-colors shadow-[0_0_15px_rgba(255,106,0,0.3)]"
             >
               <i className="fa-solid fa-paper-plane text-sm"></i>
             </button>
@@ -162,7 +171,7 @@ const ChatWidget = () => {
       {/* Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-14 h-14 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-[0_0_20px_rgba(6,182,212,0.4)] flex items-center justify-center hover:scale-105 transition-transform relative"
+        className="w-14 h-14 rounded-full bg-gradient-to-r from-brand-primary to-brand-glow text-black shadow-[0_0_20px_rgba(255,106,0,0.4)] flex items-center justify-center hover:scale-105 transition-transform relative"
       >
         <i className={`fa-solid ${isOpen ? 'fa-xmark' : 'fa-comment-dots'} text-xl`}></i>
         {unreadCount > 0 && !isOpen && (

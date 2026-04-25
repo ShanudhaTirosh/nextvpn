@@ -8,7 +8,7 @@ const FormInput = ({ label, ...props }) => (
   <div>
     <label className="block text-xs font-semibold text-slate-400 mb-1.5">{label}</label>
     <input
-      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700/70 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/10 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700/70 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-brand-primary/50 focus:ring-1 focus:ring-brand-primary/10 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed"
       {...props}
     />
   </div>
@@ -95,15 +95,15 @@ const Profile = () => {
             <h2 className="text-base font-semibold text-white mb-5">Profile Photo</h2>
             <div className="flex items-center gap-5">
               <div className="relative flex-shrink-0">
-                <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-cyan-500/40 bg-slate-800">
+                <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-brand-primary/40 bg-slate-800">
                   {photoBase64
                     ? <img src={photoBase64} alt="Avatar" className="w-full h-full object-cover" />
-                    : <div className="w-full h-full flex items-center justify-center text-cyan-400 text-2xl font-black">{initials}</div>
+                    : <div className="w-full h-full flex items-center justify-center text-brand-primary text-2xl font-black">{initials}</div>
                   }
                 </div>
                 <label
                   htmlFor="avatar-upload"
-                  className={`absolute -bottom-2 -right-2 w-7 h-7 rounded-xl bg-cyan-500 text-slate-950 flex items-center justify-center cursor-pointer hover:bg-cyan-400 transition-colors shadow-lg shadow-cyan-500/30 ${avatarLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`absolute -bottom-2 -right-2 w-7 h-7 rounded-xl bg-brand-primary text-brand-bg flex items-center justify-center cursor-pointer hover:bg-brand-glow transition-colors shadow-lg shadow-brand-primary/30 ${avatarLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   {avatarLoading
                     ? <i className="fa-solid fa-spinner animate-spin text-xs"></i>
@@ -143,7 +143,7 @@ const Profile = () => {
                 <button
                   type="submit"
                   disabled={profileLoading}
-                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 font-bold text-sm hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all disabled:opacity-50 flex items-center gap-2"
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-brand-primary to-brand-glow text-brand-bg font-black text-xs uppercase tracking-widest hover:shadow-[0_0_20px_rgba(255,106,0,0.4)] transition-all disabled:opacity-50 flex items-center gap-2"
                 >
                   {profileLoading ? <i className="fa-solid fa-spinner animate-spin"></i> : <><i className="fa-solid fa-floppy-disk"></i> Save Changes</>}
                 </button>
@@ -154,9 +154,9 @@ const Profile = () => {
 
         {/* Right — Security */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="rounded-2xl bg-slate-900/60 border border-slate-700/50 p-6 backdrop-blur-sm">
+          <div className="rounded-2xl bg-slate-900/60 border border-white/5 p-6 backdrop-blur-sm">
             <h2 className="text-base font-semibold text-white mb-5 flex items-center gap-2">
-              <i className="fa-solid fa-shield-halved text-cyan-400"></i> Security
+              <i className="fa-solid fa-shield-halved text-brand-primary shadow-[0_0_10px_rgba(255,106,0,0.3)]"></i> Security
             </h2>
             <form onSubmit={handlePasswordSave} className="space-y-4">
               <FormInput

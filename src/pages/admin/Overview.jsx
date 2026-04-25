@@ -8,7 +8,7 @@ const SEVERITY_CONFIG = {
   success: { icon: 'fa-check', color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20' },
   warning: { icon: 'fa-clock', color: 'text-amber-400', bg: 'bg-amber-500/10', border: 'border-amber-500/20' },
   danger:  { icon: 'fa-triangle-exclamation', color: 'text-red-400', bg: 'bg-red-500/10', border: 'border-red-500/20' },
-  info:    { icon: 'fa-circle-info', color: 'text-cyan-400', bg: 'bg-cyan-500/10', border: 'border-cyan-500/20' },
+  info:    { icon: 'fa-circle-info', color: 'text-brand-primary', bg: 'bg-brand-primary/10', border: 'border-brand-primary/20' },
 };
 
 const StatCard = ({ label, value, icon, colorClass, sub }) => (
@@ -105,35 +105,35 @@ const Overview = () => {
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard label="Active Subscribers" value={activeUsers} icon="fa-users" colorClass="text-cyan-400" sub="Plans active now" />
-        <StatCard label="Pending Payments" value={pendingPayments} icon="fa-money-bill-wave" colorClass="text-amber-400" sub="Awaiting review" />
+        <StatCard label="Active Subscribers" value={activeUsers} icon="fa-users" colorClass="text-brand-primary" sub="Plans active now" />
+        <StatCard label="Pending Payments" value={pendingPayments} icon="fa-money-bill-wave" colorClass="text-brand-glow" sub="Awaiting review" />
         <StatCard label="Total Revenue" value={`LKR ${totalRevenue.toLocaleString()}`} icon="fa-sack-dollar" colorClass="text-emerald-400" sub="All approved" />
-        <StatCard label="Servers Online" value={`${onlineServers} / ${servers?.length || 0}`} icon="fa-server" colorClass="text-blue-400" sub="Node health" />
+        <StatCard label="Servers Online" value={`${onlineServers} / ${servers?.length || 0}`} icon="fa-server" colorClass="text-brand-primary" sub="Node health" />
       </div>
 
       {/* Auto-Verify Queue */}
       {verifyingPayments.length > 0 && (
-        <div className="mb-8 rounded-2xl bg-cyan-500/5 border border-cyan-500/20 overflow-hidden">
-          <div className="px-5 py-4 border-b border-cyan-500/20 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
-              <i className="fa-solid fa-bolt text-cyan-400 text-sm animate-pulse"></i>
+        <div className="mb-8 rounded-2xl bg-brand-primary/5 border border-brand-primary/20 overflow-hidden">
+          <div className="px-5 py-4 border-b border-brand-primary/20 flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-brand-primary/10 border border-brand-primary/20 flex items-center justify-center">
+              <i className="fa-solid fa-bolt text-brand-primary text-sm animate-pulse"></i>
             </div>
             <div>
               <h2 className="text-sm font-bold text-white">Auto-Verification Queue</h2>
               <p className="text-xs text-slate-500">{verifyingPayments.length} HelaPay / eZcash payment{verifyingPayments.length > 1 ? 's' : ''} awaiting verification</p>
             </div>
           </div>
-          <div className="divide-y divide-cyan-500/10">
+          <div className="divide-y divide-brand-primary/10">
             {verifyingPayments.map(p => (
               <div key={p.id} className="px-5 py-4 flex flex-col md:flex-row md:items-center justify-between gap-3">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center flex-shrink-0">
-                    <i className={`fa-solid ${p.method === 'helapay' ? 'fa-mobile-screen' : 'fa-wallet'} text-cyan-400 text-sm`}></i>
+                    <i className={`fa-solid ${p.method === 'helapay' ? 'fa-mobile-screen' : 'fa-wallet'} text-brand-primary text-sm`}></i>
                   </div>
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-semibold text-white text-sm">{p.packageName}</span>
-                      <span className="px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 text-xs capitalize">{p.method}</span>
+                      <span className="px-2 py-0.5 rounded-full bg-brand-primary/10 text-brand-primary border border-brand-primary/20 text-xs capitalize">{p.method}</span>
                     </div>
                     <div className="flex items-center gap-3 mt-1">
                       <span className="text-xs text-slate-500">LKR {p.amount}</span>
@@ -180,7 +180,7 @@ const Overview = () => {
         <div className="lg:col-span-3">
           <div className="rounded-2xl bg-slate-900/60 border border-slate-700/50 p-5 h-full">
             <h2 className="text-base font-semibold text-white mb-4 flex items-center gap-2">
-              <i className="fa-solid fa-bolt-lightning text-cyan-400"></i> Live Activity Feed
+              <i className="fa-solid fa-bolt-lightning text-brand-primary"></i> Live Activity Feed
             </h2>
             {logsLoading ? (
               <div className="flex items-center justify-center py-12">
@@ -216,7 +216,7 @@ const Overview = () => {
         <div className="lg:col-span-2">
           <div className="rounded-2xl bg-slate-900/60 border border-slate-700/50 p-5 h-full">
             <h2 className="text-base font-semibold text-white mb-4 flex items-center gap-2">
-              <i className="fa-solid fa-satellite-dish text-blue-400"></i> Node Status
+              <i className="fa-solid fa-satellite-dish text-brand-glow"></i> Node Status
             </h2>
             {!servers?.length ? (
               <p className="text-slate-600 text-sm text-center py-8">No servers configured.</p>

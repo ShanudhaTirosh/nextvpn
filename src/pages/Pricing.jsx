@@ -32,8 +32,8 @@ const Pricing = () => {
 
   return (
     <div className="pricing-page position-relative min-vh-100">
-      <div className="hero-blob hero-blob-cyan" style={{ top: '20%', left: '-10%' }}></div>
-      <div className="hero-blob hero-blob-purple" style={{ top: '50%', right: '-10%' }}></div>
+      <div className="hero-blob bg-brand-primary/10" style={{ top: '20%', left: '-10%', width: '40rem', height: '40rem', filter: 'blur(100px)' }}></div>
+      <div className="hero-blob bg-brand-glow/10" style={{ top: '50%', right: '-10%', width: '30rem', height: '30rem', filter: 'blur(100px)' }}></div>
 
       <section className="section-padding text-center position-relative z-1">
         <div className="container-main pt-5">
@@ -54,7 +54,7 @@ const Pricing = () => {
                 style={{ 
                   width: '24px', 
                   height: '24px', 
-                  background: 'var(--gradient-btn)', 
+                  background: 'var(--grad-premium)', 
                   transform: isYearly ? 'translateX(28px)' : 'translateX(0)',
                   transition: 'transform 0.3s ease',
                   boxShadow: 'none',

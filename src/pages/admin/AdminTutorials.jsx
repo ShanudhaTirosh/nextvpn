@@ -32,7 +32,7 @@ const F = ({ label, children }) => (
     {children}
   </div>
 );
-const inp = "w-full px-4 py-2.5 rounded-xl bg-slate-900/50 border border-slate-700 text-slate-200 focus:outline-none focus:border-cyan-500/50 text-sm";
+const inp = "w-full px-4 py-2.5 rounded-xl bg-slate-900/50 border border-slate-700 text-slate-200 focus:outline-none focus:border-brand-primary/50 text-sm";
 
 const AdminTutorials = () => {
   const { data: tutorialsData, loading } = useDocument('siteSettings', 'tutorials');
@@ -71,7 +71,7 @@ const AdminTutorials = () => {
   };
 
   if (loading) {
-    return <div className="flex justify-center py-24"><i className="fa-solid fa-spinner animate-spin text-cyan-500 text-2xl"></i></div>;
+    return <div className="flex justify-center py-24"><i className="fa-solid fa-spinner animate-spin text-brand-primary text-2xl"></i></div>;
   }
 
   return (
@@ -84,7 +84,7 @@ const AdminTutorials = () => {
         <button 
           onClick={handleSave} 
           disabled={isSaving}
-          className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 font-bold text-sm hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all disabled:opacity-50"
+          className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-brand-primary to-brand-glow text-black font-bold text-sm hover:shadow-[0_0_20px_rgba(255,106,0,0.4)] transition-all disabled:opacity-50"
         >
           {isSaving ? <i className="fa-solid fa-spinner animate-spin mr-2"></i> : <i className="fa-solid fa-floppy-disk mr-2"></i>}
           Save Changes
