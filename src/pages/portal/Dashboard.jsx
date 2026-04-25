@@ -5,6 +5,7 @@ import LocationCard from '../../components/LocationCard';
 import SkeletonLoader from '../../components/SkeletonLoader';
 import { formatBytes } from '../../utils/usageService';
 import { xuiGetMyStats } from '../../utils/xuiApi';
+import { toDate } from '../../firebase/firestore';
 
 const StatCard = ({ label, value, sub, icon, color }) => (
   <div className={`glass-card relative overflow-hidden p-5 transition-all duration-500 hover:border-brand-primary/40 ${color.border}`}>
@@ -53,7 +54,9 @@ const Dashboard = () => {
 
   const getDaysRemaining = () => {
     if (!userData?.subscriptionExpiry) return 0;
-    const diff = userData.subscriptionExpiry.toDate() - new Date();
+    const expiry = toDate(userData.subscriptionExpiry);
+    if (!expiry) return 0;
+    const diff = expiry - new Date();
     return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
   };
 

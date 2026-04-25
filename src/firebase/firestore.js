@@ -5,6 +5,21 @@ import {
 } from 'firebase/firestore';
 
 /* ── Generic Helpers ── */
+export const toDate = (timestamp) => {
+  if (!timestamp) return null;
+  // If it's already a Date object
+  if (timestamp instanceof Date) return timestamp;
+  // If it's a Firebase Timestamp object
+  if (typeof timestamp.toDate === 'function') return timestamp.toDate();
+  // If it's a plain object with {seconds, nanoseconds}
+  if (timestamp.seconds !== undefined) {
+    return new Date(timestamp.seconds * 1000 + (timestamp.nanoseconds || 0) / 1000000);
+  }
+  // If it's a string or number
+  const date = new Date(timestamp);
+  return isNaN(date.getTime()) ? null : date;
+};
+
 export const getDocument = async (col, id) => {
   const snap = await getDoc(doc(db, col, id));
   return snap.exists() ? { id: snap.id, ...snap.data() } : null;

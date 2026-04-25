@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useRealtimeCollection } from '../../hooks/useFirestore';
-import { updateDocument, getDocument, deleteDocument } from '../../firebase/firestore';
+import { updateDocument, getDocument, deleteDocument, toDate } from '../../firebase/firestore';
 import { showToast } from '../../components/Toast';
 import { logActivity } from '../../hooks/useActivityLog';
 import { xuiAddClient } from '../../utils/xuiApi';
@@ -28,7 +28,7 @@ const Payments = () => {
 
   const filteredPayments = [...(payments || [])]
     .filter(p => filter === 'all' || p.status === filter)
-    .sort((a, b) => (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0));
+    .sort((a, b) => (toDate(b.createdAt) || 0) - (toDate(a.createdAt) || 0));
 
   const handleAction = async (paymentId, status, uid, packageName, amount, durationDays) => {
     setProcessing(paymentId);
@@ -37,7 +37,7 @@ const Payments = () => {
       if (status === 'approved') {
         const userDoc = await getDocument('users', uid);
         if (userDoc) {
-          const currentExpiry = userDoc.subscriptionExpiry ? userDoc.subscriptionExpiry.toDate() : new Date();
+          const currentExpiry = toDate(userDoc.subscriptionExpiry) || new Date();
           const newExpiry = new Date(Math.max(currentExpiry.getTime(), Date.now()));
           newExpiry.setDate(newExpiry.getDate() + Number(durationDays || 30));
           let newSubId = null;
@@ -99,7 +99,7 @@ const Payments = () => {
     if (!month) return;
 
     const toDelete = (payments || []).filter(p => {
-      const d = p.createdAt?.toDate?.();
+      const d = toDate(p.createdAt);
       if (!d) return false;
       const mStr = d.toLocaleString('default', { month: 'long', year: 'numeric' });
       return mStr.toLowerCase() === month.toLowerCase();
@@ -194,7 +194,7 @@ const Payments = () => {
                   {filteredPayments.map(payment => (
                     <tr key={payment.id} className="hover:bg-slate-800/30 transition-colors">
                       <td className="px-4 py-3.5 text-slate-400 text-xs whitespace-nowrap">
-                        {payment.createdAt?.toDate?.().toLocaleString() || 'N/A'}
+                        {toDate(payment.createdAt)?.toLocaleString() || 'N/A'}
                       </td>
                       <td className="px-4 py-3.5">
                         <div className="text-white text-xs font-medium truncate max-w-[120px]" title={payment.userEmail}>{payment.userEmail || 'N/A'}</div>

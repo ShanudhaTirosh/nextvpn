@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect } from 'react';
 import { auth, db } from '../firebase/firebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, onSnapshot } from 'firebase/firestore';
+import { toDate } from '../firebase/firestore';
 
 export const AuthContext = createContext();
 
@@ -29,8 +30,8 @@ export const AuthProvider = ({ children }) => {
             
             // Automatic Expiry Check
             if (data.isActive && data.subscriptionExpiry) {
-              const expiryDate = data.subscriptionExpiry.toDate();
-              if (expiryDate < new Date()) {
+              const expiryDate = toDate(data.subscriptionExpiry);
+              if (expiryDate && expiryDate < new Date()) {
                 // Plan has expired!
                 data.isActive = false;
                 // Note: We don't update DB here to avoid loops, 

@@ -4,6 +4,7 @@ import { useRealtimeCollection, useDocument } from '../../hooks/useFirestore';
 import PricingCard from '../../components/PricingCard';
 import PaymentModal from '../../components/PaymentModal';
 import { showToast } from '../../components/Toast';
+import { toDate } from '../../firebase/firestore';
 
 const statusConfig = {
   approved: { cls: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30', icon: 'fa-check-circle', label: 'Paid' },
@@ -22,14 +23,16 @@ const MyPlan = () => {
 
   const userPayments = (payments || [])
     .filter(p => p.uid === userData?.uid)
-    .sort((a, b) => (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0));
+    .sort((a, b) => (toDate(b.createdAt) || 0) - (toDate(a.createdAt) || 0));
 
   const pendingPayment = userPayments.find(p => p.status === 'pending');
   const isActive = userData?.isActive && userData?.plan !== 'none';
 
   const getDaysRemaining = () => {
     if (!userData?.subscriptionExpiry) return 0;
-    const diff = userData.subscriptionExpiry.toDate() - new Date();
+    const expiry = toDate(userData.subscriptionExpiry);
+    if (!expiry) return 0;
+    const diff = expiry - new Date();
     return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
   };
 
@@ -70,7 +73,7 @@ const MyPlan = () => {
             </div>
             {isActive && (
               <p className="text-sm text-slate-500">
-                Expires <span className="text-slate-300 font-medium">{userData.subscriptionExpiry?.toDate().toLocaleDateString()}</span>
+                Expires <span className="text-slate-300 font-medium">{toDate(userData.subscriptionExpiry)?.toLocaleDateString()}</span>
                 <span className="ml-2 text-brand-primary font-bold">({daysLeft} days remaining)</span>
               </p>
             )}
@@ -157,7 +160,7 @@ const MyPlan = () => {
                   const sc = statusConfig[p.status] || statusConfig.pending;
                   return (
                     <tr key={p.id} className="hover:bg-white/5 transition-colors">
-                      <td className="px-4 py-3.5 text-slate-500 text-xs">{p.createdAt?.toDate?.().toLocaleDateString() || '—'}</td>
+                      <td className="px-4 py-3.5 text-slate-500 text-xs">{toDate(p.createdAt)?.toLocaleDateString() || '—'}</td>
                       <td className="px-4 py-3.5 font-bold text-white tracking-tight">{p.packageName}</td>
                       <td className="px-4 py-3.5 text-brand-primary font-black">LKR {p.amount}</td>
                       <td className="px-4 py-3.5 text-slate-400 text-xs capitalize">{p.method}</td>

@@ -405,7 +405,7 @@ const Home = () => {
               <div className="glass-card text-center p-4 h-100 group hover:border-brand-primary/40 transition-all">
                 <i className="fa-solid fa-building-columns fs-1 mb-3 text-brand-primary"></i>
                 <h5 className="text-white mb-3">Bank Transfer</h5>
-                <p className="text-slate-500 text-sm mb-0">Direct deposit to our Commercial Bank account.</p>
+                <p className="text-slate-500 text-sm mb-0">Direct deposit to our Bank accounts.</p>
               </div>
             </div>
           </div>

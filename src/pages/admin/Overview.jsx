@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useRealtimeCollection } from '../../hooks/useFirestore';
-import { updateDocument, getDocument } from '../../firebase/firestore';
+import { updateDocument, getDocument, toDate } from '../../firebase/firestore';
 import { showToast } from '../../components/Toast';
 import { logActivity } from '../../hooks/useActivityLog';
 
@@ -36,14 +36,14 @@ const Overview = () => {
   const onlineServers = servers?.filter(s => s.isOnline).length || 0;
 
   const recentLogs = [...(logs || [])].sort((a, b) => {
-    const aT = a.createdAt?.toDate?.() || 0;
-    const bT = b.createdAt?.toDate?.() || 0;
+    const aT = toDate(a.createdAt) || 0;
+    const bT = toDate(b.createdAt) || 0;
     return bT - aT;
   }).slice(0, 8);
 
   const formatTime = (ts) => {
-    if (!ts?.toDate) return 'just now';
-    const d = ts.toDate();
+    const d = toDate(ts);
+    if (!d) return 'just now';
     const diff = Math.floor((Date.now() - d.getTime()) / 1000);
     if (diff < 60) return `${diff}s ago`;
     if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
@@ -64,7 +64,7 @@ const Overview = () => {
       await updateDocument('payments', payment.id, { status: 'approved' });
       const userDoc = await getDocument('users', payment.uid);
       if (userDoc) {
-        const currentExpiry = userDoc.subscriptionExpiry ? userDoc.subscriptionExpiry.toDate() : new Date();
+        const currentExpiry = toDate(userDoc.subscriptionExpiry) || new Date();
         const newExpiry = new Date(Math.max(currentExpiry.getTime(), Date.now()));
         newExpiry.setDate(newExpiry.getDate() + Number(payment.durationDays || 30));
         await updateDocument('users', payment.uid, {
