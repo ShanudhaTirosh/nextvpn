@@ -20,10 +20,11 @@ const Footer = () => {
             </div>
             <p className="footer-tagline">{settings.footerText || 'Premium V2Ray VPN & proxy service built for speed, privacy, and zero restrictions.'}</p>
             <div className="footer-social">
-              {settings.socialLinks?.facebook && <a href={settings.socialLinks.facebook} target="_blank" rel="noreferrer"><i className="fa-brands fa-facebook"></i></a>}
               {settings.socialLinks?.telegram && <a href={settings.socialLinks.telegram} target="_blank" rel="noreferrer"><i className="fa-brands fa-telegram"></i></a>}
-              {settings.socialLinks?.instagram && <a href={settings.socialLinks.instagram} target="_blank" rel="noreferrer"><i className="fa-brands fa-instagram"></i></a>}
               {settings.socialLinks?.whatsapp && <a href={settings.socialLinks.whatsapp} target="_blank" rel="noreferrer"><i className="fa-brands fa-whatsapp"></i></a>}
+              {settings.socialLinks?.discord && <a href={settings.socialLinks.discord} target="_blank" rel="noreferrer"><i className="fa-brands fa-discord"></i></a>}
+              {settings.socialLinks?.youtube && <a href={settings.socialLinks.youtube} target="_blank" rel="noreferrer"><i className="fa-brands fa-youtube"></i></a>}
+              {settings.socialLinks?.tiktok && <a href={settings.socialLinks.tiktok} target="_blank" rel="noreferrer"><i className="fa-brands fa-tiktok"></i></a>}
             </div>
           </div>
 

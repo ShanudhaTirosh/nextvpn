@@ -5,6 +5,7 @@ import Dashboard from './portal/Dashboard';
 import MyPlan from './portal/MyPlan';
 import Profile from './portal/Profile';
 import Tutorials from './portal/Tutorials';
+import ChatWidget from '../components/ChatWidget';
 
 const ClientPortal = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -130,6 +131,9 @@ const ClientPortal = () => {
           onClick={() => setSidebarOpen(false)}
         ></div>
       )}
+
+      {/* Support Chat Widget */}
+      <ChatWidget />
     </div>
   );
 };

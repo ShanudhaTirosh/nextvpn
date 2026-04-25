@@ -184,6 +184,7 @@ const PaymentModal = ({ show, onHide, packageData, siteSettings }) => {
                 {method === 'bank' && (
                   <>
                     <div className="flex justify-between"><span className="text-sm text-slate-400">Bank</span><span className="text-white text-sm">{siteSettings?.paymentDetails?.bankAccount?.bank || 'Commercial Bank'}</span></div>
+                    <div className="flex justify-between"><span className="text-sm text-slate-400">Branch</span><span className="text-white text-sm">{siteSettings?.paymentDetails?.bankAccount?.branch || 'N/A'}</span></div>
                     <div className="flex justify-between"><span className="text-sm text-slate-400">Name</span><span className="text-white text-sm">{siteSettings?.paymentDetails?.bankAccount?.name || 'ShiftLK Solutions'}</span></div>
                     <div className="flex justify-between"><span className="text-sm text-slate-400">Account No.</span><span className="text-white font-bold">{siteSettings?.paymentDetails?.bankAccount?.number || '1234567890'}</span></div>
                   </>

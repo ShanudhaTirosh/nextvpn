@@ -3,6 +3,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useRealtimeCollection, useDocument } from '../../hooks/useFirestore';
 import PricingCard from '../../components/PricingCard';
 import PaymentModal from '../../components/PaymentModal';
+import { showToast } from '../../components/Toast';
 
 const statusConfig = {
   approved: { cls: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30', icon: 'fa-check-circle', label: 'Paid' },
@@ -84,6 +85,37 @@ const MyPlan = () => {
           </div>
         </div>
       </div>
+
+      {/* VPN Configuration Block */}
+      {userData?.plan && userData.plan !== 'none' && (
+        <div className="mb-8 p-6 rounded-2xl bg-slate-900/60 border border-slate-700/50 backdrop-blur-sm relative overflow-hidden">
+          <h2 className="text-lg font-bold text-white mb-3">Your VPN Configuration</h2>
+          {userData.vpnConfig ? (
+            <div className="relative">
+              <textarea
+                readOnly
+                value={userData.vpnConfig}
+                rows={6}
+                className="w-full p-4 rounded-xl bg-slate-950 border border-slate-800 text-cyan-400 font-mono text-xs focus:outline-none resize-none"
+              ></textarea>
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(userData.vpnConfig);
+                  showToast.success('Config copied to clipboard!');
+                }}
+                className="absolute top-3 right-3 p-2 rounded-lg bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors text-xs flex items-center gap-2"
+              >
+                <i className="fa-regular fa-copy"></i> Copy
+              </button>
+            </div>
+          ) : (
+            <div className="p-4 rounded-xl bg-slate-800/30 border border-slate-700/50 text-center">
+              <i className="fa-solid fa-hourglass-half text-amber-400 text-xl mb-2"></i>
+              <p className="text-slate-400 text-sm">Your VPN configuration is being generated and will appear here soon.</p>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Available Plans */}
       <div id="plans-section">

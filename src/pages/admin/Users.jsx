@@ -7,6 +7,7 @@ import { logActivity } from '../../hooks/useActivityLog';
 const Users = () => {
   const { data: users, loading } = useRealtimeCollection('users');
   const [searchTerm, setSearchTerm] = useState('');
+  const [configModal, setConfigModal] = useState({ show: false, user: null, config: '' });
 
   const filteredUsers = (users || []).filter(u =>
     (u.email?.toLowerCase().includes(searchTerm.toLowerCase())) ||
@@ -37,6 +38,17 @@ const Users = () => {
   const planColor = (plan) => {
     if (!plan || plan === 'none') return 'text-slate-500';
     return 'text-cyan-400';
+  };
+
+  const saveConfig = async () => {
+    try {
+      await updateDocument('users', configModal.user.id, { vpnConfig: configModal.config });
+      await logActivity('user', `VPN Config updated for user "${configModal.user.displayName || configModal.user.email}".`, 'success');
+      showToast.success('VPN Config saved successfully!');
+      setConfigModal({ show: false, user: null, config: '' });
+    } catch {
+      showToast.error('Failed to save config.');
+    }
   };
 
   return (
@@ -121,6 +133,13 @@ const Users = () => {
                     <td className="px-4 py-3.5 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <button
+                          onClick={() => setConfigModal({ show: true, user, config: user.vpnConfig || '' })}
+                          className="p-1.5 rounded-lg border text-xs transition-colors bg-blue-500/10 text-blue-400 border-blue-500/20 hover:bg-blue-500/20"
+                          title="Set VPN Config"
+                        >
+                          <i className="fa-solid fa-file-code"></i>
+                        </button>
+                        <button
                           onClick={() => toggleUserStatus(user)}
                           className={`p-1.5 rounded-lg border text-xs transition-colors ${user.isActive ? 'bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/20'}`}
                           title={user.isActive ? 'Deactivate' : 'Activate'}
@@ -143,6 +162,36 @@ const Users = () => {
           </div>
         )}
       </div>
+
+      {configModal.show && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md" onClick={() => setConfigModal({ show: false, user: null, config: '' })}>
+          <div className="w-full max-w-lg rounded-2xl bg-slate-900 border border-slate-700 shadow-2xl p-6" onClick={e => e.stopPropagation()}>
+            <h3 className="text-xl font-bold text-white mb-2">VPN Configuration</h3>
+            <p className="text-sm text-slate-400 mb-4">Set the VPN config details for <span className="font-semibold text-white">{configModal.user?.email}</span></p>
+            <textarea
+              value={configModal.config}
+              onChange={e => setConfigModal(prev => ({ ...prev, config: e.target.value }))}
+              rows={8}
+              className="w-full p-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-300 font-mono text-xs focus:border-cyan-500/50 focus:outline-none mb-4"
+              placeholder="Paste the VPN configuration text here..."
+            ></textarea>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setConfigModal({ show: false, user: null, config: '' })}
+                className="px-4 py-2 rounded-xl text-slate-400 hover:text-white border border-slate-700 hover:bg-slate-800 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={saveConfig}
+                className="px-4 py-2 rounded-xl bg-cyan-500 text-slate-950 font-bold hover:shadow-[0_0_15px_rgba(6,182,212,0.4)] transition-all"
+              >
+                Save Config
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

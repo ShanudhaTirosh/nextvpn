@@ -27,7 +27,7 @@ const Settings = () => {
     siteName: 'ShiftLK Netch',
     contactEmail: '', phone: '', address: '',
     socialLinks: { facebook: '', telegram: '', instagram: '', whatsapp: '' },
-    paymentDetails: { helaPay: '', eZcash: '', bankAccount: { bank: '', name: '', number: '' } },
+    paymentDetails: { helaPay: '', eZcash: '', bankAccount: { bank: '', branch: '', name: '', number: '' } },
     branding: { logoUrl: '', primaryColor: '#06b6d4' },
   });
   const [isSaving, setIsSaving] = useState(false);
@@ -108,10 +108,11 @@ const Settings = () => {
                 <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Social Links</p>
                 <div className="space-y-3">
                   {[
-                    { key: 'facebook', icon: 'fa-facebook', color: 'text-blue-500', ph: 'https://facebook.com/...' },
                     { key: 'telegram', icon: 'fa-telegram', color: 'text-sky-400', ph: 'https://t.me/...' },
-                    { key: 'instagram', icon: 'fa-instagram', color: 'text-pink-400', ph: 'https://instagram.com/...' },
                     { key: 'whatsapp', icon: 'fa-whatsapp', color: 'text-emerald-400', ph: 'https://wa.me/...' },
+                    { key: 'discord', icon: 'fa-discord', color: 'text-indigo-400', ph: 'https://discord.gg/...' },
+                    { key: 'youtube', icon: 'fa-youtube', color: 'text-red-500', ph: 'https://youtube.com/...' },
+                    { key: 'tiktok', icon: 'fa-tiktok', color: 'text-pink-400', ph: 'https://tiktok.com/...' },
                   ].map(s => (
                     <div key={s.key} className="flex gap-2">
                       <div className="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center flex-shrink-0">
@@ -141,6 +142,9 @@ const Settings = () => {
                 <p className="text-xs font-bold text-slate-400 flex items-center gap-2"><i className="fa-solid fa-building-columns text-purple-400"></i> Bank Transfer</p>
                 <Field label="Bank Name">
                   <input type="text" className={inp} value={formData.paymentDetails.bankAccount.bank} onChange={e => setDeep('paymentDetails', 'bankAccount', 'bank', e.target.value)} placeholder="Commercial Bank" />
+                </Field>
+                <Field label="Branch Name">
+                  <input type="text" className={inp} value={formData.paymentDetails.bankAccount.branch} onChange={e => setDeep('paymentDetails', 'bankAccount', 'branch', e.target.value)} placeholder="Colombo 07" />
                 </Field>
                 <Field label="Account Name">
                   <input type="text" className={inp} value={formData.paymentDetails.bankAccount.name} onChange={e => setDeep('paymentDetails', 'bankAccount', 'name', e.target.value)} placeholder="John Doe" />
