@@ -31,9 +31,18 @@ const callXuiApi = async (action, payload = {}) => {
       body: JSON.stringify({ action, payload })
     });
 
-    const data = await response.json();
+    const contentType = response.headers.get('content-type');
+    let data;
+    
+    if (contentType && contentType.includes('application/json')) {
+      data = await response.json();
+    } else {
+      const text = await response.text();
+      throw new Error(text || `Request failed with status ${response.status}`);
+    }
+
     if (!response.ok) {
-      throw new Error(data.error || 'VPS Proxy Request Failed');
+      throw new Error(data?.error || 'VPS Proxy Request Failed');
     }
 
     return data;
