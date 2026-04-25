@@ -8,16 +8,16 @@ import PaymentModal from '../components/PaymentModal';
 import CounterStat from '../components/CounterStat';
 import StayUpdatedBanner from '../components/StayUpdatedBanner';
 import { useAuth } from '../hooks/useAuth';
-import { useCollection, useDocument } from '../hooks/useFirestore';
+import { useRealtimeCollection, useDocument } from '../hooks/useFirestore';
 
 const Home = () => {
   const { currentUser } = useAuth();
   
   // Data fetching
   const { data: config } = useDocument('siteSettings', 'config');
-  const { data: servers } = useCollection('servers', []);
-  const { data: packages } = useCollection('packages', []);
-  const { data: testimonials } = useCollection('testimonials', []);
+  const { data: servers } = useRealtimeCollection('servers', []);
+  const { data: packages } = useRealtimeCollection('packages', []);
+  const { data: testimonials } = useRealtimeCollection('testimonials', []);
 
   // UI State
   const [showPayment, setShowPayment] = useState(false);

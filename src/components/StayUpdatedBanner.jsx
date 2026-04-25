@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { addDocument } from '../firebase/firestore';
 import { showToast } from './Toast';
-import { useCollection } from '../hooks/useFirestore';
+import { useRealtimeCollection } from '../hooks/useFirestore';
 
 const StayUpdatedBanner = () => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
-  const { data: announcements } = useCollection('announcements', []);
+  const { data: announcements } = useRealtimeCollection('announcements', []);
 
   const visibleAnnouncements = announcements?.filter(a => a.isVisible) || [];
 

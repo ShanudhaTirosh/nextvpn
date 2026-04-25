@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useCollection } from '../hooks/useFirestore';
+import { useRealtimeCollection } from '../hooks/useFirestore';
 
 const FALLBACK = [
   { id:'1', question:'What is V2Ray?', answer:'V2Ray is a powerful proxy platform designed to bypass strict network censorship. It provides better speed, security, and evasion capabilities than traditional VPNs like OpenVPN.', category:'Technical' },
@@ -14,7 +14,7 @@ const FAQ = () => {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
   const [open, setOpen] = useState(null);
-  const { data: faqs } = useCollection('faq', []);
+  const { data: faqs } = useRealtimeCollection('faq', []);
 
   const displayFaqs = faqs?.length > 0 ? faqs.sort((a, b) => a.order - b.order) : FALLBACK;
   const categories = ['All', ...new Set(displayFaqs.map(f => f.category))];

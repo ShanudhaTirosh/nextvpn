@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useCollection } from '../../hooks/useFirestore';
+import { useRealtimeCollection } from '../../hooks/useFirestore';
 import { updateDocument } from '../../firebase/firestore';
 import { showToast } from '../../components/Toast';
 import { logActivity } from '../../hooks/useActivityLog';
 
 const Users = () => {
-  const { data: users, loading } = useCollection('users');
+  const { data: users, loading } = useRealtimeCollection('users');
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredUsers = (users || []).filter(u =>

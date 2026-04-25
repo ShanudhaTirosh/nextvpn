@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useCollection } from '../../hooks/useFirestore';
+import { useRealtimeCollection } from '../../hooks/useFirestore';
 import { addDocument, updateDocument, deleteDocument } from '../../firebase/firestore';
 import { showToast } from '../../components/Toast';
 import { logActivity } from '../../hooks/useActivityLog';
@@ -69,7 +69,7 @@ const inp = "w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 te
 const sel = "w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 focus:outline-none text-sm";
 
 const Servers = () => {
-  const { data: servers, loading } = useCollection('servers');
+  const { data: servers, loading } = useRealtimeCollection('servers');
   const [showModal, setShowModal] = useState(false);
   const [editingServer, setEditingServer] = useState(null);
   const [formData, setFormData] = useState(INITIAL);

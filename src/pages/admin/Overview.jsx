@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useCollection } from '../../hooks/useFirestore';
+import { useRealtimeCollection } from '../../hooks/useFirestore';
 import { updateDocument, getDocument } from '../../firebase/firestore';
 import { showToast } from '../../components/Toast';
 import { logActivity } from '../../hooks/useActivityLog';
@@ -23,10 +23,10 @@ const StatCard = ({ label, value, icon, colorClass, sub }) => (
 );
 
 const Overview = () => {
-  const { data: users } = useCollection('users');
-  const { data: payments } = useCollection('payments');
-  const { data: servers } = useCollection('servers');
-  const { data: logs, loading: logsLoading } = useCollection('activity_logs');
+  const { data: users } = useRealtimeCollection('users');
+  const { data: payments } = useRealtimeCollection('payments');
+  const { data: servers } = useRealtimeCollection('servers');
+  const { data: logs, loading: logsLoading } = useRealtimeCollection('activity_logs');
   const [processing, setProcessing] = useState(null);
 
   const pendingPayments = payments?.filter(p => p.status === 'pending').length || 0;

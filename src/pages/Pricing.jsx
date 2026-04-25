@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PricingCard from '../components/PricingCard';
 import PaymentModal from '../components/PaymentModal';
 import { useAuth } from '../hooks/useAuth';
-import { useCollection, useDocument } from '../hooks/useFirestore';
+import { useRealtimeCollection, useDocument } from '../hooks/useFirestore';
 
 const Pricing = () => {
   const [isYearly, setIsYearly] = useState(false);
@@ -11,7 +11,7 @@ const Pricing = () => {
   
   const { currentUser } = useAuth();
   const { data: config } = useDocument('siteSettings', 'config');
-  const { data: packages, loading } = useCollection('packages', []);
+  const { data: packages, loading } = useRealtimeCollection('packages', []);
 
   const handleSelectPackage = (pkg) => {
     // If yearly, adjust the package data to pass to the modal

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useCollection } from '../../hooks/useFirestore';
+import { useRealtimeCollection } from '../../hooks/useFirestore';
 import { addDocument, updateDocument, deleteDocument } from '../../firebase/firestore';
 import { showToast } from '../../components/Toast';
 import { logActivity } from '../../hooks/useActivityLog';
@@ -34,7 +34,7 @@ const FeatureRow = ({ feature, index, onChange, onRemove }) => (
 );
 
 const Packages = () => {
-  const { data: packages, loading } = useCollection('packages');
+  const { data: packages, loading } = useRealtimeCollection('packages');
   const [showModal, setShowModal] = useState(false);
   const [editingPkg, setEditingPkg] = useState(null);
   const [formData, setFormData] = useState(INITIAL);

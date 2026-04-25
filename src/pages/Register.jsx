@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { registerWithEmail, signInWithGoogle } from '../firebase/auth';
 import { useAuth } from '../hooks/useAuth';
 import { showToast } from '../components/Toast';

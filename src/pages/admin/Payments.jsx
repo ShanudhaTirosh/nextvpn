@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useCollection } from '../../hooks/useFirestore';
+import { useRealtimeCollection } from '../../hooks/useFirestore';
 import { updateDocument, getDocument } from '../../firebase/firestore';
 import { showToast } from '../../components/Toast';
 import { logActivity } from '../../hooks/useActivityLog';
@@ -20,7 +20,7 @@ const StatusBadge = ({ status }) => {
 };
 
 const Payments = () => {
-  const { data: payments, loading } = useCollection('payments');
+  const { data: payments, loading } = useRealtimeCollection('payments');
   const [filter, setFilter] = useState('pending');
   const [selectedProof, setSelectedProof] = useState(null);
   const [processing, setProcessing] = useState(null);
