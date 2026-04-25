@@ -20,7 +20,6 @@ const Register = () => {
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
   const { currentUser } = useAuth();
 
   if (currentUser) { navigate('/portal/dashboard', { replace: true }); return null; }

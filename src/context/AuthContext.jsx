@@ -23,9 +23,23 @@ export const AuthProvider = ({ children }) => {
 
       if (user) {
         const docRef = doc(db, 'users', user.uid);
-        unsubscribeDoc = onSnapshot(docRef, (docSnap) => {
+        unsubscribeDoc = onSnapshot(docRef, async (docSnap) => {
           if (docSnap.exists()) {
-            setUserData({ id: docSnap.id, ...docSnap.data() });
+            const data = { id: docSnap.id, ...docSnap.data() };
+            
+            // Automatic Expiry Check
+            if (data.isActive && data.subscriptionExpiry) {
+              const expiryDate = data.subscriptionExpiry.toDate();
+              if (expiryDate < new Date()) {
+                // Plan has expired!
+                data.isActive = false;
+                // Note: We don't update DB here to avoid loops, 
+                // but the local state will show it as inactive immediately.
+                // The admin or a background function should clean up the DB.
+              }
+            }
+            
+            setUserData(data);
           } else {
             setUserData(null);
           }

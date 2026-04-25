@@ -66,13 +66,7 @@ const PaymentModal = ({ show, onHide, packageData, siteSettings }) => {
         where('uid', '==', currentUser.uid),
         where('packageId', '==', packageData.id),
       ]);
-      const hasPending = existing.some(p => p.status === 'pending' || p.status === 'verifying');
-      const hasApproved = existing.some(p => p.status === 'approved');
-      if (hasApproved) {
-        showToast.error('You already have an active subscription for this package.');
-        setChecking(false);
-        return;
-      }
+      const hasPending = existing.some(p => p.status === 'pending');
       if (hasPending) {
         showToast.error('You have a pending payment for this. Please wait for verification.');
         setChecking(false);
