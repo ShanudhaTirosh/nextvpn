@@ -88,13 +88,13 @@ const Home = () => {
               </h1>
               {/* Body */}
               <p className="text-slate-400 text-lg mb-8 max-w-md leading-relaxed">
-                Enterprise Web Hosting, Ultra-Fast VPS, Dedicated Servers,
-                Scalable Cloud &amp; Low-Latency Game Hosting — with 24/7 Expert Support.
+                High-Performance V2Ray &amp; Netch VPN Servers, Ultra-Low Latency Nodes,
+                Multi-Protocol Support &amp; Bypass-Ready Configs — with 24/7 Stable Uptime.
               </p>
               {/* Button row */}
               <div className="flex flex-wrap items-center gap-4 mb-10">
-                <Link to={currentUser ? "/portal/dashboard" : "/pricing"} className="text-decoration-none flex items-center gap-2 px-8 py-3.5 rounded-xl font-bold text-brand-bg bg-gradient-to-r from-brand-primary to-brand-glow hover:scale-105 transition-all duration-300 shadow-[0_0_30px_rgba(255,106,0,0.4)] hover:shadow-[0_0_40px_rgba(255,106,0,0.6)] border-0">
-                  {currentUser ? 'Go to Dashboard' : 'Explore Now'} <i className="fa-solid fa-arrow-right text-sm"></i>
+                <Link to="/pricing" className="text-decoration-none flex items-center gap-2 px-8 py-3.5 rounded-xl font-bold text-brand-bg bg-gradient-to-r from-brand-primary to-brand-glow hover:scale-105 transition-all duration-300 shadow-[0_0_30px_rgba(255,106,0,0.4)] hover:shadow-[0_0_40px_rgba(255,106,0,0.6)] border-0">
+                  Explore Now <i className="fa-solid fa-arrow-right text-sm"></i>
                 </Link>
 
                 <Link to="/contact" className="btn-outline">

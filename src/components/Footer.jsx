@@ -9,7 +9,7 @@ const Footer = () => {
     <footer className="footer-main mt-16">
       <div className="footer-gradient-line"></div>
       
-      <div className="container-main footer-content">
+      <div className="container-main footer-content px-8 lg:px-24">
         <div className="row g-4">
           
           {/* Brand Col */}
@@ -72,10 +72,10 @@ const Footer = () => {
       </div>
 
       {/* Bottom Bar */}
-      <div className="container-main">
-        <div className="footer-bottom reveal-on-scroll">
-          <p className="mb-0">© {new Date().getFullYear()} {settings.siteName} · All rights reserved.</p>
-          <p className="mb-0">
+      <div className="container-main px-6 md:px-12">
+        <div className="footer-bottom flex flex-col md:flex-row items-center justify-between py-6 w-full reveal-on-scroll">
+          <p className="mb-0 text-center md:text-left text-sm text-slate-400">© {new Date().getFullYear()} {settings.siteName} · All rights reserved.</p>
+          <p className="mb-0 text-center md:text-right text-sm text-slate-400 mt-3 md:mt-0">
             Design and Develop by{' '}
             <a 
               href="https://shanudhatirosh.github.io/" 

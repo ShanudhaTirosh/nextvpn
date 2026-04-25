@@ -1,17 +1,17 @@
 /* ── Navbar ── */
 .navbar-main{position:fixed;top:0;left:0;width:100%;z-index:1000;background:transparent;transition:all .4s ease;padding:12px 0}
-.navbar-main.scrolled{background:rgba(8,8,8,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border)}
+.navbar-main.scrolled{background:rgba(8,8,8,.95);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border)}
 .navbar-brand-icon{color:var(--orange-main);font-size:1.4rem;margin-right:8px}
 .navbar-brand-text{font-weight:800;font-size:1.2rem;color:#fff}
-.navbar-brand-text span{background:var(--grad-premium);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.navbar-brand-text span{background:var(--grad-premium);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .nav-link-custom{color:var(--text-secondary)!important;font-weight:500;font-size:.9rem;transition:color .3s ease;padding:8px 16px!important}
 .nav-link-custom:hover,.nav-link-custom.active{color:var(--orange-main)!important}
 .navbar-avatar{width:36px;height:36px;border-radius:50%;border:2px solid var(--orange-main);object-fit:cover;cursor:pointer}
 .navbar-avatar-initials{width:36px;height:36px;border-radius:50%;background:var(--grad-premium);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:#000;cursor:pointer}
-.navbar-dropdown{background:var(--glass-bg)!important;backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border)!important;border-radius:12px!important;box-shadow:var(--glass-shadow)!important;padding:8px!important}
+.navbar-dropdown{background:var(--glass-bg)!important;-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border:1px solid var(--glass-border)!important;border-radius:12px!important;box-shadow:var(--glass-shadow)!important;padding:8px!important}
 .navbar-dropdown .dropdown-item{color:var(--text-secondary)!important;padding:8px 16px;border-radius:8px;font-size:.9rem;transition:all .2s}
 .navbar-dropdown .dropdown-item:hover{background:rgba(255,106,0,.08)!important;color:var(--orange-main)!important}
-.mobile-menu{background:var(--glass-bg);backdrop-filter:var(--glass-blur);border-bottom:1px solid var(--glass-border)}
+.mobile-menu{background:var(--glass-bg);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);border-bottom:1px solid var(--glass-border)}
 
 /* ── Hero ── */
 .hero-section{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;background:var(--gradient-hero);padding-top:80px}
@@ -34,7 +34,7 @@
 .stat-item{text-align:center;padding:24px 16px;position:relative}
 .stat-item:not(:last-child)::after{content:'';position:absolute;right:0;top:20%;height:60%;width:1px;background:var(--bg-panel)}
 .stat-icon{font-size:1.5rem;color:var(--orange-main);margin-bottom:8px}
-.stat-number{font-size:clamp(1.5rem,3vw,2.25rem);font-weight:800;background:var(--grad-premium);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-number{font-size:clamp(1.5rem,3vw,2.25rem);font-weight:800;background:var(--grad-premium);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .stat-label{color:var(--text-secondary);font-size:.85rem;margin-top:4px}
 
 /* ── Feature Cards ── */
