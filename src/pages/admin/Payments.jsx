@@ -29,7 +29,7 @@ const Payments = () => {
     .filter(p => filter === 'all' || p.status === filter)
     .sort((a, b) => (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0));
 
-  const handleAction = async (paymentId, status, uid, packageName, amount) => {
+  const handleAction = async (paymentId, status, uid, packageName, amount, durationDays) => {
     setProcessing(paymentId);
     try {
       await updateDocument('payments', paymentId, { status });
@@ -38,12 +38,13 @@ const Payments = () => {
         if (userDoc) {
           const currentExpiry = userDoc.subscriptionExpiry ? userDoc.subscriptionExpiry.toDate() : new Date();
           const newExpiry = new Date(Math.max(currentExpiry.getTime(), Date.now()));
-          newExpiry.setDate(newExpiry.getDate() + 30);
+          newExpiry.setDate(newExpiry.getDate() + Number(durationDays || 30));
           await updateDocument('users', uid, {
             plan: packageName.toLowerCase(),
             isActive: true,
             paymentStatus: 'paid',
             subscriptionExpiry: newExpiry,
+            planDurationDays: Number(durationDays || 30),
           });
         }
         await logActivity('payment', `Payment of LKR ${amount} for "${packageName}" approved for UID: ${uid?.slice(0,8)}...`, 'success');
@@ -107,6 +108,7 @@ const Payments = () => {
               <thead>
                 <tr className="border-b border-slate-800">
                   <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Date</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">User</th>
                   <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Reference</th>
                   <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Package / Amount</th>
                   <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Method</th>
@@ -119,6 +121,10 @@ const Payments = () => {
                   <tr key={payment.id} className="hover:bg-slate-800/30 transition-colors">
                     <td className="px-4 py-3.5 text-slate-400 text-xs whitespace-nowrap">
                       {payment.createdAt?.toDate?.().toLocaleString() || 'N/A'}
+                    </td>
+                    <td className="px-4 py-3.5">
+                      <div className="text-white text-xs font-medium truncate max-w-[120px]" title={payment.userEmail}>{payment.userEmail || 'N/A'}</div>
+                      <div className="text-[10px] text-slate-600 font-mono">{payment.uid?.slice(0, 8)}...</div>
                     </td>
                     <td className="px-4 py-3.5 font-mono text-amber-400 text-xs">{payment.reference || '—'}</td>
                     <td className="px-4 py-3.5">
@@ -141,7 +147,7 @@ const Payments = () => {
                         {payment.status === 'pending' && (
                           <>
                             <button
-                              onClick={() => handleAction(payment.id, 'approved', payment.uid, payment.packageName, payment.amount)}
+                              onClick={() => handleAction(payment.id, 'approved', payment.uid, payment.packageName, payment.amount, payment.durationDays)}
                               disabled={processing === payment.id}
                               className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors text-xs disabled:opacity-50"
                               title="Approve"
@@ -149,7 +155,7 @@ const Payments = () => {
                               {processing === payment.id ? <i className="fa-solid fa-spinner animate-spin"></i> : <i className="fa-solid fa-check"></i>}
                             </button>
                             <button
-                              onClick={() => handleAction(payment.id, 'rejected', payment.uid, payment.packageName, payment.amount)}
+                              onClick={() => handleAction(payment.id, 'rejected', payment.uid, payment.packageName, payment.amount, payment.durationDays)}
                               disabled={processing === payment.id}
                               className="p-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors text-xs disabled:opacity-50"
                               title="Reject"
@@ -171,10 +177,10 @@ const Payments = () => {
       {/* Proof Modal */}
       {selectedProof && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex p-4 bg-black/80 backdrop-blur-sm overflow-y-auto"
           onClick={() => setSelectedProof(null)}
         >
-          <div className="relative max-w-2xl w-full" onClick={e => e.stopPropagation()}>
+          <div className="relative max-w-2xl w-full m-auto" onClick={e => e.stopPropagation()}>
             <button
               onClick={() => setSelectedProof(null)}
               className="absolute -top-4 -right-4 z-10 w-8 h-8 rounded-full bg-slate-800 border border-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-colors"

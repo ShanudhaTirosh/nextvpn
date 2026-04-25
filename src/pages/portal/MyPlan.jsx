@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { useCollection, useDocument } from '../../hooks/useFirestore';
+import { useRealtimeCollection, useDocument } from '../../hooks/useFirestore';
 import PricingCard from '../../components/PricingCard';
 import PaymentModal from '../../components/PaymentModal';
 
@@ -13,8 +13,8 @@ const statusConfig = {
 const MyPlan = () => {
   const { userData } = useAuth();
   const { data: config } = useDocument('siteSettings', 'config');
-  const { data: packages, loading } = useCollection('packages', []);
-  const { data: payments } = useCollection('payments', []);
+  const { data: packages, loading } = useRealtimeCollection('packages', []);
+  const { data: payments } = useRealtimeCollection('payments', []);
 
   const [showPayment, setShowPayment] = useState(false);
   const [selectedPkg, setSelectedPkg] = useState(null);

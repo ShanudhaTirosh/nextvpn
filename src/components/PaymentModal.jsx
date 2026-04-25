@@ -100,6 +100,7 @@ const PaymentModal = ({ show, onHide, packageData, siteSettings }) => {
         userEmail: currentUser.email || 'N/A',
         packageId: packageData.id,
         packageName: packageData.name,
+        durationDays: packageData.durationDays || 30,
         amount: packageData.price,
         method: method,
         proofBase64,

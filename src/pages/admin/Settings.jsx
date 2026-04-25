@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDocument } from '../../hooks/useFirestore';
-import { updateDocument } from '../../firebase/firestore';
+import { setDocument } from '../../firebase/firestore';
 import { showToast } from '../../components/Toast';
 
 const SectionCard = ({ title, icon, children }) => (
@@ -24,9 +24,11 @@ const inp = "w-full px-3.5 py-2.5 rounded-xl bg-slate-800/80 border border-slate
 const Settings = () => {
   const { data: config, loading } = useDocument('siteSettings', 'config');
   const [formData, setFormData] = useState({
+    siteName: 'ShiftLK Netch',
     contactEmail: '', phone: '', address: '',
     socialLinks: { facebook: '', telegram: '', instagram: '', whatsapp: '' },
     paymentDetails: { helaPay: '', eZcash: '', bankAccount: { bank: '', name: '', number: '' } },
+    branding: { logoUrl: '', primaryColor: '#06b6d4' },
   });
   const [isSaving, setIsSaving] = useState(false);
 
@@ -39,6 +41,7 @@ const Settings = () => {
           ...prev.paymentDetails, ...(config.paymentDetails || {}),
           bankAccount: { ...prev.paymentDetails.bankAccount, ...(config.paymentDetails?.bankAccount || {}) },
         },
+        branding: { ...prev.branding, ...(config.branding || {}) },
       }));
     }
   }, [config]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -51,10 +54,10 @@ const Settings = () => {
     e.preventDefault();
     setIsSaving(true);
     try {
-      await updateDocument('siteSettings', 'config', formData);
+      await setDocument('siteSettings', 'config', formData);
       showToast.success('Settings saved successfully!');
     } catch (err) {
-      showToast.error('Failed to save. Does the config document exist in Firestore?');
+      showToast.error('Failed to save settings.');
       console.error(err);
     } finally {
       setIsSaving(false);
@@ -88,6 +91,9 @@ const Settings = () => {
 
           <SectionCard title="Contact & Social" icon="fa-address-book">
             <div className="space-y-4">
+              <Field label="Website Name">
+                <input type="text" className={inp} value={formData.siteName} onChange={e => set('siteName', e.target.value)} placeholder="ShiftLK Netch" />
+              </Field>
               <Field label="Support Email">
                 <input type="email" className={inp} value={formData.contactEmail} onChange={e => set('contactEmail', e.target.value)} placeholder="support@example.com" />
               </Field>
@@ -143,6 +149,20 @@ const Settings = () => {
                   <input type="text" className={inp} value={formData.paymentDetails.bankAccount.number} onChange={e => setDeep('paymentDetails', 'bankAccount', 'number', e.target.value)} placeholder="1234567890" />
                 </Field>
               </div>
+            </div>
+          </SectionCard>
+
+          <SectionCard title="Branding" icon="fa-palette">
+            <div className="space-y-4">
+              <Field label="Logo URL (Image Link)">
+                <input type="text" className={inp} value={formData.branding.logoUrl} onChange={e => setNested('branding', 'logoUrl', e.target.value)} placeholder="https://..." />
+              </Field>
+              <Field label="Primary Theme Color">
+                <div className="flex gap-2">
+                  <input type="color" className="w-10 h-10 p-1 bg-slate-800 border border-slate-700 rounded-lg cursor-pointer" value={formData.branding.primaryColor} onChange={e => setNested('branding', 'primaryColor', e.target.value)} />
+                  <input type="text" className={inp} value={formData.branding.primaryColor} onChange={e => setNested('branding', 'primaryColor', e.target.value)} placeholder="#06b6d4" />
+                </div>
+              </Field>
             </div>
           </SectionCard>
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { useCollection } from '../../hooks/useFirestore';
+import { useRealtimeCollection } from '../../hooks/useFirestore';
 import LocationCard from '../../components/LocationCard';
 import SkeletonLoader from '../../components/SkeletonLoader';
 import { showToast } from '../../components/Toast';
@@ -13,15 +13,15 @@ const StatCard = ({ label, value, sub, icon, color }) => (
         <span className="text-xs font-bold uppercase tracking-widest text-slate-500">{label}</span>
         <i className={`fa-solid ${icon} ${color.text}`}></i>
       </div>
-      <div className={`text-2xl font-bold text-white mb-1`}>{value}</div>
-      {sub && <p className="text-xs text-slate-500">{sub}</p>}
+      <div className={`text-2xl font-bold text-white mb-1 capitalize`}>{value}</div>
+      {sub && <div className="text-xs text-slate-500">{sub}</div>}
     </div>
   </div>
 );
 
 const Dashboard = () => {
   const { userData } = useAuth();
-  const { data: servers, loading } = useCollection('servers', []);
+  const { data: servers, loading } = useRealtimeCollection('servers', []);
   const [selectedServer, setSelectedServer] = useState(null);
 
   const isActive = userData?.isActive && userData?.plan !== 'none';
@@ -33,7 +33,9 @@ const Dashboard = () => {
   };
 
   const daysLeft = getDaysRemaining();
-  const daysProgress = Math.min(100, (daysLeft / 30) * 100);
+  // We don't store max days, so we assume 30 for monthly and 365 for anything > 30
+  const maxDays = userData?.planDurationDays || 30;
+  const daysProgress = maxDays > 0 ? Math.min(100, Math.max(0, ((maxDays - daysLeft) / maxDays) * 100)) : 0;
 
   const handleCopyConfig = (server) => {
     if (!isActive) { showToast.error('Active plan required to view configs.'); return; }

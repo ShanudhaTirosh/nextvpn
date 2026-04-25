@@ -106,8 +106,22 @@ const Contact = () => {
           {/* Contact info */}
           <div className="lg:col-span-2 flex flex-col gap-4">
             <ContactCard href={`mailto:${config?.contactEmail || 'support@shiftlk.net'}`} icon="envelope" iconClass="bg-cyan-500/10 border border-cyan-500/20 text-cyan-400" label="Email Us" value={config?.contactEmail || 'support@shiftlk.net'} />
-            <ContactCard href={config?.socialLinks?.telegram || '#'} icon="fa-brands fa-telegram" iconClass="bg-blue-500/10 border border-blue-500/20 text-sky-400" label="Telegram" value="@ShiftLK_Support" target="_blank" />
-            <ContactCard href={config?.socialLinks?.whatsapp || `https://wa.me/${config?.phone?.replace(/[^0-9]/g,'')}`} icon="fa-brands fa-whatsapp" iconClass="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400" label="WhatsApp" value={config?.phone || '+94 77 123 4567'} target="_blank" />
+            <ContactCard 
+              href={config?.socialLinks?.telegram || 'https://t.me/ShiftLK_Support'} 
+              icon="fa-brands fa-telegram" 
+              iconClass="bg-blue-500/10 border border-blue-500/20 text-sky-400" 
+              label="Telegram" 
+              value={config?.socialLinks?.telegram ? "@" + config.socialLinks.telegram.split('/').pop() : "@ShiftLK_Support"} 
+              target="_blank" 
+            />
+            <ContactCard 
+              href={config?.socialLinks?.whatsapp || (config?.phone ? `https://wa.me/${config.phone.replace(/[^0-9]/g,'')}` : 'https://wa.me/94771234567')} 
+              icon="fa-brands fa-whatsapp" 
+              iconClass="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400" 
+              label="WhatsApp" 
+              value={config?.phone || '+94 77 123 4567'} 
+              target="_blank" 
+            />
 
             <div className="rounded-2xl bg-gradient-to-br from-cyan-500/5 to-blue-500/5 border border-slate-800 p-5 mt-2">
               <h3 className="text-sm font-bold text-white mb-3">Response Times</h3>

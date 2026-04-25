@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useAdmin } from '../hooks/useAdmin';
+import { useSiteSettings } from '../hooks/useSiteSettings';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -9,6 +10,7 @@ const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { currentUser, userData, logOut } = useAuth();
   const { isAdmin } = useAdmin();
+  const { settings } = useSiteSettings();
   const location = useLocation();
   const dropdownRef = useRef(null);
 
@@ -61,10 +63,14 @@ const Navbar = () => {
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 no-underline flex-shrink-0">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-[0_0_12px_rgba(6,182,212,0.5)]">
-              <span className="text-white font-black text-xs">N</span>
-            </div>
-            <span className="font-bold text-white text-sm">NetchX<span className="text-cyan-400 font-normal ml-0.5">™</span></span>
+            {settings.branding.logoUrl ? (
+              <img src={settings.branding.logoUrl} alt="Logo" className="w-7 h-7 object-contain" />
+            ) : (
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-[0_0_12px_rgba(6,182,212,0.5)]">
+                <span className="text-white font-black text-xs">{settings.siteName[0]}</span>
+              </div>
+            )}
+            <span className="font-bold text-white text-sm">{settings.siteName}</span>
           </Link>
 
           {/* Desktop Links */}

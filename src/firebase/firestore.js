@@ -1,6 +1,6 @@
 import { db } from './firebaseConfig';
 import {
-  collection, doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc,
+  collection, doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, setDoc,
   onSnapshot, query, where, orderBy, limit, serverTimestamp, writeBatch
 } from 'firebase/firestore';
 
@@ -22,6 +22,10 @@ export const addDocument = (col, data) => {
 
 export const updateDocument = (col, id, data) => {
   return updateDoc(doc(db, col, id), data);
+};
+
+export const setDocument = (col, id, data) => {
+  return setDoc(doc(db, col, id), data, { merge: true });
 };
 
 export const deleteDocument = (col, id) => {

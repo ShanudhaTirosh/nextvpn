@@ -74,10 +74,8 @@ export const sendEmailNotification = async (paymentData) => {
     console.log('Email notification sent successfully.');
   } catch (error) {
     console.error('Failed to send Email notification:', error);
+    console.warn('Email Notification failed: Check your EmailJS configuration.');
   }
-  
-  
-  console.warn('Email Notification skipped: Email service not configured.');
 };
 
 /**

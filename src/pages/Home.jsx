@@ -54,7 +54,7 @@ const Home = () => {
   const displayPackages = packages?.length > 0 ? packages.filter(p => p.isVisible).sort((a,b) => a.order - b.order).slice(0, 3) : [
     { id: '1', name: 'Starter', price: 500, durationDays: 30, icon: 'fa-paper-plane', isRecommended: false, features: [{text:'1 Device', included:true}] },
     { id: '2', name: 'Pro', price: 800, durationDays: 30, icon: 'fa-rocket', isRecommended: true, features: [{text:'3 Devices', included:true}] },
-    { id: '3', name: 'Elite', price: 1500, durationDays: 30, icon: 'fa-gem', isRecommended: false, features: [{text:'Unlimited Devices', included:true}] }
+    { id: '3', name: 'Elite', price: 1500, durationDays: 365, icon: 'fa-gem', isRecommended: false, features: [{text:'Unlimited Devices', included:true}] }
   ];
 
   const displayTestimonials = testimonials?.length > 0 ? testimonials.filter(t => t.isVisible) : [
@@ -95,8 +95,8 @@ const Home = () => {
               {/* Button row */}
               <div className="flex flex-wrap items-center gap-4 mb-10">
                 {/* Primary CTA */}
-                <Link to="/pricing" className="text-decoration-none flex items-center gap-2 px-8 py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 transition-all duration-300 shadow-[0_0_30px_rgba(99,102,241,0.4)] hover:shadow-[0_0_40px_rgba(192,132,252,0.6)] hover:-translate-y-1 border-0">
-                  Explore Now <i className="fa-solid fa-arrow-right text-sm"></i>
+                <Link to={currentUser ? "/portal/dashboard" : "/pricing"} className="text-decoration-none flex items-center gap-2 px-8 py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 transition-all duration-300 shadow-[0_0_30px_rgba(99,102,241,0.4)] hover:shadow-[0_0_40px_rgba(192,132,252,0.6)] hover:-translate-y-1 border-0">
+                  {currentUser ? 'Go to Dashboard' : 'Explore Now'} <i className="fa-solid fa-arrow-right text-sm"></i>
                 </Link>
 
                 {/* Secondary — dark glass */}

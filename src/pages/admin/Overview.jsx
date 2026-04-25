@@ -66,12 +66,13 @@ const Overview = () => {
       if (userDoc) {
         const currentExpiry = userDoc.subscriptionExpiry ? userDoc.subscriptionExpiry.toDate() : new Date();
         const newExpiry = new Date(Math.max(currentExpiry.getTime(), Date.now()));
-        newExpiry.setDate(newExpiry.getDate() + 30);
+        newExpiry.setDate(newExpiry.getDate() + Number(payment.durationDays || 30));
         await updateDocument('users', payment.uid, {
           plan: payment.packageName.toLowerCase(),
           isActive: true,
           paymentStatus: 'paid',
           subscriptionExpiry: newExpiry,
+          planDurationDays: Number(payment.durationDays || 30),
         });
       }
       await logActivity('payment', `Auto-verified ${payment.method} payment of LKR ${payment.amount} for "${payment.packageName}" (Ref: ${payment.reference}).`, 'success');

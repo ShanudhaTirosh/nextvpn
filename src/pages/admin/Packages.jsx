@@ -60,9 +60,9 @@ const Packages = () => {
     try {
       const parsed = {
         ...formData,
-        price: parseInt(formData.price, 10),
-        durationDays: parseInt(formData.durationDays, 10),
-        order: parseInt(formData.order, 10),
+        price: parseInt(formData.price, 10) || 0,
+        durationDays: parseInt(formData.durationDays, 10) || 30,
+        order: parseInt(formData.order, 10) || 0,
         features: formData.features.filter(f => f.text.trim()),
       };
       if (editingPkg) {
@@ -92,70 +92,72 @@ const Packages = () => {
   const sorted = [...(packages || [])].sort((a, b) => a.order - b.order);
 
   return (
-    <div className="animate-fade-in">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-2xl font-bold text-white mb-1">Pricing Packages</h1>
-          <p className="text-slate-500 text-sm">Manage subscription plans displayed on the website.</p>
-        </div>
-        <button onClick={() => openModal()} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 font-bold text-sm hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all">
-          <i className="fa-solid fa-plus"></i> Add Package
-        </button>
-      </div>
-
-      <div className="rounded-2xl bg-slate-900/60 border border-slate-700/50 overflow-hidden backdrop-blur-sm">
-        {loading ? (
-          <div className="flex items-center justify-center py-16"><div className="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div></div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-slate-800">
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">#</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Package</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Price (LKR)</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Duration</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Visibility</th>
-                  <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800/50">
-                {sorted.map(pkg => (
-                  <tr key={pkg.id} className="hover:bg-slate-800/30 transition-colors">
-                    <td className="px-4 py-3.5 text-slate-600 text-xs">{pkg.order}</td>
-                    <td className="px-4 py-3.5">
-                      <div className="flex items-center gap-2">
-                        <i className={`fa-solid ${pkg.icon} text-cyan-400`}></i>
-                        <span className="font-semibold text-white">{pkg.name}</span>
-                        {pkg.isRecommended && <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs">Popular</span>}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3.5 text-cyan-400 font-semibold">{pkg.price.toLocaleString()}</td>
-                    <td className="px-4 py-3.5 text-slate-400 text-xs">{pkg.durationDays} days</td>
-                    <td className="px-4 py-3.5">
-                      {pkg.isVisible
-                        ? <span className="text-xs text-emerald-400"><i className="fa-solid fa-eye mr-1"></i>Visible</span>
-                        : <span className="text-xs text-slate-600"><i className="fa-solid fa-eye-slash mr-1"></i>Hidden</span>
-                      }
-                    </td>
-                    <td className="px-4 py-3.5 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <button onClick={() => openModal(pkg)} className="p-1.5 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20 transition-colors text-xs"><i className="fa-solid fa-pen"></i></button>
-                        <button onClick={() => handleDelete(pkg.id, pkg.name)} className="p-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors text-xs"><i className="fa-solid fa-trash"></i></button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+    <>
+      <div className="animate-fade-in">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+          <div>
+            <h1 className="text-2xl font-bold text-white mb-1">Pricing Packages</h1>
+            <p className="text-slate-500 text-sm">Manage subscription plans displayed on the website.</p>
           </div>
-        )}
+          <button onClick={() => openModal()} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 font-bold text-sm hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all">
+            <i className="fa-solid fa-plus"></i> Add Package
+          </button>
+        </div>
+
+        <div className="rounded-2xl bg-slate-900/60 border border-slate-700/50 overflow-hidden backdrop-blur-sm">
+          {loading ? (
+            <div className="flex items-center justify-center py-16"><div className="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div></div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-slate-800">
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">#</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Package</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Price (LKR)</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Duration</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Visibility</th>
+                    <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-800/50">
+                  {sorted.map(pkg => (
+                    <tr key={pkg.id} className="hover:bg-slate-800/30 transition-colors">
+                      <td className="px-4 py-3.5 text-slate-600 text-xs">{pkg.order}</td>
+                      <td className="px-4 py-3.5">
+                        <div className="flex items-center gap-2">
+                          <i className={`fa-solid ${pkg.icon} text-cyan-400`}></i>
+                          <span className="font-semibold text-white">{pkg.name}</span>
+                          {pkg.isRecommended && <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs">Popular</span>}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3.5 text-cyan-400 font-semibold">{pkg.price.toLocaleString()}</td>
+                      <td className="px-4 py-3.5 text-slate-400 text-xs">{pkg.durationDays} days</td>
+                      <td className="px-4 py-3.5">
+                        {pkg.isVisible
+                          ? <span className="text-xs text-emerald-400"><i className="fa-solid fa-eye mr-1"></i>Visible</span>
+                          : <span className="text-xs text-slate-600"><i className="fa-solid fa-eye-slash mr-1"></i>Hidden</span>
+                        }
+                      </td>
+                      <td className="px-4 py-3.5 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <button onClick={() => openModal(pkg)} className="p-1.5 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20 hover:bg-blue-500/20 transition-colors text-xs"><i className="fa-solid fa-pen"></i></button>
+                          <button onClick={() => handleDelete(pkg.id, pkg.name)} className="p-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors text-xs"><i className="fa-solid fa-trash"></i></button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Modal */}
+      {/* Modal moved outside transformed div */}
       {showModal && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md" onClick={closeModal}>
-          <div className="w-full max-w-2xl flex flex-col max-h-[90vh] rounded-2xl bg-slate-950 border border-slate-800 shadow-[0_0_60px_rgba(0,0,0,0.9)] overflow-hidden animate-fade-in" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md" onClick={closeModal}>
+          <div className="w-full max-w-2xl bg-slate-950 border border-slate-800 shadow-[0_0_80px_rgba(0,0,0,1)] rounded-2xl overflow-hidden flex flex-col max-h-[90vh]" onClick={e => e.stopPropagation()}>
             <div className="p-5 border-b border-slate-800 bg-slate-900/60 flex items-center justify-between flex-shrink-0">
               <h2 className="text-lg font-bold text-white">{editingPkg ? 'Edit Package' : 'New Package'}</h2>
               <button onClick={closeModal} className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-all"><i className="fa-solid fa-xmark text-sm"></i></button>
@@ -220,7 +222,7 @@ const Packages = () => {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

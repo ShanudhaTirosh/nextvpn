@@ -1,35 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase/firebaseConfig';
+import { useSiteSettings } from '../hooks/useSiteSettings';
 
 const Footer = () => {
-  const [settings, setSettings] = useState({
-    contactEmail: 'support@shiftlk.net',
-    phone: '+94 77 123 4567',
-    address: 'Colombo, Sri Lanka',
-    footerText: 'Premium V2Ray VPN & proxy service built for speed, privacy, and zero restrictions.',
-    socialLinks: {
-      facebook: '#',
-      telegram: '#',
-      instagram: '#',
-      whatsapp: '#'
-    }
-  });
-
-  useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const docSnap = await getDoc(doc(db, 'siteSettings', 'config'));
-        if (docSnap.exists()) {
-          setSettings(prev => ({ ...prev, ...docSnap.data() }));
-        }
-      } catch (err) {
-        console.error('Failed to load footer settings', err);
-      }
-    };
-    fetchSettings();
-  }, []);
+  const { settings } = useSiteSettings();
 
   return (
     <footer className="footer-main">
@@ -42,9 +16,9 @@ const Footer = () => {
           <div className="col-12 col-lg-4 reveal-on-scroll">
             <div className="d-flex align-items-center mb-3">
               <i className="fa-solid fa-shield-halved navbar-brand-icon"></i>
-              <div className="footer-brand-text">ShiftLK <span>Netch</span> Solutions</div>
+              <div className="footer-brand-text">{settings.siteName}</div>
             </div>
-            <p className="footer-tagline">{settings.footerText}</p>
+            <p className="footer-tagline">{settings.footerText || 'Premium V2Ray VPN & proxy service built for speed, privacy, and zero restrictions.'}</p>
             <div className="footer-social">
               {settings.socialLinks?.facebook && <a href={settings.socialLinks.facebook} target="_blank" rel="noreferrer"><i className="fa-brands fa-facebook"></i></a>}
               {settings.socialLinks?.telegram && <a href={settings.socialLinks.telegram} target="_blank" rel="noreferrer"><i className="fa-brands fa-telegram"></i></a>}
@@ -99,7 +73,7 @@ const Footer = () => {
       {/* Bottom Bar */}
       <div className="container-main">
         <div className="footer-bottom reveal-on-scroll">
-          <p>© {new Date().getFullYear()} ShiftLK Netch Solutions · All rights reserved.</p>
+          <p>© {new Date().getFullYear()} {settings.siteName} · All rights reserved.</p>
           <p>Made with <span className="text-danger">❤️</span> in Sri Lanka</p>
         </div>
       </div>

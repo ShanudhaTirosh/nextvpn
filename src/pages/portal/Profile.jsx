@@ -23,6 +23,14 @@ const Profile = () => {
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [avatarLoading, setAvatarLoading] = useState(false);
 
+  // Sync with real-time userData updates
+  React.useEffect(() => {
+    if (userData) {
+      setDisplayName(userData.displayName || '');
+      setPhotoBase64(userData.photoBase64 || '');
+    }
+  }, [userData]);
+
   const handleAvatarUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;

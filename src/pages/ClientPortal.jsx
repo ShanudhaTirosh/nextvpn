@@ -45,8 +45,8 @@ const ClientPortal = () => {
             />
             <div className="overflow-hidden">
               <div className="text-white font-bold truncate text-sm">{userData?.displayName || 'User'}</div>
-              <div className="inline-block px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-xs font-medium mt-1">
-                {userData?.plan === 'none' ? 'Free User' : `${userData?.plan} Plan`}
+              <div className="inline-block px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 text-xs font-medium mt-1 capitalize">
+                {userData?.plan === 'none' || !userData?.plan ? 'Free User' : `${userData?.plan} Plan`}
               </div>
             </div>
           </div>

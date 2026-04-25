@@ -59,6 +59,15 @@ const ServerCard = ({ server, onEdit, onDelete, onToggle }) => {
   );
 };
 
+const F = ({ label, children }) => (
+  <div>
+    <label className="block text-xs font-semibold text-slate-400 mb-1.5">{label}</label>
+    {children}
+  </div>
+);
+const inp = "w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 focus:outline-none focus:border-cyan-500/50 text-sm";
+const sel = "w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 focus:outline-none text-sm";
+
 const Servers = () => {
   const { data: servers, loading } = useCollection('servers');
   const [showModal, setShowModal] = useState(false);
@@ -105,48 +114,41 @@ const Servers = () => {
     await logActivity('server', `Server "${server?.name}" was brought ${!current ? 'online' : 'offline'}.`, !current ? 'success' : 'warning');
   };
 
-  const F = ({ label, children }) => (
-    <div>
-      <label className="block text-xs font-semibold text-slate-400 mb-1.5">{label}</label>
-      {children}
-    </div>
-  );
-  const inp = "w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 focus:outline-none focus:border-cyan-500/50 text-sm";
-  const sel = "w-full px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 focus:outline-none text-sm";
-
   return (
-    <div className="animate-fade-in">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-2xl font-bold text-white mb-1">Server Nodes</h1>
-          <p className="text-slate-500 text-sm">Manage VPN and proxy infrastructure.</p>
+    <>
+      <div className="animate-fade-in">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+          <div>
+            <h1 className="text-2xl font-bold text-white mb-1">Server Nodes</h1>
+            <p className="text-slate-500 text-sm">Manage VPN and proxy infrastructure.</p>
+          </div>
+          <button onClick={() => openModal()} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 font-bold text-sm hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all">
+            <i className="fa-solid fa-plus"></i> Add Server
+          </button>
         </div>
-        <button onClick={() => openModal()} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 font-bold text-sm hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all">
-          <i className="fa-solid fa-plus"></i> Add Server
-        </button>
+
+        {loading ? (
+          <div className="flex items-center justify-center py-24"><div className="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div></div>
+        ) : !servers?.length ? (
+          <div className="text-center py-24 text-slate-600"><i className="fa-solid fa-server text-4xl mb-4 block"></i><p>No servers configured yet.</p></div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+            {servers.map(s => <ServerCard key={s.id} server={s} onEdit={openModal} onDelete={handleDelete} onToggle={toggleStatus} />)}
+          </div>
+        )}
       </div>
 
-      {loading ? (
-        <div className="flex items-center justify-center py-24"><div className="w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div></div>
-      ) : !servers?.length ? (
-        <div className="text-center py-24 text-slate-600"><i className="fa-solid fa-server text-4xl mb-4 block"></i><p>No servers configured yet.</p></div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-          {servers.map(s => <ServerCard key={s.id} server={s} onEdit={openModal} onDelete={handleDelete} onToggle={toggleStatus} />)}
-        </div>
-      )}
-
-      {/* Modal */}
+      {/* Modal moved outside animate-fade-in to prevent fixed positioning issues */}
       {showModal && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md" onClick={closeModal}>
-          <div className="w-full max-w-2xl flex flex-col max-h-[90vh] rounded-2xl bg-slate-950 border border-slate-800 shadow-[0_0_60px_rgba(0,0,0,0.9)] overflow-hidden animate-fade-in" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md" onClick={closeModal}>
+          <div className="w-full max-w-2xl bg-slate-950 border border-slate-800 shadow-[0_0_80px_rgba(0,0,0,1)] rounded-2xl overflow-hidden flex flex-col max-h-[90vh]" onClick={e => e.stopPropagation()}>
             <div className="p-5 border-b border-slate-800 bg-slate-900/60 flex items-center justify-between flex-shrink-0">
               <h2 className="text-lg font-bold text-white">{editingServer ? 'Edit Server' : 'New Server'}</h2>
               <button onClick={closeModal} className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-400 hover:text-white transition-all"><i className="fa-solid fa-xmark text-sm"></i></button>
             </div>
             
             <form onSubmit={handleSave} className="flex flex-col flex-1 min-h-0">
-              <div className="p-6 space-y-4 overflow-y-auto flex-1">
+              <div className="p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="col-span-2 md:col-span-1 flex gap-3">
                     <F label="Server Name"><input className={inp} required value={formData.name} onChange={e => setFormData({...formData,name:e.target.value})} placeholder="e.g. SG-1 Premium" /></F>
@@ -191,7 +193,7 @@ const Servers = () => {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
