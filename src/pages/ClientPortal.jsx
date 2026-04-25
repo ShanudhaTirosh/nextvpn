@@ -80,7 +80,7 @@ const ClientPortal = () => {
             <Link to="/contact" className="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition-all" onClick={() => setSidebarOpen(false)}>
               <i className="fa-solid fa-headset w-6"></i> Contact Support
             </Link>
-            <a href="https://t.me/ShiftLK_Support" target="_blank" rel="noreferrer" className="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition-all">
+            <a href="https://t.me/ShiftLK_Community" target="_blank" rel="noreferrer" className="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition-all">
               <i className="fa-brands fa-telegram w-6 text-blue-400"></i> Telegram Group
             </a>
           </div>

@@ -25,7 +25,12 @@ const FAQ = () => {
       (f.question.toLowerCase().includes(q) || f.answer.toLowerCase().includes(q));
   });
 
-  const catColors = { Technical:'text-cyan-400 bg-cyan-500/10 border-cyan-500/20', Payments:'text-amber-400 bg-amber-500/10 border-amber-500/20', Plans:'text-blue-400 bg-blue-500/10 border-blue-500/20', General:'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
+  const catColors = { 
+    Technical: 'text-indigo-400 bg-indigo-500/10 border-indigo-500/20', 
+    Payments: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20', 
+    Plans: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20', 
+    General: 'text-purple-400 bg-purple-500/10 border-purple-500/20' 
+  };
 
   return (
     <div className="min-h-screen bg-[#020617]">
@@ -90,7 +95,7 @@ const FAQ = () => {
               return (
                 <div
                   key={faq.id}
-                  className={`rounded-2xl border transition-all duration-300 overflow-hidden ${isOpen ? 'border-cyan-500/30 bg-slate-900/80' : 'border-slate-800 bg-slate-900/40 hover:border-slate-700'}`}
+                  className={`rounded-2xl border transition-all duration-300 overflow-hidden backdrop-blur-sm ${isOpen ? 'border-cyan-500/40 bg-slate-900/90 shadow-[0_0_30px_rgba(6,182,212,0.1)]' : 'border-slate-800 bg-slate-900/40 hover:border-slate-700'}`}
                 >
                   <button
                     onClick={() => setOpen(isOpen ? null : faq.id)}
@@ -100,8 +105,8 @@ const FAQ = () => {
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border flex-shrink-0 ${catCls}`}>{faq.category}</span>
                       <span className={`font-semibold text-sm ${isOpen ? 'text-white' : 'text-slate-300'}`}>{faq.question}</span>
                     </div>
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${isOpen ? 'bg-cyan-500/10 border border-cyan-500/30' : 'bg-slate-800 border border-slate-700'}`}>
-                      <i className={`fa-solid fa-chevron-down text-xs transition-transform duration-300 ${isOpen ? 'rotate-180 text-cyan-400' : 'text-slate-500'}`}></i>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${isOpen ? 'bg-cyan-500 text-slate-950 shadow-[0_0_12px_rgba(6,182,212,0.4)]' : 'bg-slate-800 border border-slate-700'}`}>
+                      <i className={`fa-solid fa-chevron-down text-[10px] transition-transform duration-300 ${isOpen ? 'rotate-180' : 'text-slate-500'}`}></i>
                     </div>
                   </button>
                   {isOpen && (

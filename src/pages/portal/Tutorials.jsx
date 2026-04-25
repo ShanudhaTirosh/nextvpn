@@ -37,7 +37,7 @@ const Tutorials = () => {
       <div className="d-flex justify-content-between align-items-end mb-4">
         <div>
           <h2 className="text-white fw-bold mb-1">Setup Tutorials</h2>
-          <p className="text-secondary mb-0">Learn how to configure your device to connect to our network.</p>
+          <p className="text-slate-400 mb-0 text-sm">Learn how to configure your device to connect to our network.</p>
         </div>
       </div>
 
@@ -50,13 +50,13 @@ const Tutorials = () => {
               <h4 className="text-white mb-0">{data.android.title}</h4>
             </div>
             
-            <ol className="text-secondary ps-3 mb-4" style={{ lineHeight: '1.8' }}>
+            <ol className="text-slate-400 ps-3 mb-4 text-sm" style={{ lineHeight: '1.8' }}>
               {data.android.steps.split('\n').filter(s => s.trim()).map((step, idx) => (
                 <li key={idx}>{step}</li>
               ))}
             </ol>
             
-            <a href={data.android.linkUrl} target="_blank" rel="noreferrer" className="btn-ghost d-inline-flex w-100 justify-content-center border-secondary text-white">
+            <a href={data.android.linkUrl} target="_blank" rel="noreferrer" className="btn-ghost d-inline-flex w-100 justify-content-center border-slate-700 text-white hover:border-cyan-500/50 hover:bg-cyan-500/5">
               {data.android.linkText}
             </a>
           </GlassCard>
@@ -70,13 +70,13 @@ const Tutorials = () => {
               <h4 className="text-white mb-0">{data.ios.title}</h4>
             </div>
             
-            <ol className="text-secondary ps-3 mb-4" style={{ lineHeight: '1.8' }}>
+            <ol className="text-slate-400 ps-3 mb-4 text-sm" style={{ lineHeight: '1.8' }}>
               {data.ios.steps.split('\n').filter(s => s.trim()).map((step, idx) => (
                 <li key={idx}>{step}</li>
               ))}
             </ol>
             
-            <a href={data.ios.linkUrl} target="_blank" rel="noreferrer" className="btn-ghost d-inline-flex w-100 justify-content-center border-secondary text-white">
+            <a href={data.ios.linkUrl} target="_blank" rel="noreferrer" className="btn-ghost d-inline-flex w-100 justify-content-center border-slate-700 text-white hover:border-cyan-500/50 hover:bg-cyan-500/5">
               {data.ios.linkText}
             </a>
           </GlassCard>
@@ -92,23 +92,23 @@ const Tutorials = () => {
             
             <div className="row">
               <div className="col-md-6">
-                <ol className="text-secondary ps-3 mb-4" style={{ lineHeight: '1.8' }}>
+                <ol className="text-slate-400 ps-3 mb-4 text-sm" style={{ lineHeight: '1.8' }}>
                   {data.windows.steps.split('\n').filter(s => s.trim()).map((step, idx) => (
                     <li key={idx}>{step}</li>
                   ))}
                 </ol>
               </div>
               <div className="col-md-6">
-                <div className="bg-dark rounded-3 p-3 border border-secondary h-100 d-flex flex-column">
+                <div className="bg-slate-950/40 rounded-xl p-3 border border-slate-800 h-100 d-flex flex-column">
                   <div>
-                    <h6 className="text-warning mb-2"><i className="fa-solid fa-triangle-exclamation me-2"></i> Important Note</h6>
-                    <p className="text-secondary small mb-4">
+                    <h6 className="text-amber-400 mb-2 font-bold text-sm"><i className="fa-solid fa-triangle-exclamation me-2"></i> Important Note</h6>
+                    <p className="text-slate-500 text-xs mb-4 leading-relaxed">
                       {data.windows.note}
                     </p>
                   </div>
                   
                   {data.windows.linkUrl && (
-                    <a href={data.windows.linkUrl} target="_blank" rel="noreferrer" className="btn-ghost mt-auto d-inline-flex w-100 justify-content-center border-secondary text-white">
+                    <a href={data.windows.linkUrl} target="_blank" rel="noreferrer" className="btn-ghost mt-auto d-inline-flex w-100 justify-content-center border-slate-700 text-white hover:border-cyan-500/50 hover:bg-cyan-500/5">
                       {data.windows.linkText || 'Download App'}
                     </a>
                   )}

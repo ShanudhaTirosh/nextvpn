@@ -435,7 +435,7 @@ const Home = () => {
               <div className="d-flex flex-column align-items-center">
                 <div className="feature-icon-wrap mb-3" style={{ background: 'rgba(99,102,241,0.1)' }}><i className="fa-brands fa-telegram text-indigo-400"></i></div>
                 <h6 className="text-white">Telegram Support</h6>
-                <div className="text-slate-300 text-sm">@ShiftLK_Support</div>
+                <div className="text-slate-300 text-sm">@ShiftLK_Community</div>
               </div>
             </div>
             <div className="col-12 col-md-4 reveal-on-scroll" style={{ '--delay': '0.2s' }}>

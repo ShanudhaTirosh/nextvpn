@@ -16,7 +16,7 @@ const Pricing = () => {
   const handleSelectPackage = (pkg) => {
     // If yearly, adjust the package data to pass to the modal
     const finalPkg = isYearly 
-      ? { ...pkg, price: pkg.price * 10 * 0.8, durationDays: 365, name: `${pkg.name} (Yearly)` }
+      ? { ...pkg, price: pkg.price * 12 * 0.9, durationDays: 365, name: `${pkg.name} (Yearly)` }
       : pkg;
       
     setSelectedPkg(finalPkg);
@@ -63,7 +63,7 @@ const Pricing = () => {
               ></div>
             </div>
             <span className={`fw-bold d-flex align-items-center gap-2 ${isYearly ? 'text-white' : 'text-muted'}`}>
-              Yearly <span className="badge-active py-1 px-2" style={{ fontSize: '0.65rem' }}>Save 20%</span>
+              Yearly <span className="badge-active py-1 px-2" style={{ fontSize: '0.65rem' }}>Save 10%</span>
             </span>
           </div>
 
@@ -73,7 +73,7 @@ const Pricing = () => {
             <div className="row justify-content-center g-4">
               {displayPackages.map((pkg, idx) => {
                 const pkgDisplay = isYearly 
-                  ? { ...pkg, price: pkg.price * 10 * 0.8, durationDays: 365 } 
+                  ? { ...pkg, price: pkg.price * 12 * 0.9, durationDays: 365 } 
                   : pkg;
                   
                 return (

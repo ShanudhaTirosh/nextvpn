@@ -107,11 +107,11 @@ const Contact = () => {
           <div className="lg:col-span-2 flex flex-col gap-4">
             <ContactCard href={`mailto:${config?.contactEmail || 'support@shiftlk.net'}`} icon="envelope" iconClass="bg-cyan-500/10 border border-cyan-500/20 text-cyan-400" label="Email Us" value={config?.contactEmail || 'support@shiftlk.net'} />
             <ContactCard 
-              href={config?.socialLinks?.telegram || 'https://t.me/ShiftLK_Support'} 
+              href={config?.socialLinks?.telegram || 'https://t.me/ShiftLK_Community'} 
               icon="fa-brands fa-telegram" 
               iconClass="bg-blue-500/10 border border-blue-500/20 text-sky-400" 
-              label="Telegram" 
-              value={config?.socialLinks?.telegram ? "@" + config.socialLinks.telegram.split('/').pop() : "@ShiftLK_Support"} 
+              label="Telegram Group" 
+              value={config?.socialLinks?.telegram ? "@" + config.socialLinks.telegram.split('/').pop() : "@ShiftLK_Community"} 
               target="_blank" 
             />
             <ContactCard 

@@ -51,6 +51,17 @@ const Users = () => {
     }
   };
 
+  const cancelUserPlan = async (user) => {
+    if (!window.confirm(`Are you sure you want to cancel the active plan for ${user.displayName || user.email}?`)) return;
+    try {
+      await updateDocument('users', user.id, { plan: 'none', subscriptionExpiry: null });
+      await logActivity('user', `Canceled active plan for user "${user.displayName || user.email}".`, 'warning');
+      showToast.success('User plan canceled successfully.');
+    } catch {
+      showToast.error('Failed to cancel user plan.');
+    }
+  };
+
   return (
     <div className="animate-fade-in">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
@@ -153,6 +164,15 @@ const Users = () => {
                         >
                           <i className="fa-solid fa-crown text-xs"></i>
                         </button>
+                        {user.plan && user.plan !== 'none' && (
+                          <button
+                            onClick={() => cancelUserPlan(user)}
+                            className="p-1.5 rounded-lg border text-xs transition-colors bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20"
+                            title="Cancel Plan"
+                          >
+                            <i className="fa-solid fa-user-minus"></i>
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

@@ -47,7 +47,7 @@ export const subscribeToDocument = (col, id, callback) => {
 };
 
 /* ── Image Compression ── */
-export const compressImageToBase64 = (file, maxSizeKB = 500) => {
+export const compressImageToBase64 = (file, maxSizeKB = 600) => {
   return new Promise((resolve, reject) => {
     if (file.size > maxSizeKB * 1024 * 4) {
       reject(new Error(`File too large. Max ${maxSizeKB}KB after compression.`));
@@ -59,7 +59,7 @@ export const compressImageToBase64 = (file, maxSizeKB = 500) => {
       img.onload = () => {
         const canvas = document.createElement('canvas');
         let w = img.width, h = img.height;
-        const maxDim = 800;
+        const maxDim = 1024;
         if (w > maxDim || h > maxDim) {
           if (w > h) { h = (h * maxDim) / w; w = maxDim; }
           else { w = (w * maxDim) / h; h = maxDim; }

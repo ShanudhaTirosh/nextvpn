@@ -19,7 +19,7 @@ const Services = () => {
         <div className="container-main">
           <div className="row align-items-center g-5">
             <div className="col-12 col-lg-5 reveal-on-scroll">
-              <img src="https://github.com/ShanudhaTirosh/nextvpn/blob/master/public/v2ray.png" 
+              <img src="/v2ray.png" 
                    alt="V2Ray Logo" 
                    style={{ width: '200px', filter: 'drop-shadow(0 0 20px rgba(0,229,255,0.4))' }} 
                    className="mx-auto d-block mb-4" />

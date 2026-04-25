@@ -108,7 +108,7 @@ const Settings = () => {
                 <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Social Links</p>
                 <div className="space-y-3">
                   {[
-                    { key: 'telegram', icon: 'fa-telegram', color: 'text-sky-400', ph: 'https://t.me/...' },
+                    { key: 'telegram', icon: 'fa-telegram', color: 'text-sky-400', ph: 'https://t.me/your_group_link' },
                     { key: 'whatsapp', icon: 'fa-whatsapp', color: 'text-emerald-400', ph: 'https://wa.me/...' },
                     { key: 'discord', icon: 'fa-discord', color: 'text-indigo-400', ph: 'https://discord.gg/...' },
                     { key: 'youtube', icon: 'fa-youtube', color: 'text-red-500', ph: 'https://youtube.com/...' },

@@ -37,7 +37,7 @@ const Profile = () => {
     if (!file.type.startsWith('image/')) { showToast.error('Please upload an image file.'); return; }
     setAvatarLoading(true);
     try {
-      const b64 = await compressImageToBase64(file, 200);
+      const b64 = await compressImageToBase64(file, 600);
       setPhotoBase64(b64);
     } catch (err) {
       showToast.error(err.message || 'Failed to process image.');
@@ -114,7 +114,7 @@ const Profile = () => {
               </div>
               <div>
                 <p className="text-sm text-white font-semibold mb-1">{displayName || 'Your Name'}</p>
-                <p className="text-xs text-slate-500">JPG, PNG or GIF · Max 200KB</p>
+                <p className="text-xs text-slate-500">JPG, PNG or GIF · Max 600KB</p>
                 <p className="text-xs text-slate-600 mt-1">Click the camera icon to change your photo.</p>
               </div>
             </div>

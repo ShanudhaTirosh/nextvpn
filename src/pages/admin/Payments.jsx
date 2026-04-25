@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useRealtimeCollection } from '../../hooks/useFirestore';
-import { updateDocument, getDocument } from '../../firebase/firestore';
+import { updateDocument, getDocument, deleteDocument } from '../../firebase/firestore';
 import { showToast } from '../../components/Toast';
 import { logActivity } from '../../hooks/useActivityLog';
 
@@ -61,6 +61,47 @@ const Payments = () => {
     }
   };
 
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this payment record? This action cannot be undone.')) return;
+    try {
+      await deleteDocument('payments', id);
+      showToast.success('Payment record deleted.');
+    } catch {
+      showToast.error('Failed to delete record.');
+    }
+  };
+
+  const handleDeleteMonth = async () => {
+    const month = window.prompt('Enter the Month and Year to clear (e.g. "April 2024") or leave empty to cancel:');
+    if (!month) return;
+
+    const toDelete = (payments || []).filter(p => {
+      const d = p.createdAt?.toDate?.();
+      if (!d) return false;
+      const mStr = d.toLocaleString('default', { month: 'long', year: 'numeric' });
+      return mStr.toLowerCase() === month.toLowerCase();
+    });
+
+    if (toDelete.length === 0) {
+      showToast.error(`No records found for "${month}".`);
+      return;
+    }
+
+    if (!window.confirm(`Found ${toDelete.length} records for ${month}. Delete all of them permanently?`)) return;
+
+    try {
+      setProcessing('bulk');
+      for (const p of toDelete) {
+        await deleteDocument('payments', p.id);
+      }
+      showToast.success(`Successfully cleared ${toDelete.length} records for ${month}.`);
+    } catch {
+      showToast.error('Failed during bulk deletion.');
+    } finally {
+      setProcessing(null);
+    }
+  };
+
   const filters = ['pending', 'approved', 'rejected', 'all'];
 
   return (
@@ -71,26 +112,35 @@ const Payments = () => {
             <h1 className="text-2xl font-bold text-white mb-1">Manual Payments</h1>
             <p className="text-slate-500 text-sm">Review and verify user-submitted payment proofs.</p>
           </div>
-          <div className="flex gap-2">
-            {filters.map(f => (
+            <div className="flex gap-2">
               <button
-                key={f}
-                onClick={() => setFilter(f)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize transition-all ${
-                  filter === f
-                    ? 'bg-cyan-500 text-slate-950'
-                    : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white border border-slate-700'
-                }`}
+                onClick={handleDeleteMonth}
+                disabled={processing === 'bulk'}
+                className="px-3 py-1.5 rounded-lg text-xs font-bold bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-all flex items-center gap-2"
+                title="Bulk Delete by Month"
               >
-                {f}
-                {f !== 'all' && (
-                  <span className="ml-1.5 opacity-70">
-                    ({payments?.filter(p => p.status === f).length || 0})
-                  </span>
-                )}
+                {processing === 'bulk' ? <i className="fa-solid fa-spinner animate-spin"></i> : <i className="fa-solid fa-eraser"></i>}
+                Clear Month
               </button>
-            ))}
-          </div>
+              {filters.map(f => (
+                <button
+                  key={f}
+                  onClick={() => setFilter(f)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold capitalize transition-all ${
+                    filter === f
+                      ? 'bg-cyan-500 text-slate-950'
+                      : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white border border-slate-700'
+                  }`}
+                >
+                  {f}
+                  {f !== 'all' && (
+                    <span className="ml-1.5 opacity-70">
+                      ({payments?.filter(p => p.status === f).length || 0})
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
         </div>
 
         <div className="rounded-2xl bg-slate-900/60 border border-slate-700/50 overflow-hidden backdrop-blur-sm">
@@ -165,6 +215,13 @@ const Payments = () => {
                               </button>
                             </>
                           )}
+                          <button
+                            onClick={() => handleDelete(payment.id)}
+                            className="p-1.5 rounded-lg bg-slate-800 text-slate-500 border border-slate-700 hover:bg-red-500/20 hover:text-red-400 hover:border-red-500/20 transition-all text-xs"
+                            title="Delete Record"
+                          >
+                            <i className="fa-solid fa-trash-can"></i>
+                          </button>
                         </div>
                       </td>
                     </tr>
