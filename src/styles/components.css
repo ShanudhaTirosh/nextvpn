@@ -153,7 +153,7 @@
 /* ── Footer ── */
 .footer-main{background:var(--bg-secondary);border-top:1px solid var(--bg-panel);position:relative;padding-top:0}
 .footer-gradient-line{height:3px;background:var(--gradient-brand);width:100%}
-.footer-content{padding:60px 0 30px}
+.footer-content{padding:80px 0 60px}
 .footer-brand-text{font-weight:800;font-size:1.1rem;color:#fff;margin-bottom:8px}
 .footer-tagline{color:var(--text-secondary);font-size:.85rem;margin-bottom:16px;line-height:1.5}
 .footer-social{display:flex;gap:10px}

@@ -8,6 +8,7 @@ import CounterStat from '../components/CounterStat';
 import StayUpdatedBanner from '../components/StayUpdatedBanner';
 import { useAuth } from '../hooks/useAuth';
 import { useRealtimeCollection, useDocument } from '../hooks/useFirestore';
+import SEO from '../components/SEO';
 
 const Home = () => {
   const { currentUser } = useAuth();
@@ -61,7 +62,13 @@ const Home = () => {
   ];
 
   return (
-    <div className="home-page">
+    <div className="home-container">
+      <SEO 
+        title="Home" 
+        description="ShiftLK Netch - Premium V2Ray & Netch VPN service built for speed, privacy, and zero restrictions. Ultra-low latency servers in Sri Lanka and worldwide." 
+        keywords="VPN, V2Ray, Netch, Sri Lanka, Privacy, Secure Internet, ShiftLK, Best VPN Sri Lanka"
+      />
+      
       {/* SECTION 1 — HERO */}
       <section className="relative min-h-screen bg-bg-deep overflow-hidden flex items-center">
         {/* Background glows (above) */}

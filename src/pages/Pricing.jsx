@@ -3,6 +3,7 @@ import PricingCard from '../components/PricingCard';
 import PaymentModal from '../components/PaymentModal';
 import { useAuth } from '../hooks/useAuth';
 import { useRealtimeCollection, useDocument } from '../hooks/useFirestore';
+import SEO from '../components/SEO';
 
 const Pricing = () => {
   const [isYearly, setIsYearly] = useState(false);
@@ -32,6 +33,11 @@ const Pricing = () => {
 
   return (
     <div className="pricing-page position-relative min-vh-100">
+      <SEO 
+        title="Pricing Plans" 
+        description="Choose the perfect plan for your needs. Affordable V2Ray and Netch VPN subscriptions starting from 500 LKR. Secure and high-speed." 
+        keywords="VPN Pricing, V2Ray cost, Netch subscription, Cheap VPN Sri Lanka"
+      />
       <div className="hero-blob bg-brand-primary/10" style={{ top: '20%', left: '-10%', width: '40rem', height: '40rem', filter: 'blur(100px)' }}></div>
       <div className="hero-blob bg-brand-glow/10" style={{ top: '50%', right: '-10%', width: '30rem', height: '30rem', filter: 'blur(100px)' }}></div>
 

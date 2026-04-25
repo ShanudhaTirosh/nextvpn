@@ -9,11 +9,11 @@ const Footer = () => {
     <footer className="footer-main mt-16">
       <div className="footer-gradient-line"></div>
       
-      <div className="container-main footer-content px-8 lg:px-24">
+      <div className="container-main footer-content pl-10 pr-6 md:pl-20 md:pr-10 lg:pl-32 lg:pr-16">
         <div className="row g-4">
           
           {/* Brand Col */}
-          <div className="col-12 col-lg-4 reveal-on-scroll">
+          <div className="col-12 col-lg-4 reveal-on-scroll ps-lg-4">
             <div className="d-flex align-items-center mb-3">
               <i className="fa-solid fa-shield-halved navbar-brand-icon"></i>
               <div className="footer-brand-text">{settings.siteName}</div>
@@ -72,7 +72,7 @@ const Footer = () => {
       </div>
 
       {/* Bottom Bar */}
-      <div className="container-main px-6 md:px-12">
+      <div className="container-main pl-10 pr-6 md:pl-20 md:pr-10 lg:pl-32 lg:pr-16">
         <div className="footer-bottom flex flex-col md:flex-row items-center justify-between py-6 w-full reveal-on-scroll">
           <p className="mb-0 text-center md:text-left text-sm text-slate-400">© {new Date().getFullYear()} {settings.siteName} · All rights reserved.</p>
           <p className="mb-0 text-center md:text-right text-sm text-slate-400 mt-3 md:mt-0">

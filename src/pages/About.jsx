@@ -1,5 +1,6 @@
 import React from 'react';
 import CounterStat from '../components/CounterStat';
+import SEO from '../components/SEO';
 
 const VALUES = [
   { icon:'fa-user-shield', color:'text-brand-primary', bg:'bg-brand-primary/10 border-brand-primary/20', title:'Absolute Privacy', desc:'A strict zero-logs policy. We never track, store, or share your data with anyone.' },
@@ -17,6 +18,11 @@ const TIMELINE = [
 
 const About = () => (
   <div className="min-h-screen bg-[#020617]">
+    <SEO 
+      title="About Us" 
+      description="Learn about ShiftLK Netch Solutions. Our mission is to provide unrestricted, lightning-fast internet access to users across Sri Lanka and Asia." 
+      keywords="About ShiftLK, VPN mission, V2Ray provider Sri Lanka"
+    />
     <div className="fixed inset-0 pointer-events-none overflow-hidden">
       <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-brand-primary/10 rounded-full blur-3xl" />
       <div className="absolute bottom-1/3 left-1/4 w-80 h-80 bg-brand-glow/10 rounded-full blur-3xl" />

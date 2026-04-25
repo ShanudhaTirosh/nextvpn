@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useDocument } from '../hooks/useFirestore';
 import { showToast } from '../components/Toast';
 import { sendSupportNotification } from '../utils/notifications';
+import SEO from '../components/SEO';
 
 const Inp = ({ label, children }) => (
   <div>
@@ -48,7 +49,12 @@ const Contact = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#020617]">
+    <div className="min-vh-100 bg-[#020617]">
+      <SEO 
+        title="Contact Us" 
+        description="Have questions or need technical support? Contact the ShiftLK Netch team for 24/7 assistance via Telegram, WhatsApp, or Email." 
+        keywords="Contact VPN support, ShiftLK contact, Telegram VPN support, WhatsApp VPN support"
+      />
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-primary/10 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-brand-glow/10 rounded-full blur-3xl" />

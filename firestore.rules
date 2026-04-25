@@ -9,7 +9,10 @@ service cloud.firestore {
     }
     
     function isAdmin() {
-      return isSignedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+      // Safer isAdmin check: handles cases where user doc might not exist yet
+      return isSignedIn() && 
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
     }
     
     function isOwner(uid) {
@@ -52,6 +55,12 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // ── FAQ ──
+    match /faq/{faqId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     // ── Testimonials ──
     match /testimonials/{testimonialId} {
       allow read: if true;
@@ -83,6 +92,12 @@ service cloud.firestore {
     // ── Subscribers (Newsletter) ──
     match /subscribers/{subscriberId} {
       allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // ── Activity Logs ──
+    match /activity_logs/{logId} {
+      allow create: if isSignedIn();
       allow read, update, delete: if isAdmin();
     }
   }

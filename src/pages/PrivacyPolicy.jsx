@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import SEO from '../components/SEO';
 
 
 const PrivacyPolicy = () => {
@@ -35,6 +36,11 @@ const PrivacyPolicy = () => {
 
   return (
     <div className="legal-page section-bg-primary min-vh-100 pt-5">
+      <SEO 
+        title="Privacy Policy" 
+        description="ShiftLK Netch Solutions Privacy Policy. Learn about our strict zero-logs policy and how we protect your digital identity." 
+        keywords="VPN Privacy Policy, zero logs policy, ShiftLK data protection"
+      />
       <div className="container-main section-padding">
         <div className="text-center reveal-on-scroll mb-5">
           <div className="section-eyebrow">Legal</div>

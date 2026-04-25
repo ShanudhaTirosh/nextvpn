@@ -1,8 +1,14 @@
 import React from 'react';
+import SEO from '../components/SEO';
 
 const TermsOfService = () => {
   return (
     <div className="legal-page section-bg-primary min-vh-100 pt-5">
+      <SEO 
+        title="Terms of Service" 
+        description="ShiftLK Netch Solutions Terms of Service. Read about our acceptable use policy, account responsibilities, and service conditions." 
+        keywords="VPN terms of service, ShiftLK terms, service agreement"
+      />
       <div className="container-main section-padding">
         <div className="text-center reveal-on-scroll mb-5">
           <div className="section-eyebrow">Legal</div>

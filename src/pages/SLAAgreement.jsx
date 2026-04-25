@@ -1,8 +1,14 @@
 import React from 'react';
+import SEO from '../components/SEO';
 
 const SLAAgreement = () => {
   return (
     <div className="legal-page section-bg-primary min-vh-100 pt-5">
+      <SEO 
+        title="SLA Agreement" 
+        description="ShiftLK Netch Solutions Service Level Agreement (SLA). Learn about our 99.9% uptime guarantee and subscription credit policy." 
+        keywords="VPN SLA, uptime guarantee, ShiftLK agreement"
+      />
       <div className="container-main section-padding">
         <div className="text-center reveal-on-scroll mb-5">
           <div className="section-eyebrow">Legal</div>

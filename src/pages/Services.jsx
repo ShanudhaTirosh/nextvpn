@@ -1,10 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import GlassCard from '../components/GlassCard';
+import SEO from '../components/SEO';
 
 const Services = () => {
   return (
     <div className="services-page">
+      <SEO 
+        title="Our Services" 
+        description="Explore our next-gen VPN technology powered by V2Ray and Netch. High-speed VMess, VLESS, and Trojan protocols for ultimate privacy." 
+        keywords="V2Ray Services, Netch VPN protocols, VMess, VLESS, Trojan VPN"
+      />
       {/* Hero */}
       <section className="section-padding section-bg-primary text-center">
         <div className="container-main pt-5">
