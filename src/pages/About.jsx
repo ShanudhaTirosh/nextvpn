@@ -39,7 +39,7 @@ const About = () => (
     <section className="max-w-6xl mx-auto px-6 pb-16">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { end:50, suffix:'k+', label:'Users Served', color:'from-cyan-500/10', border:'border-cyan-500/20', text:'text-cyan-400' },
+          { end:50, suffix:'+', label:'Users Served', color:'from-cyan-500/10', border:'border-cyan-500/20', text:'text-cyan-400' },
           { end:5, suffix:'+', label:'Global Servers', color:'from-blue-500/10', border:'border-blue-500/20', text:'text-blue-400' },
           { end:3, suffix:'+', label:'Countries', color:'from-purple-500/10', border:'border-purple-500/20', text:'text-purple-400' },
           { end:99.9, suffix:'%', label:'Uptime Record', color:'from-emerald-500/10', border:'border-emerald-500/20', text:'text-emerald-400' },

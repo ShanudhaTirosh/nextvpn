@@ -1,31 +1,53 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { useRealtimeCollection } from '../hooks/useFirestore';
-import { addDocument } from '../firebase/firestore';
+import { 
+  initChat, 
+  subscribeToMessages, 
+  subscribeToClientUnread, 
+  sendMessage, 
+  markMessagesRead 
+} from '../firebase/chatService';
 
 const ChatWidget = () => {
   const { currentUser, userData } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [text, setText] = useState('');
+  const [messages, setMessages] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const messagesEndRef = useRef(null);
 
-  // We fetch all messages and filter in client to avoid complex indexing for now,
-  // or we can use a custom hook. useRealtimeCollection doesn't support complex where clauses out of the box in this app's implementation,
-  // so we'll just filter them here.
-  const { data: allMessages } = useRealtimeCollection('messages', []);
-  
-  const messages = (allMessages || [])
-    .filter(m => m.uid === currentUser?.uid)
-    .sort((a, b) => (a.createdAt?.toDate?.() || 0) - (b.createdAt?.toDate?.() || 0));
-
-  const unreadCount = messages.filter(m => m.sender === 'admin' && !m.read && !isOpen).length;
-
+  // Initialize chat metadata when user logs in
   useEffect(() => {
-    if (isOpen) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-      // In a real app, we would mark them as read here
+    if (currentUser) {
+      initChat(currentUser.uid, userData?.displayName, currentUser.email).catch(console.error);
     }
-  }, [messages, isOpen]);
+  }, [currentUser, userData]);
+
+  // Subscribe to messages and unread count
+  useEffect(() => {
+    if (!currentUser) return;
+    
+    const unsubMessages = subscribeToMessages(currentUser.uid, (msgs) => {
+      setMessages(msgs);
+    });
+
+    const unsubUnread = subscribeToClientUnread(currentUser.uid, (count) => {
+      setUnreadCount(count);
+    });
+
+    return () => {
+      unsubMessages();
+      unsubUnread();
+    };
+  }, [currentUser]);
+
+  // Handle opening chat window & marking messages as read
+  useEffect(() => {
+    if (isOpen && currentUser) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      markMessagesRead(currentUser.uid, 'admin').catch(console.error);
+    }
+  }, [messages, isOpen, currentUser]);
 
   const handleSend = async (e) => {
     e.preventDefault();
@@ -35,13 +57,11 @@ const ChatWidget = () => {
     setText('');
     
     try {
-      await addDocument('messages', {
-        uid: currentUser.uid,
-        userEmail: currentUser.email,
-        userName: userData?.displayName || 'User',
+      await sendMessage(currentUser.uid, {
         text: msgText,
         sender: 'client',
-        read: false
+        userName: userData?.displayName,
+        userEmail: currentUser.email
       });
     } catch (err) {
       console.error('Failed to send message', err);
@@ -57,7 +77,7 @@ const ChatWidget = () => {
       return (
         <div className="flex flex-col gap-2 min-w-[160px]">
           <div className="flex items-center gap-2 text-xs font-bold bg-black/20 px-2 py-1.5 rounded-lg w-fit">
-            <i className="fa-solid fa-server text-cyan-400"></i> {protocol} Config
+            <img src="/v2ray.png" alt="v2ray" className="w-4 h-4 object-contain" /> {protocol} Config
           </div>
           <button
             onClick={() => {
@@ -111,7 +131,7 @@ const ChatWidget = () => {
                     {renderMessageText(msg.text)}
                   </div>
                   <span className={`text-[9px] text-slate-500 mt-1 ${isMine ? 'text-right pr-1' : 'text-left pl-1'}`}>
-                    {msg.createdAt?.toDate?.().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) || 'Now'}
+                    {new Date(msg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) || 'Now'}
                   </span>
                 </div>
               );

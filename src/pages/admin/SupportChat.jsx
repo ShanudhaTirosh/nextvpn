@@ -1,59 +1,51 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { useRealtimeCollection } from '../../hooks/useFirestore';
-import { addDocument, updateDocument } from '../../firebase/firestore';
+import React, { useState, useEffect, useRef } from 'react';
+import { 
+  subscribeToAllChats, 
+  subscribeToMessages, 
+  sendMessage, 
+  markMessagesRead 
+} from '../../firebase/chatService';
 
 const SupportChat = () => {
-  const { data: allMessages, loading } = useRealtimeCollection('messages', []);
+  const [chatList, setChatList] = useState([]);
+  const [activeMessages, setActiveMessages] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [activeUid, setActiveUid] = useState(null);
   const [text, setText] = useState('');
   const messagesEndRef = useRef(null);
 
-  // Group messages by uid
-  const chats = useMemo(() => {
-    return (allMessages || []).reduce((acc, msg) => {
-      if (!acc[msg.uid]) {
-        acc[msg.uid] = {
-          uid: msg.uid,
-          userEmail: msg.userEmail || 'Unknown',
-          userName: msg.userName || 'User',
-          messages: [],
-          unreadCount: 0,
-          lastMessage: null,
-          lastActive: 0
-        };
-      }
-      acc[msg.uid].messages.push(msg);
-      acc[msg.uid].lastActive = Math.max(acc[msg.uid].lastActive, msg.createdAt?.toDate?.() || 0);
-      
-      // Unread count for admin (messages sent by client that are not read)
-      if (msg.sender === 'client' && !msg.read) {
-        acc[msg.uid].unreadCount++;
-      }
-      
-      return acc;
-    }, {});
-  }, [allMessages]);
+  // Subscribe to all chats metadata for the sidebar
+  useEffect(() => {
+    const unsub = subscribeToAllChats((chats) => {
+      setChatList(chats);
+      setLoading(false);
+    });
+    return () => unsub();
+  }, []);
 
-  const chatList = useMemo(() => Object.values(chats).sort((a, b) => b.lastActive - a.lastActive), [chats]);
-  
-  const activeChat = activeUid ? chats[activeUid] : null;
-  const activeMessages = useMemo(() => {
-    if (!activeChat) return [];
-    return [...activeChat.messages].sort((a, b) => (a.createdAt?.toDate?.() || 0) - (b.createdAt?.toDate?.() || 0));
-  }, [activeChat]);
+  // Subscribe to messages for the active chat and mark them as read
+  useEffect(() => {
+    if (!activeUid) {
+      setActiveMessages([]);
+      return;
+    }
+    
+    const unsub = subscribeToMessages(activeUid, (msgs) => {
+      setActiveMessages(msgs);
+    });
 
+    // Mark messages as read when viewing
+    markMessagesRead(activeUid, 'client').catch(console.error);
+
+    return () => unsub();
+  }, [activeUid]);
+
+  // Scroll to bottom when messages update
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    
-    // Mark messages as read when viewing
-    if (activeUid && activeMessages.length > 0) {
-      activeMessages.forEach(msg => {
-        if (msg.sender === 'client' && !msg.read) {
-          updateDocument('messages', msg.id, { read: true }).catch(console.error);
-        }
-      });
-    }
-  }, [activeMessages, activeUid]);
+  }, [activeMessages]);
+
+  const activeChat = chatList.find(c => c.chatId === activeUid) || null;
 
   const handleSend = async (e) => {
     e.preventDefault();
@@ -63,13 +55,9 @@ const SupportChat = () => {
     setText('');
     
     try {
-      await addDocument('messages', {
-        uid: activeUid,
-        userEmail: activeChat.userEmail,
-        userName: activeChat.userName,
+      await sendMessage(activeUid, {
         text: msgText,
-        sender: 'admin',
-        read: false
+        sender: 'admin'
       });
     } catch (err) {
       console.error('Failed to send admin message', err);
@@ -85,7 +73,7 @@ const SupportChat = () => {
       return (
         <div className="flex flex-col gap-2 min-w-[180px]">
           <div className="flex items-center gap-2 text-xs font-bold bg-black/20 px-2 py-1.5 rounded-lg w-fit">
-            <i className="fa-solid fa-server text-cyan-400"></i> {protocol} Config
+            <img src="/v2ray.png" alt="v2ray" className="w-4 h-4 object-contain" /> {protocol} Config
           </div>
           <button
             onClick={() => {
@@ -124,17 +112,17 @@ const SupportChat = () => {
             ) : (
               chatList.map(chat => (
                 <button
-                  key={chat.uid}
-                  onClick={() => setActiveUid(chat.uid)}
-                  className={`w-full text-left p-4 border-b border-slate-800/50 transition-colors ${activeUid === chat.uid ? 'bg-cyan-500/10 border-l-2 border-l-cyan-500' : 'hover:bg-slate-800/50'}`}
+                  key={chat.chatId}
+                  onClick={() => setActiveUid(chat.chatId)}
+                  className={`w-full text-left p-4 border-b border-slate-800/50 transition-colors ${activeUid === chat.chatId ? 'bg-cyan-500/10 border-l-2 border-l-cyan-500' : 'hover:bg-slate-800/50'}`}
                 >
                   <div className="flex justify-between items-start mb-1">
-                    <span className="font-bold text-white text-sm truncate">{chat.userName}</span>
-                    {chat.unreadCount > 0 && (
-                      <span className="px-1.5 py-0.5 rounded-md bg-red-500 text-white text-[10px] font-bold">{chat.unreadCount}</span>
+                    <span className="font-bold text-white text-sm truncate">{chat.userName || 'User'}</span>
+                    {chat.adminUnread > 0 && (
+                      <span className="px-1.5 py-0.5 rounded-md bg-red-500 text-white text-[10px] font-bold">{chat.adminUnread}</span>
                     )}
                   </div>
-                  <div className="text-xs text-slate-500 truncate">{chat.userEmail}</div>
+                  <div className="text-xs text-slate-500 truncate">{chat.userEmail || ''}</div>
                 </button>
               ))
             )}
@@ -163,7 +151,7 @@ const SupportChat = () => {
                         {renderMessageText(msg.text)}
                       </div>
                       <span className={`text-[10px] text-slate-500 mt-1 ${isMine ? 'text-right pr-1' : 'text-left pl-1'}`}>
-                        {msg.createdAt?.toDate?.().toLocaleString([], {month:'short', day:'numeric', hour: '2-digit', minute:'2-digit'}) || 'Now'}
+                        {new Date(msg.createdAt).toLocaleString([], {month:'short', day:'numeric', hour: '2-digit', minute:'2-digit'}) || 'Now'}
                       </span>
                     </div>
                   );

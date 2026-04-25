@@ -4,7 +4,7 @@ export const useSiteSettings = () => {
   const { data, loading, error } = useDocument('siteSettings', 'config');
   
   const settings = {
-    siteName: data?.siteName || 'NetchX',
+    siteName: data?.siteName || 'ShiftLK',
     branding: {
       logoUrl: data?.branding?.logoUrl || '',
       primaryColor: data?.branding?.primaryColor || '#06b6d4',

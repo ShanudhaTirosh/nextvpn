@@ -72,7 +72,7 @@ const Login = () => {
           <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.4)]">
             <span className="text-white font-black text-sm">N</span>
           </div>
-          <span className="text-white font-bold text-lg">NetchX<span className="text-cyan-400 font-normal text-sm">™</span></span>
+          <span className="text-white font-bold text-lg">ShiftLK<span className="text-cyan-400 font-normal text-sm">™</span></span>
         </Link>
 
         <div className="relative z-10">
@@ -111,7 +111,7 @@ const Login = () => {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center">
               <span className="text-white font-black text-xs">N</span>
             </div>
-            <span className="text-white font-bold">NetchX™</span>
+            <span className="text-white font-bold">ShiftLK™</span>
           </Link>
 
           <h2 className="text-2xl font-black text-white mb-1">{resetMode ? 'Reset Password' : 'Welcome back'}</h2>
