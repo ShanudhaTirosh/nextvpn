@@ -29,6 +29,7 @@ const Settings = () => {
     socialLinks: { facebook: '', telegram: '', instagram: '', whatsapp: '' },
     paymentDetails: { helaPay: '', eZcash: '', bankAccount: { bank: '', branch: '', name: '', number: '' } },
     branding: { logoUrl: '', primaryColor: '#06b6d4' },
+    notifications: { discordWebhook: '', telegramBotToken: '', telegramChatId: '' },
   });
   const [isSaving, setIsSaving] = useState(false);
 
@@ -42,6 +43,7 @@ const Settings = () => {
           bankAccount: { ...prev.paymentDetails.bankAccount, ...(config.paymentDetails?.bankAccount || {}) },
         },
         branding: { ...prev.branding, ...(config.branding || {}) },
+        notifications: { ...prev.notifications, ...(config.notifications || {}) },
       }));
     }
   }, [config]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -167,6 +169,27 @@ const Settings = () => {
                   <input type="text" className={inp} value={formData.branding.primaryColor} onChange={e => setNested('branding', 'primaryColor', e.target.value)} placeholder="#06b6d4" />
                 </div>
               </Field>
+            </div>
+          </SectionCard>
+          
+          <SectionCard title="Notification System" icon="fa-bell">
+            <p className="text-xs text-slate-500 mb-5">Configure where you receive alerts for new manual payments.</p>
+            <div className="space-y-4">
+              <Field label="Discord Webhook URL">
+                <input type="text" className={inp} value={formData.notifications.discordWebhook} onChange={e => setNested('notifications', 'discordWebhook', e.target.value)} placeholder="https://discord.com/api/webhooks/..." />
+              </Field>
+              <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50 space-y-4">
+                <p className="text-xs font-bold text-sky-400 flex items-center gap-2"><i className="fa-brands fa-telegram"></i> Telegram Bot Notifications</p>
+                <Field label="Bot Token">
+                  <input type="text" className={inp} value={formData.notifications.telegramBotToken} onChange={e => setNested('notifications', 'telegramBotToken', e.target.value)} placeholder="123456789:ABCDefgh..." />
+                </Field>
+                <Field label="Chat ID (Your ID or Group ID)">
+                  <input type="text" className={inp} value={formData.notifications.telegramChatId} onChange={e => setNested('notifications', 'telegramChatId', e.target.value)} placeholder="-100XXXXXXXXXX" />
+                </Field>
+                <p className="text-[10px] text-slate-500 leading-relaxed italic">
+                  Tip: Create a bot via @BotFather, add it to your group, and use @IDBot to find your Chat ID.
+                </p>
+              </div>
             </div>
           </SectionCard>
 

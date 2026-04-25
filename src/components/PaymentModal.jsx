@@ -105,7 +105,7 @@ const PaymentModal = ({ show, onHide, packageData, siteSettings }) => {
       await addDocument('payments', paymentData);
       
       // Fire and forget notification
-      sendPaymentNotification(paymentData).catch(console.error);
+      sendPaymentNotification(paymentData, siteSettings).catch(console.error);
 
       setStep(3);
     } catch {
