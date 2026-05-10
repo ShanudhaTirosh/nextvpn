@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useRealtimeCollection } from '../../hooks/useFirestore';
 import { updateDocument } from '../../firebase/firestore';
+import { syncAdminRTDB } from '../../firebase/chatService';
 import { showToast } from '../../components/Toast';
 import { logActivity } from '../../hooks/useActivityLog';
 import { xuiGetInbounds, xuiResetTraffic, xuiDeleteClient } from '../../utils/xuiApi';
@@ -87,6 +88,7 @@ const Users = () => {
   const setAdminStatus = async (user, isAdmin) => {
     try {
       await updateDocument('users', user.id, { isAdmin });
+      await syncAdminRTDB(user.id, isAdmin);
       await logActivity('user', `User "${user.displayName || user.email}" was ${isAdmin ? 'granted' : 'revoked'} admin rights.`, 'warning');
       showToast.success('Admin status updated.');
     } catch {

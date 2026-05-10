@@ -1,0 +1,60 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isOwner(uid) {
+      return request.auth.uid == uid;
+    }
+    function isAdmin() {
+      return isSignedIn() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // ── users ──────────────────────────────────────────────────────────────
+    match /users/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow create: if isOwner(uid); // self-registration on first sign-in
+      allow update: if isAdmin(); // only admin can update (plan, uuid, etc.)
+      allow delete: if isAdmin();
+    }
+
+    // ── plans ──────────────────────────────────────────────────────────────
+    match /plans/{planId} {
+      allow read: if true; // Public — everyone can read active plans
+      allow write: if isAdmin();
+    }
+
+    // ── servers ────────────────────────────────────────────────────────────
+    match /servers/{serverId} {
+      allow read: if isSignedIn(); // Signed-in users can read server list
+      allow write: if isAdmin();
+    }
+
+    // ── payments ───────────────────────────────────────────────────────────
+    match /payments/{paymentId} {
+      allow read: if isAdmin() ||
+        (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow create: if isSignedIn() &&
+        request.resource.data.uid == request.auth.uid &&
+        request.resource.data.status == 'pending';
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ── siteSettings ───────────────────────────────────────────────────────
+    match /siteSettings/{section} {
+      allow read: if true; // Public — homepage reads these
+      allow write: if isAdmin();
+    }
+
+    // ── contactSubmissions ─────────────────────────────────────────────────
+    match /contactSubmissions/{id} {
+      allow create: if true; // Anyone can submit contact form
+      allow read, update, delete: if isAdmin();
+    }
+  }
+}

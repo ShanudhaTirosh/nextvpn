@@ -1,0 +1,21 @@
+{
+  "rules": {
+    "chats": {
+      "$uid": {
+        "messages": {
+          ".read": "auth != null && (auth.uid == $uid || root.child('users/' + auth.uid + '/role').val() == 'admin')",
+          ".write": "auth != null && (auth.uid == $uid || root.child('users/' + auth.uid + '/role').val() == 'admin')",
+          "$messageId": {
+            ".validate": "newData.hasChildren(['text', 'sender', 'timestamp'])"
+          }
+        }
+      }
+    },
+    "notifications": {
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        ".write": "auth != null && root.child('users/' + auth.uid + '/role').val() == 'admin'"
+      }
+    }
+  }
+}

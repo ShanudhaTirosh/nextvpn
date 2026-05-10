@@ -158,3 +158,7 @@ export const subscribeToTyping = (chatId, who, callback) => {
     callback(val && (Date.now() - val) < 5000);
   });
 };
+// ── Admin Synchronization ──
+export const syncAdminRTDB = (uid, isAdmin) => {
+  return update(ref(rtdb), { [`admins/${uid}`]: isAdmin ? true : null });
+};
